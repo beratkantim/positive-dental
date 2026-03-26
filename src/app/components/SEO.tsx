@@ -4,7 +4,7 @@ const SITE_NAME = "Positive Dental Studio";
 const SITE_URL = "https://positivedental.com";
 const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=1200&q=80";
 const DEFAULT_DESCRIPTION =
-  "Positive Dental Studio — İstanbul, Ankara, İzmir ve Antalya'da modern diş kliniği. İmplant, estetik diş hekimliği, ortodonti ve çocuk diş hekimliği. Ücretsiz ilk muayene.";
+  "Positive Dental Studio — Adana Türkmenbaşı ve İstanbul Nişantaşı'nda modern diş kliniği. İmplant, estetik diş hekimliği, ortodonti ve çocuk diş hekimliği. Ücretsiz ilk muayene.";
 
 interface SEOProps {
   title?: string;
@@ -17,6 +17,7 @@ interface SEOProps {
   author?: string;
   schemaType?: "dental" | "blog" | "none";
   noindex?: boolean;
+  breadcrumbs?: { name: string; url: string }[];
 }
 
 const DENTAL_CLINIC_SCHEMA = {
@@ -45,8 +46,15 @@ const DENTAL_CLINIC_SCHEMA = {
   address: [
     {
       "@type": "PostalAddress",
-      streetAddress: "Caferağa Mah., Moda Cad. No:45/3",
-      addressLocality: "Kadıköy",
+      streetAddress: "Türkmenbaşı Mah. Atatürk Cad. No:123",
+      addressLocality: "Seyhan",
+      addressRegion: "Adana",
+      addressCountry: "TR",
+    },
+    {
+      "@type": "PostalAddress",
+      streetAddress: "Nişantaşı Mah. Valikonağı Cad. No:45",
+      addressLocality: "Şişli",
       addressRegion: "İstanbul",
       addressCountry: "TR",
     },
@@ -70,18 +78,30 @@ const DENTAL_CLINIC_SCHEMA = {
     "https://www.facebook.com/positivedental",
     "https://twitter.com/positivedental",
   ],
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Diş Tedavisi Hizmetleri",
+    itemListElement: [
+      { "@type": "Offer", itemOffered: { "@type": "MedicalProcedure", name: "Dental İmplant" } },
+      { "@type": "Offer", itemOffered: { "@type": "MedicalProcedure", name: "Ortodonti" } },
+      { "@type": "Offer", itemOffered: { "@type": "MedicalProcedure", name: "Estetik Diş Hekimliği" } },
+      { "@type": "Offer", itemOffered: { "@type": "MedicalProcedure", name: "Çocuk Diş Hekimliği" } },
+    ],
+  },
 };
 
-const BREADCRUMB_SCHEMA = (items: { name: string; url: string }[]) => ({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: items.map((item, index) => ({
-    "@type": "ListItem",
-    position: index + 1,
-    name: item.name,
-    item: item.url,
-  })),
-});
+function buildBreadcrumbSchema(items: { name: string; url: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
 
 export function SEO({
   title,
@@ -94,8 +114,9 @@ export function SEO({
   author,
   schemaType = "dental",
   noindex = false,
+  breadcrumbs,
 }: SEOProps) {
-  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Modern Diş Kliniği`;
+  const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Adana & İstanbul Diş Kliniği`;
   const fullUrl = `${SITE_URL}${url}`;
   const defaultKeywords = [
     "diş kliniği",
@@ -104,20 +125,26 @@ export function SEO({
     "implant",
     "ortodonti",
     "estetik diş hekimliği",
-    "istanbul diş",
+    "adana diş kliniği",
+    "istanbul diş kliniği",
+    "diş beyazlatma",
+    "zirkonyum kaplama",
   ];
-  const allKeywords = [...defaultKeywords, ...keywords].join(", ");
+  const allKeywords = [...new Set([...defaultKeywords, ...keywords])].join(", ");
+
+  const defaultBreadcrumbs = [
+    { name: "Ana Sayfa", url: SITE_URL },
+    ...(title ? [{ name: title, url: fullUrl }] : []),
+  ];
 
   return (
     <Helmet>
-      {/* ── Basic ── */}
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <meta name="keywords" content={allKeywords} />
       <link rel="canonical" href={fullUrl} />
       {noindex && <meta name="robots" content="noindex,nofollow" />}
 
-      {/* ── Open Graph ── */}
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
       <meta property="og:image" content={image} />
@@ -126,14 +153,12 @@ export function SEO({
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:locale" content="tr_TR" />
 
-      {/* ── Twitter Card ── */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@positivedental" />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={image} />
 
-      {/* ── Article specific ── */}
       {type === "article" && publishedAt && (
         <meta property="article:published_time" content={publishedAt} />
       )}
@@ -141,12 +166,15 @@ export function SEO({
         <meta property="article:author" content={author} />
       )}
 
-      {/* ── JSON-LD ── */}
       {schemaType === "dental" && (
         <script type="application/ld+json">
           {JSON.stringify(DENTAL_CLINIC_SCHEMA)}
         </script>
       )}
+
+      <script type="application/ld+json">
+        {JSON.stringify(buildBreadcrumbSchema(breadcrumbs || defaultBreadcrumbs))}
+      </script>
     </Helmet>
   );
 }
@@ -213,11 +241,24 @@ export function BlogPostSEO({
     },
   };
 
-  const breadcrumbSchema = BREADCRUMB_SCHEMA([
+  const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Ana Sayfa", url: SITE_URL },
     { name: "Blog", url: `${SITE_URL}/blog` },
     { name: title, url: fullUrl },
   ]);
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [{
+      "@type": "Question",
+      name: title,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: description,
+      },
+    }],
+  };
 
   return (
     <Helmet>
@@ -245,6 +286,7 @@ export function BlogPostSEO({
 
       <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
     </Helmet>
   );
 }
