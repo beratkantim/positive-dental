@@ -297,8 +297,8 @@ export function Home() {
                       src={slide.image}
                       alt={slide.title.replace("\n", " ")}
                       className="w-full h-full object-cover"
-                      loading={i === 0 ? "eager" : "lazy"}
-                      fetchPriority={i === 0 ? "high" : undefined}
+                      loading={active === 0 ? "eager" : "lazy"}
+                      fetchPriority={active === 0 ? "high" : undefined}
                     />
                     {/* Dark overlay gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07091A]/60 via-transparent to-transparent" />
