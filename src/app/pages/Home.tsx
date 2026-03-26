@@ -11,7 +11,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
-import type { HeroSlide } from "@/lib/supabase";
+import type { HeroSlide, Testimonial } from "@/lib/supabase";
 import livePositiveLogo from "../../assets/f4b0e084b9ed2ff5e408d040b35a42fa850c9272.png";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
@@ -105,7 +105,8 @@ const STATS = [
   { value: "4.9★",    label: "Google Puanı", icon: ThumbsUp },
 ];
 
-const TESTIMONIALS = [
+// Testimonials Supabase'den çekilir, fallback aşağıda
+const FALLBACK_TESTIMONIALS = [
   { name: "Selin Y.", role: "İmplant Hastası",  text: "Hayatımda dişçiye gitmekten bu kadar keyif aldığımı hiç düşünmezdim. Ekip inanılmaz sıcak, ortam çok modern.", rating: 5, img: "https://images.unsplash.com/photo-1679486479476-5ff4ee182334?w=200&q=80" },
   { name: "Kaan M.", role: "Ortodonti Hastası", text: "Şeffaf plak ile 8 ayda çarpık dişlerimi düzelttim. Kimse fark etmedi, sonuç muhteşem!", rating: 5, img: "https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=200&q=80" },
   { name: "Buse T.", role: "Gülüş Tasarımı",    text: "Gülüş tasarımı sonuçlarım harika — fotoğraflarda bile belli oluyor! Kesinlikle tavsiye ediyorum.", rating: 5, img: "https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=200&q=80" },
@@ -117,6 +118,11 @@ export function Home() {
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
   const { data: rawSlides } = useTable<HeroSlide>("hero_slides", "sort_order");
+  const { data: rawTestimonials } = useTable<Testimonial>("testimonials", "created_at", false);
+
+  const TESTIMONIALS = rawTestimonials.length > 0
+    ? rawTestimonials.map(t => ({ name: t.name, role: t.role, text: t.text, rating: t.rating, img: t.image }))
+    : FALLBACK_TESTIMONIALS;
 
   const HERO_SLIDES: SlideData[] = rawSlides.length > 0
     ? rawSlides.map(mapSlide)
