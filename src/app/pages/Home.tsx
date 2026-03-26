@@ -164,19 +164,19 @@ export function Home() {
       ══════════════════════════════════════════════════════════ */}
       <section className="relative bg-[#0D1235] overflow-hidden min-h-[92vh] flex flex-col">
 
-        {/* Ambient blobs — react to active slide */}
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/25 blur-[130px] pointer-events-none transition-all duration-1000" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-violet-700/25 blur-[110px] pointer-events-none transition-all duration-1000" />
+        {/* Ambient blobs — hidden on mobile for performance */}
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/25 blur-[130px] pointer-events-none transition-all duration-1000 hidden md:block" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-violet-700/25 blur-[110px] pointer-events-none transition-all duration-1000 hidden md:block" />
 
-        {/* Rings */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04]">
+        {/* Rings — hidden on mobile */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04] hidden md:flex">
           {[300, 500, 700, 900, 1100].map((s) => (
             <div key={s} className="absolute rounded-full border border-white" style={{ width: s, height: s }} />
           ))}
         </div>
 
-        {/* Grid dots */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        {/* Grid dots — hidden on mobile */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none hidden md:block"
           style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
         {/* ── Top bar ── */}
@@ -215,7 +215,6 @@ export function Home() {
                   exit={{ opacity: 0, x: direction * -40 }}
                   transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="space-y-6"
-                  style={{ willChange: "transform, opacity" }}
                 >
                   {/* Service tag */}
                   <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/8 border border-white/12`}>
@@ -287,7 +286,6 @@ export function Home() {
                   exit={{ opacity: 0, scale: 0.96, x: direction * -30 }}
                   transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="relative w-full max-w-[520px]"
-                  style={{ willChange: "transform, opacity" }}
                 >
                   {/* Glow behind image */}
                   <div className={`absolute inset-0 scale-90 translate-y-6 rounded-[2rem] bg-gradient-to-br ${slide.accentFrom} ${slide.accentTo} opacity-25 blur-3xl pointer-events-none`} />
@@ -387,7 +385,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           SERVICES
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-[#FAFAF8] content-lazy">
+      <section className="py-24 bg-[#FAFAF8]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
             <div>
@@ -438,9 +436,9 @@ export function Home() {
             viewport={{ once: true }}
             className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-50 via-violet-50 to-indigo-50 border border-pink-100"
           >
-            {/* Floating blobs */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-pink-200/40 rounded-full blur-[80px] pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-60 h-60 bg-violet-200/40 rounded-full blur-[70px] pointer-events-none" />
+            {/* Floating blobs — hidden on mobile for performance */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-pink-200/40 rounded-full blur-[80px] pointer-events-none hidden md:block" />
+            <div className="absolute bottom-0 left-0 w-60 h-60 bg-violet-200/40 rounded-full blur-[70px] pointer-events-none hidden md:block" />
 
             <div className="relative grid lg:grid-cols-2 gap-0 items-center">
               {/* Left – text */}
@@ -692,12 +690,13 @@ export function Home() {
       <section className="relative bg-[#0D1235] overflow-hidden py-24 lg:py-32 content-lazy">
 
         {/* Ambient glows */}
-        <div className="absolute top-0 left-0 w-[700px] h-[700px] bg-indigo-600/12 rounded-full blur-[160px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-violet-600/15 rounded-full blur-[120px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-pink-600/8 rounded-full blur-[80px] pointer-events-none" />
+        {/* Ambient glows — hidden on mobile for performance */}
+        <div className="absolute top-0 left-0 w-[700px] h-[700px] bg-indigo-600/12 rounded-full blur-[160px] pointer-events-none hidden md:block" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-violet-600/15 rounded-full blur-[120px] pointer-events-none hidden md:block" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-pink-600/8 rounded-full blur-[80px] pointer-events-none hidden md:block" />
 
-        {/* Dot grid */}
-        <div className="absolute inset-0 opacity-[0.025] pointer-events-none"
+        {/* Dot grid — hidden on mobile */}
+        <div className="absolute inset-0 opacity-[0.025] pointer-events-none hidden md:block"
           style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

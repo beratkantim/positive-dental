@@ -28,16 +28,8 @@ body {
   }
 }
 
-/* GPU hızlandırma ipuçları */
-.will-change-transform {
-  will-change: transform;
-}
-.will-change-opacity {
-  will-change: opacity;
-}
-
 /* Content-visibility: below-the-fold bölümler lazy render */
 .content-lazy {
   content-visibility: auto;
-  contain-intrinsic-size: auto 500px;
+  contain-intrinsic-size: auto 600px;
 }
