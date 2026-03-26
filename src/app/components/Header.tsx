@@ -1,7 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router";
 import { Menu, Phone, X, Calendar, ChevronDown, Building2, Shield, Info, ExternalLink, Stethoscope, MapPin, Users } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import logo from "figma:asset/3e0714ea93eab26375a84dbf0bb9f0148151f7b4.png";
+import logo from "../../assets/3e0714ea93eab26375a84dbf0bb9f0148151f7b4.png";
 
 const FacebookIcon = () => (
   <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">

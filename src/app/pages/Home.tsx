@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
-import livePositiveLogo from "figma:asset/f4b0e084b9ed2ff5e408d040b35a42fa850c9272.png";
+import livePositiveLogo from "../../assets/f4b0e084b9ed2ff5e408d040b35a42fa850c9272.png";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
