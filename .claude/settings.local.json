@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vite:*)",
+      "Bash(xargs grep:*)",
+      "Bash(node /c/Users/beratkan/Desktop/positive-dental/generate-seed.cjs)"
+    ]
+  }
+}
