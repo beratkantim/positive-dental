@@ -17,12 +17,21 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router'],
-          'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs', '@radix-ui/react-select', '@radix-ui/react-popover', '@radix-ui/react-tooltip'],
-          'vendor-motion': ['motion'],
-          'vendor-charts': ['recharts'],
-          'vendor-supabase': ['@supabase/supabase-js'],
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react-dom') || id.includes('react-router') || id.includes('scheduler'))
+              return 'vendor-react';
+            if (id.includes('@supabase'))
+              return 'vendor-supabase';
+            if (id.includes('motion'))
+              return 'vendor-motion';
+            if (id.includes('recharts') || id.includes('d3-'))
+              return 'vendor-charts';
+            if (id.includes('@radix-ui'))
+              return 'vendor-ui';
+            if (id.includes('lucide-react'))
+              return 'vendor-icons';
+          }
         },
       },
     },
@@ -33,6 +42,7 @@ export default defineConfig({
       compress: {
         drop_console: true,
         drop_debugger: true,
+        passes: 2,
       },
     },
   },

@@ -1,7 +1,11 @@
+import { lazy, Suspense } from "react";
 import { Outlet } from "react-router";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { FloatingActionBar } from "./FloatingActionBar";
+
+const FloatingActionBar = lazy(() =>
+  import("./FloatingActionBar").then(m => ({ default: m.FloatingActionBar }))
+);
 
 export function Layout() {
   return (
@@ -11,7 +15,9 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
-      <FloatingActionBar />
+      <Suspense fallback={null}>
+        <FloatingActionBar />
+      </Suspense>
     </div>
   );
 }

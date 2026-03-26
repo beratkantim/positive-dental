@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Phone, Mail, Clock } from "lucide-react";
-import logo from "../../assets/3e0714ea93eab26375a84dbf0bb9f0148151f7b4.png";
+import logo from "../../assets/logo.webp";
 
 const FacebookIcon = () => (
   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
