@@ -7,7 +7,7 @@ import {
   Users, Stethoscope, Building2, ThumbsUp, ChevronLeft, ChevronRight,
   CheckCircle2, Zap, Eye, Sparkles,
 } from "lucide-react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence } from "../hooks/cssMotion";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
 import type { HeroSlide, Testimonial } from "@/lib/supabase";

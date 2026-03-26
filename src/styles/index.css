@@ -33,3 +33,88 @@ body {
   content-visibility: auto;
   contain-intrinsic-size: auto 600px;
 }
+
+/* ── CSS Animasyonlar (motion/react yerine) ────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+@keyframes progressBar {
+  from { width: 0%; }
+  to   { width: 100%; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Başlangıçta gizli, .in-view eklenince animasyon çalışır */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(24px);
+}
+.anim-fade-up.in-view {
+  animation: fadeUp 0.5s ease-out forwards;
+}
+.anim-fade-in {
+  opacity: 0;
+}
+.anim-fade-in.in-view {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+.anim-scale-in {
+  opacity: 0;
+  transform: scale(0.94);
+}
+.anim-scale-in.in-view {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+/* Hover lift */
+.hover-lift {
+  transition: transform 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-5px);
+}
+
+/* Float animasyonu */
+.anim-float {
+  animation: float 3.5s ease-in-out infinite;
+}
+
+/* Slide geçişi */
+.slide-enter {
+  animation: fadeUp 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.slide-enter-image {
+  animation: scaleIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Progress bar */
+.anim-progress {
+  animation: progressBar 5.5s linear forwards;
+}
+
+/* Delay utility classes */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
