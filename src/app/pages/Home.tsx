@@ -7,7 +7,7 @@ import {
   Users, Stethoscope, Building2, ThumbsUp, ChevronLeft, ChevronRight,
   CheckCircle2, Zap, Eye, Sparkles,
 } from "lucide-react";
-import { useInView } from "../hooks/useInView";
+import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
 import type { HeroSlide, Testimonial } from "@/lib/supabase";
@@ -16,18 +16,6 @@ import livePositiveLogo from "../../assets/live-positive-logo.webp";
 // Sayfa altındaki ağır bileşenler — kullanıcı scroll edince yüklenir
 const SmilePositive = lazy(() => import("../components/SmilePositive").then(m => ({ default: m.SmilePositive })));
 const BookingWizard = lazy(() => import("../components/BookingWizard").then(m => ({ default: m.BookingWizard })));
-
-// ─── HELPER COMPONENTS ───────────────────────────────────────────────────────
-
-function FadeUp({ children, className = "", delay = "" }: { children: React.ReactNode; className?: string; delay?: string }) {
-  const { ref, inView } = useInView();
-  return <div ref={ref} className={`anim-fade-up ${inView ? "in-view" : ""} ${delay} ${className}`}>{children}</div>;
-}
-
-function ScaleIn({ children, className = "", delay = "" }: { children: React.ReactNode; className?: string; delay?: string }) {
-  const { ref, inView } = useInView();
-  return <div ref={ref} className={`anim-scale-in ${inView ? "in-view" : ""} ${delay} ${className}`}>{children}</div>;
-}
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -387,7 +375,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           SERVICES
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-[#FAFAF8]">
+      <section className="py-16 sm:py-24 bg-[#FAFAF8] content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
             <div>
@@ -404,7 +392,7 @@ export function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PAGE_SERVICES.map((s, i) => (
-              <FadeUp
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 key={s.title}
                 delay={i < 3 ? `delay-${(i + 1) * 100}` : `delay-${Math.min((i - 2) * 100, 500)}`}
                 className="hover-lift group bg-white rounded-2xl p-6 border border-slate-100 hover:border-transparent hover:shadow-xl hover:shadow-slate-200/60 transition-all cursor-pointer"
@@ -417,7 +405,7 @@ export function Home() {
                 <div className="mt-4 flex items-center gap-1 text-xs font-bold text-slate-400 group-hover:text-indigo-500 transition-colors">
                   Detaylı Bilgi <ArrowRight className="w-3 h-3" />
                 </div>
-              </FadeUp>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -426,9 +414,9 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           KIDS TEASER
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-12 sm:py-20 bg-white overflow-hidden content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <FadeUp
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-50 via-violet-50 to-indigo-50 border border-pink-100"
           >
             {/* Floating blobs — hidden on mobile for performance */}
@@ -503,17 +491,17 @@ export function Home() {
                 </div>
               </div>
             </div>
-          </FadeUp>
+          </motion.div>
         </div>
       </section>
 
       {/* ══════════════════════════════════════════════════════════
           NEDEN BİZ
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-white overflow-hidden">
+      <section className="py-16 sm:py-24 bg-white overflow-hidden content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <FadeUp
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="relative"
             >
               <div className="grid grid-cols-2 gap-3">
@@ -542,9 +530,9 @@ export function Home() {
                   <Play className="w-6 h-6 text-slate-900 fill-slate-900 ml-0.5" />
                 </div>
               </div>
-            </FadeUp>
+            </motion.div>
 
-            <FadeUp
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
               className="space-y-8"
             >
               <div>
@@ -563,14 +551,14 @@ export function Home() {
                   { icon: "🛡️", title: "Steril & Güvenli",     desc: "Uluslararası sterilizasyon protokolü." },
                   { icon: "🌍", title: "International Patients", desc: "Yabancı hastalar için özel paketler." },
                 ].map((w, i) => (
-                  <FadeUp key={w.title} delay={`delay-${(i + 1) * 100}`}
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} key={w.title} delay={`delay-${(i + 1) * 100}`}
                     className="flex gap-3 p-4 rounded-2xl bg-slate-50 hover:bg-indigo-50 transition-colors group">
                     <span className="text-2xl flex-shrink-0">{w.icon}</span>
                     <div>
                       <p className="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">{w.title}</p>
                       <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{w.desc}</p>
                     </div>
-                  </FadeUp>
+                  </motion.div>
                 ))}
               </div>
               <a
@@ -581,7 +569,7 @@ export function Home() {
               >
                 <Calendar className="w-5 h-5" /> Online Randevu Al
               </a>
-            </FadeUp>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -589,7 +577,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           TESTIMONIALS
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-[#FAFAF8] content-lazy">
+      <section className="py-16 sm:py-24 bg-[#FAFAF8] content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Hasta Yorumları</span>
@@ -597,7 +585,7 @@ export function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t, i) => (
-              <FadeUp key={i}
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} key={i}
                 delay={`delay-${(i + 1) * 100}`}
                 className={`relative bg-white rounded-3xl p-7 border border-slate-100 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/50 transition-all ${i === 1 ? "lg:-translate-y-4" : ""}`}>
                 <div className="absolute top-5 right-6 text-5xl text-slate-100 font-serif leading-none select-none">"</div>
@@ -617,10 +605,10 @@ export function Home() {
                     <span className="text-xs bg-green-100 text-green-700 font-semibold px-2.5 py-1 rounded-full">Doğrulandı</span>
                   </div>
                 </div>
-              </FadeUp>
+              </motion.div>
             ))}
           </div>
-          <FadeUp
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="mt-10 flex items-center justify-center gap-4">
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
@@ -628,7 +616,7 @@ export function Home() {
             <p className="text-slate-600 text-sm">
               <span className="font-black text-slate-900">4.9/5</span> ortalama · <span className="font-bold">1.200+ Google Yorumu</span>
             </p>
-          </FadeUp>
+          </motion.div>
         </div>
       </section>
 
@@ -641,7 +629,7 @@ export function Home() {
             {STATS.map((s, i) => {
               const Icon = s.icon;
               return (
-                <FadeUp
+                <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   key={s.label}
                   delay={`delay-${Math.min((i + 1) * 100, 500)}`}
                   className="relative flex flex-col items-center justify-center py-10 px-6 text-center group overflow-hidden"
@@ -656,7 +644,7 @@ export function Home() {
 
                   <p className="font-display text-3xl font-black text-white tracking-tight">{s.value}</p>
                   <p className="text-slate-500 text-xs uppercase tracking-widest mt-1.5 font-medium">{s.label}</p>
-                </FadeUp>
+                </motion.div>
               );
             })}
           </div>
@@ -686,7 +674,7 @@ export function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Top label */}
-          <FadeUp
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="flex flex-col items-center text-center mb-16"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-black uppercase tracking-widest mb-6">
@@ -705,7 +693,7 @@ export function Home() {
               Bebekten büyükbabaya, her yaştan her bireye özel tedavi protokolleri.
               Tek bir çatı altında tüm ailenizin gülüşünü koruyoruz.
             </p>
-          </FadeUp>
+          </motion.div>
 
           {/* Family cards grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
@@ -747,7 +735,7 @@ export function Home() {
                 img: "https://images.unsplash.com/photo-1575267685970-7fbabf6ed7b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=75&auto=format",
               },
             ].map((card, i) => (
-              <FadeUp
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 key={card.label}
                 delay={`delay-${Math.min((i + 1) * 100, 500)}`}
                 className="hover-lift relative group rounded-3xl overflow-hidden border border-white/8 cursor-default"
@@ -776,12 +764,12 @@ export function Home() {
                   <p className="text-slate-400 text-xs leading-relaxed">{card.desc}</p>
                   <div className={`mt-4 h-0.5 rounded-full bg-gradient-to-r ${card.color} opacity-60`} />
                 </div>
-              </FadeUp>
+              </motion.div>
             ))}
           </div>
 
           {/* Center feature: family photo + stats */}
-          <FadeUp
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="relative rounded-3xl overflow-hidden border border-white/10 mb-14"
           >
             {/* BG image */}
@@ -847,10 +835,10 @@ export function Home() {
                 </div>
               </div>
             </div>
-          </FadeUp>
+          </motion.div>
 
           {/* Bottom trust strip */}
-          <FadeUp
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             className="grid grid-cols-2 sm:grid-cols-4 gap-4"
           >
             {[
@@ -859,7 +847,7 @@ export function Home() {
               { icon: "📋", value: "Aile Paketi", label: "Toplu İndirim" },
               { icon: "📍", value: "4 Klinik", label: "Size Yakın" },
             ].map((item, i) => (
-              <ScaleIn
+              <motion.div initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
                 key={item.label}
                 delay={`delay-${Math.min((i + 1) * 100, 500)}`}
                 className="flex items-center gap-3 bg-white/5 border border-white/8 rounded-2xl px-5 py-4 hover:bg-white/8 transition-colors"
@@ -869,9 +857,9 @@ export function Home() {
                   <p className="text-white font-black text-sm">{item.value}</p>
                   <p className="text-slate-500 text-xs">{item.label}</p>
                 </div>
-              </ScaleIn>
+              </motion.div>
             ))}
-          </FadeUp>
+          </motion.div>
 
           {/* Footer note */}
           <p className="text-center text-slate-600 text-xs mt-8">
