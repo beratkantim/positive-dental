@@ -10,68 +10,80 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
+import { useTable } from "../hooks/useSupabase";
+import type { HeroSlide } from "@/lib/supabase";
 import livePositiveLogo from "../../assets/f4b0e084b9ed2ff5e408d040b35a42fa850c9272.png";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
-// ─── HERO SLIDES ──────────────────────────────────────────────────────────────
+// ─── TAG COLOR → ICON MAP ────────────────────────────────────────────────────
 
-const HERO_SLIDES = [
+const TAG_ICON_MAP: Record<string, React.ComponentType<any>> = {
+  "text-violet-300": Zap,
+  "text-teal-300": Eye,
+  "text-amber-300": Sparkles,
+  "text-rose-300": Star,
+  "text-sky-300": Eye,
+  "text-emerald-300": CheckCircle2,
+};
+
+// tag_color → accent renkleri
+const ACCENT_MAP: Record<string, { from: string; to: string }> = {
+  "text-violet-300": { from: "from-indigo-500", to: "to-violet-600" },
+  "text-teal-300": { from: "from-teal-500", to: "to-cyan-600" },
+  "text-amber-300": { from: "from-amber-500", to: "to-orange-500" },
+  "text-rose-300": { from: "from-rose-500", to: "to-pink-600" },
+  "text-sky-300": { from: "from-sky-500", to: "to-blue-600" },
+  "text-emerald-300": { from: "from-emerald-500", to: "to-teal-600" },
+};
+
+interface SlideData {
+  tag: string;
+  tagIcon: React.ComponentType<any>;
+  tagColor: string;
+  title: string;
+  titleGradient: string;
+  subtitle: string;
+  features: string[];
+  image: string;
+  accentFrom: string;
+  accentTo: string;
+  badge: string;
+}
+
+function mapSlide(s: HeroSlide): SlideData {
+  const accent = ACCENT_MAP[s.tag_color] || ACCENT_MAP["text-violet-300"];
+  return {
+    tag: s.tag,
+    tagIcon: TAG_ICON_MAP[s.tag_color] || Sparkles,
+    tagColor: s.tag_color,
+    title: s.title,
+    titleGradient: s.title_gradient,
+    subtitle: s.subtitle,
+    features: s.features || [],
+    image: s.image,
+    accentFrom: accent.from,
+    accentTo: accent.to,
+    badge: s.badge,
+  };
+}
+
+// Fallback slide (veritabanı boşsa veya yüklenirken)
+const FALLBACK_SLIDES: SlideData[] = [
   {
-    tag: "Ağrısız Diş Hekimliği",
-    tagIcon: Zap,
+    tag: "Positive Dental Studio",
+    tagIcon: Sparkles,
     tagColor: "text-violet-300",
-    title: "Dijital\nAnestezi",
+    title: "Sağlıklı\nGülüşler",
     titleGradient: "from-indigo-400 via-violet-400 to-purple-400",
-    subtitle: "Iğne hissi olmadan, tamamen konforlu bir tedavi deneyimi. STA (Single Tooth Anesthesia) sistemiyle mikroişlemci kontrollü, kademeli ilaç verilimi.",
-    features: [
-      "Mikro-kontrollü ilaç dozajı",
-      "Titreşim ile algı azaltma",
-      "Çocuklar ve kaygılı hastalar için ideal",
-      "İşlem süresi %40 daha kısa",
-    ],
+    subtitle: "Adana ve İstanbul'da uzman kadrosuyla hizmet veren modern diş kliniği.",
+    features: ["Uzman hekim kadrosu", "Modern teknoloji", "Ücretsiz ilk muayene"],
     image: "https://images.unsplash.com/photo-1623867821208-c4d8025f8194?w=900&q=85",
     accentFrom: "from-indigo-500",
     accentTo: "to-violet-600",
-    badge: "STA Sistemi",
-  },
-  {
-    tag: "Rahatlatıcı Terapi",
-    tagIcon: Eye,
-    tagColor: "text-teal-300",
-    title: "Guided Film\nTherapy",
-    titleGradient: "from-teal-300 via-cyan-300 to-indigo-300",
-    subtitle: "Tedavi süresince özel VR gözlük ve kişiselleştirilmiş içerik seçimiyle zihninizi kliniğin dışına taşıyoruz. Kaygı yüzde seksen azalıyor.",
-    features: [
-      "Kişiselleştirilmiş film & müzik seçimi",
-      "Kortizol düzeyi ölçümlü kaygı takibi",
-      "Çocuk, genç ve yetişkin protokolleri",
-      "İşlem süresini hissettirmez",
-    ],
-    image: "https://images.unsplash.com/photo-1757652591587-b8d27db73e10?w=900&q=85",
-    accentFrom: "from-teal-500",
-    accentTo: "to-cyan-600",
-    badge: "VR Destekli",
-  },
-  {
-    tag: "Estetik Diş Hekimliği",
-    tagIcon: Sparkles,
-    tagColor: "text-amber-300",
-    title: "Lamine\nTedavileri",
-    titleGradient: "from-amber-300 via-orange-300 to-rose-300",
-    subtitle: "Ultra-ince porselen laminalar ile gülüşünüzü tamamen dönüştürüyoruz. Dijital tasarım, aynı gün simülasyon, minimum diş kesimi.",
-    features: [
-      "0,3 mm ultra-ince porselen",
-      "Digital Smile Design simülasyonu",
-      "Minimum veya sıfır diş kesimi",
-      "10+ yıl renk stabilitesi garantisi",
-    ],
-    image: "https://images.unsplash.com/photo-1562330743-fbc6ef07ca78?w=900&q=85",
-    accentFrom: "from-amber-500",
-    accentTo: "to-orange-500",
-    badge: "DSD Teknolojisi",
+    badge: "Randevu Açık",
   },
 ];
 
@@ -104,14 +116,20 @@ const TESTIMONIALS = [
 export function Home() {
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
+  const { data: rawSlides } = useTable<HeroSlide>("hero_slides", "sort_order");
+
+  const HERO_SLIDES: SlideData[] = rawSlides.length > 0
+    ? rawSlides.map(mapSlide)
+    : FALLBACK_SLIDES;
 
   const goTo = useCallback((idx: number) => {
     setDirection(idx > active ? 1 : -1);
     setActive(idx);
   }, [active]);
 
-  const prev = () => goTo((active - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
-  const next = useCallback(() => goTo((active + 1) % HERO_SLIDES.length), [active, goTo]);
+  const slideCount = HERO_SLIDES.length;
+  const prev = () => goTo((active - 1 + slideCount) % slideCount);
+  const next = useCallback(() => goTo((active + 1) % slideCount), [active, slideCount, goTo]);
 
   // Auto-advance
   useEffect(() => {
@@ -119,7 +137,9 @@ export function Home() {
     return () => clearTimeout(t);
   }, [active, next]);
 
-  const slide = HERO_SLIDES[active];
+  // Active index'i slide sayısına sınırla
+  const safeActive = active < HERO_SLIDES.length ? active : 0;
+  const slide = HERO_SLIDES[safeActive];
   const TagIcon = slide.tagIcon;
 
   return (
