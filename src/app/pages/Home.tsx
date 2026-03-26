@@ -80,7 +80,7 @@ const FALLBACK_SLIDES: SlideData[] = [
     titleGradient: "from-indigo-400 via-violet-400 to-purple-400",
     subtitle: "Adana ve İstanbul'da uzman kadrosuyla hizmet veren modern diş kliniği.",
     features: ["Uzman hekim kadrosu", "Modern teknoloji", "Ücretsiz ilk muayene"],
-    image: "https://images.unsplash.com/photo-1623867821208-c4d8025f8194?w=900&q=85",
+    image: "https://images.unsplash.com/photo-1623867821208-c4d8025f8194?w=900&q=75&auto=format",
     accentFrom: "from-indigo-500",
     accentTo: "to-violet-600",
     badge: "Randevu Açık",
@@ -107,9 +107,9 @@ const STATS = [
 
 // Testimonials Supabase'den çekilir, fallback aşağıda
 const FALLBACK_TESTIMONIALS = [
-  { name: "Selin Y.", role: "İmplant Hastası",  text: "Hayatımda dişçiye gitmekten bu kadar keyif aldığımı hiç düşünmezdim. Ekip inanılmaz sıcak, ortam çok modern.", rating: 5, img: "https://images.unsplash.com/photo-1679486479476-5ff4ee182334?w=200&q=80" },
-  { name: "Kaan M.", role: "Ortodonti Hastası", text: "Şeffaf plak ile 8 ayda çarpık dişlerimi düzelttim. Kimse fark etmedi, sonuç muhteşem!", rating: 5, img: "https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=200&q=80" },
-  { name: "Buse T.", role: "Gülüş Tasarımı",    text: "Gülüş tasarımı sonuçlarım harika — fotoğraflarda bile belli oluyor! Kesinlikle tavsiye ediyorum.", rating: 5, img: "https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=200&q=80" },
+  { name: "Selin Y.", role: "İmplant Hastası",  text: "Hayatımda dişçiye gitmekten bu kadar keyif aldığımı hiç düşünmezdim. Ekip inanılmaz sıcak, ortam çok modern.", rating: 5, img: "https://images.unsplash.com/photo-1679486479476-5ff4ee182334?w=100&q=75&auto=format" },
+  { name: "Kaan M.", role: "Ortodonti Hastası", text: "Şeffaf plak ile 8 ayda çarpık dişlerimi düzelttim. Kimse fark etmedi, sonuç muhteşem!", rating: 5, img: "https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=100&q=75&auto=format" },
+  { name: "Buse T.", role: "Gülüş Tasarımı",    text: "Gülüş tasarımı sonuçlarım harika — fotoğraflarda bile belli oluyor! Kesinlikle tavsiye ediyorum.", rating: 5, img: "https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=100&q=75&auto=format" },
 ];
 
 // ─── COMPONENT ───────────────────────────────────────────────────────────────
@@ -188,7 +188,7 @@ export function Home() {
           >
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             <img src={livePositiveLogo} alt="live positive" className="h-4 w-auto"
-              style={{ filter: "brightness(0) invert(1)", opacity: 0.55 }} />
+              style={{ filter: "brightness(0) invert(1)", opacity: 0.55 }} loading="eager" decoding="async" width="55" height="16" />
             <span className="text-white/40 text-xs">·</span>
             <span className="text-white/50 text-xs font-medium">Online Randevu Açık</span>
           </motion.div>
@@ -215,6 +215,7 @@ export function Home() {
                   exit={{ opacity: 0, x: direction * -40 }}
                   transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="space-y-6"
+                  style={{ willChange: "transform, opacity" }}
                 >
                   {/* Service tag */}
                   <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/8 border border-white/12`}>
@@ -286,6 +287,7 @@ export function Home() {
                   exit={{ opacity: 0, scale: 0.96, x: direction * -30 }}
                   transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
                   className="relative w-full max-w-[520px]"
+                  style={{ willChange: "transform, opacity" }}
                 >
                   {/* Glow behind image */}
                   <div className={`absolute inset-0 scale-90 translate-y-6 rounded-[2rem] bg-gradient-to-br ${slide.accentFrom} ${slide.accentTo} opacity-25 blur-3xl pointer-events-none`} />
@@ -295,6 +297,8 @@ export function Home() {
                       src={slide.image}
                       alt={slide.title.replace("\n", " ")}
                       className="w-full h-full object-cover"
+                      loading={i === 0 ? "eager" : "lazy"}
+                      fetchPriority={i === 0 ? "high" : undefined}
                     />
                     {/* Dark overlay gradient */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#07091A]/60 via-transparent to-transparent" />
@@ -383,7 +387,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           SERVICES
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-[#FAFAF8]">
+      <section className="py-24 bg-[#FAFAF8] content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
             <div>
@@ -486,7 +490,7 @@ export function Home() {
               {/* Right – visual */}
               <div className="relative h-64 lg:h-auto lg:min-h-[420px] overflow-hidden">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=700&q=80"
+                  src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=700&q=75&auto=format"
                   alt="Mutlu çocuk dişçide"
                   className="w-full h-full object-cover"
                 />
@@ -527,7 +531,7 @@ export function Home() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-3">
                   <div className="rounded-2xl overflow-hidden h-52">
-                    <ImageWithFallback src="https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=400&q=80" alt="Gülen hasta" className="w-full h-full object-cover" />
+                    <ImageWithFallback src="https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=400&q=75&auto=format" alt="Gülen hasta" className="w-full h-full object-cover" />
                   </div>
                   <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl p-5 text-white">
                     <p className="font-display text-4xl font-black">%100</p>
@@ -540,7 +544,7 @@ export function Home() {
                     <p className="text-slate-400 text-sm mt-1">Yıl Deneyim</p>
                   </div>
                   <div className="rounded-2xl overflow-hidden h-52">
-                    <ImageWithFallback src="https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=400&q=80" alt="Mutlu çift" className="w-full h-full object-cover" />
+                    <ImageWithFallback src="https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=400&q=75&auto=format" alt="Mutlu çift" className="w-full h-full object-cover" />
                   </div>
                 </div>
               </div>
@@ -600,7 +604,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           TESTIMONIALS
       ══════════════════════════════════════════════════════════ */}
-      <section className="py-24 bg-[#FAFAF8]">
+      <section className="py-24 bg-[#FAFAF8] content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Hasta Yorumları</span>
@@ -619,7 +623,7 @@ export function Home() {
                 </div>
                 <p className="text-slate-600 leading-relaxed mb-6 relative z-10">{t.text}</p>
                 <div className="flex items-center gap-3">
-                  <img src={t.img} alt={t.name} className="w-11 h-11 rounded-full object-cover object-top" />
+                  <img src={t.img} alt={t.name} className="w-11 h-11 rounded-full object-cover object-top" loading="lazy" decoding="async" width="44" height="44" />
                   <div>
                     <p className="font-bold text-slate-800 text-sm">{t.name}</p>
                     <p className="text-xs text-slate-400">{t.role}</p>
@@ -646,7 +650,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           STATS
       ══════════════════════════════════════════════════════════ */}
-      <section className="pt-10 pb-0 bg-[#0D1235]">
+      <section className="pt-10 pb-0 bg-[#0D1235] content-lazy">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/5 bg-[#1A2248] rounded-3xl overflow-hidden">
             {STATS.map((s, i) => {
@@ -685,7 +689,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           CTA — AİLENİZİN DİŞ KLİNİĞİ
       ══════════════════════════════════════════════════════════ */}
-      <section className="relative bg-[#0D1235] overflow-hidden py-24 lg:py-32">
+      <section className="relative bg-[#0D1235] overflow-hidden py-24 lg:py-32 content-lazy">
 
         {/* Ambient glows */}
         <div className="absolute top-0 left-0 w-[700px] h-[700px] bg-indigo-600/12 rounded-full blur-[160px] pointer-events-none" />
@@ -731,7 +735,7 @@ export function Home() {
                 desc: "İlk diş muayenesi, alışma seansları ve ebeveyn eğitimi.",
                 color: "from-pink-500 to-rose-500",
                 glow: "bg-pink-500/15",
-                img: "https://images.unsplash.com/photo-1722596540819-5947b7c75523?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=80",
+                img: "https://images.unsplash.com/photo-1722596540819-5947b7c75523?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=75&auto=format",
               },
               {
                 label: "Çocuklar",
@@ -740,7 +744,7 @@ export function Home() {
                 desc: "Oyunlu muayene, ortodonti takibi ve diş koruyucular.",
                 color: "from-amber-500 to-orange-500",
                 glow: "bg-amber-500/15",
-                img: "https://images.unsplash.com/photo-1615462696310-09736533dbb8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=80",
+                img: "https://images.unsplash.com/photo-1615462696310-09736533dbb8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=75&auto=format",
               },
               {
                 label: "Gençler & Yetişkinler",
@@ -749,7 +753,7 @@ export function Home() {
                 desc: "Estetik, implant, ortodonti — tam kapsamlı tedavi.",
                 color: "from-indigo-500 to-violet-500",
                 glow: "bg-indigo-500/15",
-                img: "https://images.unsplash.com/photo-1627964807070-e19d3ca29bdb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=80",
+                img: "https://images.unsplash.com/photo-1627964807070-e19d3ca29bdb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=75&auto=format",
               },
               {
                 label: "Büyükler & Yaşlılar",
@@ -758,7 +762,7 @@ export function Home() {
                 desc: "Protez, implant ve hassas dişler için özel protokoller.",
                 color: "from-emerald-500 to-teal-500",
                 glow: "bg-emerald-500/15",
-                img: "https://images.unsplash.com/photo-1575267685970-7fbabf6ed7b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=80",
+                img: "https://images.unsplash.com/photo-1575267685970-7fbabf6ed7b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=75&auto=format",
               },
             ].map((card, i) => (
               <motion.div
@@ -806,7 +810,7 @@ export function Home() {
             {/* BG image */}
             <div className="relative h-72 sm:h-96 lg:h-[420px] overflow-hidden">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1772723246543-213f2a4fc526?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1400&q=85"
+                src="https://images.unsplash.com/photo-1772723246543-213f2a4fc526?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1400&q=75&auto=format"
                 alt="Mutlu Aile"
                 className="w-full h-full object-cover object-center"
               />

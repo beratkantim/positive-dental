@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 
 const SITE_NAME = "Positive Dental Studio";
 const SITE_URL = "https://positivedental.com";
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=1200&q=80";
+const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=1200&q=75&auto=format";
 const DEFAULT_DESCRIPTION =
   "Positive Dental Studio — Adana Türkmenbaşı ve İstanbul Nişantaşı'nda modern diş kliniği. İmplant, estetik diş hekimliği, ortodonti ve çocuk diş hekimliği. Ücretsiz ilk muayene.";
 

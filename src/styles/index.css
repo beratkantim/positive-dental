@@ -17,3 +17,27 @@ body {
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+/* Reduced motion: animasyonları azalt */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* GPU hızlandırma ipuçları */
+.will-change-transform {
+  will-change: transform;
+}
+.will-change-opacity {
+  will-change: opacity;
+}
+
+/* Content-visibility: below-the-fold bölümler lazy render */
+.content-lazy {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}

@@ -27,19 +27,19 @@ const TEAM = [
     name: "Dr. Ayşe Yılmaz",
     title: "Başhekim · Estetik Diş Hekimi",
     specialty: "Digital Smile Design",
-    image: "https://images.unsplash.com/photo-1565090567208-c8038cfcf6cd?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1565090567208-c8038cfcf6cd?w=600&q=75&auto=format",
   },
   {
     name: "Dr. Mehmet Kaya",
     title: "İmplant & Cerrahi Uzmanı",
     specialty: "Robotik İmplant Cerrahi",
-    image: "https://images.unsplash.com/photo-1615177393114-bd2917a4f74a?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1615177393114-bd2917a4f74a?w=600&q=75&auto=format",
   },
   {
     name: "Dr. Zeynep Demir",
     title: "Ortodonti Uzmanı",
     specialty: "Dijital Ortodonti",
-    image: "https://images.unsplash.com/photo-1675526607070-f5cbd71dde92?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1675526607070-f5cbd71dde92?w=600&q=75&auto=format",
   },
 ];
 
@@ -164,7 +164,7 @@ export function About() {
             <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=800&q=75&auto=format"
                   alt="Positive Dental Studio kliniği"
                   className="w-full h-[420px] object-cover"
                 />
@@ -361,7 +361,7 @@ export function About() {
             <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1770134223774-13b735e29201?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1770134223774-13b735e29201?w=800&q=75&auto=format"
                   alt="Uzman hekim"
                   className="w-full h-[440px] object-cover"
                 />

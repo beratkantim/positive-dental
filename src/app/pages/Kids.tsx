@@ -171,7 +171,7 @@ export function Kids() {
                 {/* Main image */}
                 <div className="absolute left-0 top-0 w-[65%] h-[68%] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                   <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=600&q=80"
+                    src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=600&q=75&auto=format"
                     alt="Mutlu çocuk dişçide"
                     className="w-full h-full object-cover"
                   />
@@ -180,7 +180,7 @@ export function Kids() {
                 {/* Second image */}
                 <div className="absolute right-0 top-8 w-[42%] h-[50%] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                   <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1622408064430-9728776f96e6?w=400&q=80"
+                    src="https://images.unsplash.com/photo-1622408064430-9728776f96e6?w=400&q=75&auto=format"
                     alt="Diş fırçalayan çocuk"
                     className="w-full h-full object-cover"
                   />
@@ -189,7 +189,7 @@ export function Kids() {
                 {/* Third image */}
                 <div className="absolute left-8 bottom-0 w-[48%] h-[40%] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                   <ImageWithFallback
-                    src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=400&q=80"
+                    src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=400&q=75&auto=format"
                     alt="Çocuk muayenesi"
                     className="w-full h-full object-cover"
                   />
@@ -446,7 +446,7 @@ export function Kids() {
 
               <div className="relative hidden lg:block">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=600&q=80"
+                  src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=600&q=75&auto=format"
                   alt="Çocuk muayenesi"
                   className="absolute inset-0 w-full h-full object-cover opacity-40"
                 />

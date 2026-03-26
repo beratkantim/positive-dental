@@ -593,7 +593,7 @@ function Step4({
       {/* Doktor kartı mini */}
       <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-500/15 to-violet-600/15 border border-indigo-500/25">
         <img src={doctor.photo} alt={doctor.name}
-          className="w-16 h-16 rounded-xl object-cover object-center flex-shrink-0" />
+          className="w-16 h-16 rounded-xl object-cover object-center flex-shrink-0" loading="lazy" decoding="async" width="64" height="64" />
         <div>
           <p className="text-xs font-bold text-indigo-400 uppercase tracking-wide">{doctor.specialty}</p>
           <p className="text-white font-bold">{doctor.name}</p>

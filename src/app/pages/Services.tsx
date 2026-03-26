@@ -320,7 +320,7 @@ export function Services() {
             <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1770321119305-f191c09c5801?w=800&q=80"
+                  src="https://images.unsplash.com/photo-1770321119305-f191c09c5801?w=800&q=75&auto=format"
                   alt="Diş tedavi ekipmanları"
                   className="w-full h-[420px] object-cover"
                 />
