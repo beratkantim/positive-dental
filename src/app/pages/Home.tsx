@@ -7,7 +7,7 @@ import {
   Users, Stethoscope, Building2, ThumbsUp, ChevronLeft, ChevronRight,
   CheckCircle2, Zap, Eye, Sparkles,
 } from "lucide-react";
-import { motion, AnimatePresence } from "../hooks/cssMotion";
+import { useInView } from "../hooks/useInView";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
 import type { HeroSlide, Testimonial } from "@/lib/supabase";
@@ -16,6 +16,18 @@ import livePositiveLogo from "../../assets/live-positive-logo.webp";
 // Sayfa altındaki ağır bileşenler — kullanıcı scroll edince yüklenir
 const SmilePositive = lazy(() => import("../components/SmilePositive").then(m => ({ default: m.SmilePositive })));
 const BookingWizard = lazy(() => import("../components/BookingWizard").then(m => ({ default: m.BookingWizard })));
+
+// ─── HELPER COMPONENTS ───────────────────────────────────────────────────────
+
+function FadeUp({ children, className = "", delay = "" }: { children: React.ReactNode; className?: string; delay?: string }) {
+  const { ref, inView } = useInView();
+  return <div ref={ref} className={`anim-fade-up ${inView ? "in-view" : ""} ${delay} ${className}`}>{children}</div>;
+}
+
+function ScaleIn({ children, className = "", delay = "" }: { children: React.ReactNode; className?: string; delay?: string }) {
+  const { ref, inView } = useInView();
+  return <div ref={ref} className={`anim-scale-in ${inView ? "in-view" : ""} ${delay} ${className}`}>{children}</div>;
+}
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
@@ -173,7 +185,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           HERO — SERVICE SLIDER
       ══════════════════════════════════════════════════════════ */}
-      <section className="relative bg-[#0D1235] overflow-hidden min-h-[92vh] flex flex-col">
+      <section className="relative bg-[#0D1235] overflow-hidden min-h-screen lg:min-h-[92vh] flex flex-col">
 
         {/* Ambient blobs — hidden on mobile for performance */}
         <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/25 blur-[130px] pointer-events-none transition-all duration-1000 hidden md:block" />
@@ -191,18 +203,17 @@ export function Home() {
           style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
         {/* ── Top bar ── */}
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-14 pb-6 flex items-center justify-between">
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-4 sm:pb-6 flex items-center justify-between">
           {/* Live badge */}
-          <motion.div
-            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
+          <div
+            className="anim-fade-in in-view inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
           >
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
             <img src={livePositiveLogo} alt="live positive" className="h-4 w-auto"
               style={{ filter: "brightness(0) invert(1)", opacity: 0.55 }} loading="eager" decoding="async" width="55" height="16" />
             <span className="text-white/40 text-xs">·</span>
             <span className="text-white/50 text-xs font-medium">Online Randevu Açık</span>
-          </motion.div>
+          </div>
 
           {/* Slide counter */}
           <div className="hidden sm:flex items-center gap-2 text-white/30 text-sm font-mono">
@@ -214,122 +225,105 @@ export function Home() {
 
         {/* ── Main content ── */}
         <div className="relative flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-          <div className="grid lg:grid-cols-2 gap-12 xl:gap-20 w-full py-8 lg:py-0">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-12 xl:gap-20 w-full py-6 lg:py-0">
 
             {/* LEFT — text */}
             <div className="flex flex-col justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active}
-                  initial={{ opacity: 0, x: direction * 40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: direction * -40 }}
-                  transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="space-y-6"
-                >
-                  {/* Service tag */}
-                  <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/8 border border-white/12`}>
-                    <TagIcon className={`w-3.5 h-3.5 ${slide.tagColor}`} />
-                    <span className="text-white/60 text-xs font-bold uppercase tracking-widest">{slide.tag}</span>
-                    <span className="ml-1 text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/50 font-semibold">{slide.badge}</span>
-                  </div>
+              <div
+                key={active}
+                className="slide-enter space-y-6"
+              >
+                {/* Service tag */}
+                <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/8 border border-white/12`}>
+                  <TagIcon className={`w-3.5 h-3.5 ${slide.tagColor}`} />
+                  <span className="text-white/60 text-xs font-bold uppercase tracking-widest">{slide.tag}</span>
+                  <span className="ml-1 text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/50 font-semibold">{slide.badge}</span>
+                </div>
 
-                  {/* Title */}
-                  <h1 className="font-display text-6xl sm:text-7xl lg:text-[5.5rem] font-black text-white leading-[0.88] tracking-tight">
-                    {slide.title.split("\n").map((line, i) => (
-                      <span key={i} className="block">
-                        {i === 1 ? (
-                          <span className={`bg-gradient-to-r ${slide.titleGradient} bg-clip-text text-transparent`}>
-                            {line}
-                          </span>
-                        ) : line}
-                      </span>
-                    ))}
-                  </h1>
+                {/* Title */}
+                <h1 className="font-display text-4xl sm:text-6xl lg:text-[5.5rem] font-black text-white leading-[0.88] tracking-tight">
+                  {slide.title.split("\n").map((line, i) => (
+                    <span key={i} className="block">
+                      {i === 1 ? (
+                        <span className={`bg-gradient-to-r ${slide.titleGradient} bg-clip-text text-transparent`}>
+                          {line}
+                        </span>
+                      ) : line}
+                    </span>
+                  ))}
+                </h1>
 
-                  {/* Subtitle */}
-                  <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-lg">
-                    {slide.subtitle}
-                  </p>
+                {/* Subtitle */}
+                <p className="text-slate-400 text-base sm:text-lg leading-relaxed max-w-lg">
+                  {slide.subtitle}
+                </p>
 
-                  {/* Feature checklist */}
-                  <ul className="space-y-2">
-                    {slide.features.map((f, i) => (
-                      <motion.li
-                        key={f}
-                        initial={{ opacity: 0, x: -12 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.25 + i * 0.07 }}
-                        className="flex items-center gap-2.5 text-slate-300 text-sm"
-                      >
-                        <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${slide.tagColor}`} />
-                        {f}
-                      </motion.li>
-                    ))}
-                  </ul>
-
-                  {/* CTAs */}
-                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                    <a
-                      href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
-                      className={`group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r ${slide.accentFrom} ${slide.accentTo} hover:opacity-90 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all`}
+                {/* Feature checklist */}
+                <ul className="space-y-2">
+                  {slide.features.map((f, i) => (
+                    <li
+                      key={f}
+                      className={`flex items-center gap-2.5 text-slate-300 text-sm anim-fade-in in-view ${i === 0 ? "delay-200" : i === 1 ? "delay-300" : "delay-400"}`}
                     >
-                      <Calendar className="w-5 h-5" />
-                      Online Randevu Al
-                      <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </a>
-                    <Link to="/services"
-                      className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white/6 border border-white/10 hover:bg-white/12 text-white font-bold transition-all">
-                      Tüm Hizmetler <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
+                      <CheckCircle2 className={`w-4 h-4 flex-shrink-0 ${slide.tagColor}`} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* CTAs */}
+                <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                  <a
+                    href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                    className={`group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r ${slide.accentFrom} ${slide.accentTo} hover:opacity-90 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all`}
+                  >
+                    <Calendar className="w-5 h-5" />
+                    Online Randevu Al
+                    <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                  </a>
+                  <Link to="/services"
+                    className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white/6 border border-white/10 hover:bg-white/12 text-white font-bold transition-all">
+                    Tüm Hizmetler <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              </div>
             </div>
 
             {/* RIGHT — image */}
             <div className="relative hidden lg:flex items-center justify-center">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active}
-                  initial={{ opacity: 0, scale: 0.94, x: direction * 30 }}
-                  animate={{ opacity: 1, scale: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.96, x: direction * -30 }}
-                  transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                  className="relative w-full max-w-[520px]"
-                >
-                  {/* Glow behind image */}
-                  <div className={`absolute inset-0 scale-90 translate-y-6 rounded-[2rem] bg-gradient-to-br ${slide.accentFrom} ${slide.accentTo} opacity-25 blur-3xl pointer-events-none`} />
+              <div
+                key={active}
+                className="slide-enter-image relative w-full max-w-[520px]"
+              >
+                {/* Glow behind image */}
+                <div className={`absolute inset-0 scale-90 translate-y-6 rounded-[2rem] bg-gradient-to-br ${slide.accentFrom} ${slide.accentTo} opacity-25 blur-3xl pointer-events-none`} />
 
-                  <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl aspect-[4/3]">
-                    <ImageWithFallback
-                      src={responsiveImg(slide.image)}
-                      alt={slide.title.replace("\n", " ")}
-                      className="w-full h-full object-cover"
-                      loading={active === 0 ? "eager" : "lazy"}
-                      fetchPriority={active === 0 ? "high" : undefined}
-                    />
-                    {/* Dark overlay gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#07091A]/60 via-transparent to-transparent" />
+                <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl aspect-[4/3]">
+                  <ImageWithFallback
+                    src={responsiveImg(slide.image)}
+                    alt={slide.title.replace("\n", " ")}
+                    className="w-full h-full object-cover"
+                    loading={active === 0 ? "eager" : "lazy"}
+                    fetchPriority={active === 0 ? "high" : undefined}
+                  />
+                  {/* Dark overlay gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#07091A]/60 via-transparent to-transparent" />
 
-                    {/* Floating service badge */}
-                    <motion.div
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                      className="absolute bottom-5 left-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3"
-                    >
-                      <p className="text-white font-black text-sm">{slide.title.replace("\n", " ")}</p>
-                      <p className={`text-xs mt-0.5 font-semibold ${slide.tagColor}`}>{slide.badge}</p>
-                    </motion.div>
+                  {/* Floating service badge */}
+                  <div
+                    className="anim-float absolute bottom-5 left-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3"
+                  >
+                    <p className="text-white font-black text-sm">{slide.title.replace("\n", " ")}</p>
+                    <p className={`text-xs mt-0.5 font-semibold ${slide.tagColor}`}>{slide.badge}</p>
                   </div>
-                </motion.div>
-              </AnimatePresence>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* ── Navigation bar ── */}
-        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-8">
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-16 pt-6 sm:pt-8">
           <div className="flex items-center justify-between">
 
             {/* Slide tabs */}
@@ -347,11 +341,8 @@ export function Home() {
                   {/* Progress bar */}
                   {active === i && (
                     <span className="block w-12 h-0.5 bg-white/30 rounded-full overflow-hidden relative">
-                      <motion.span
-                        className={`absolute inset-y-0 left-0 bg-gradient-to-r ${s.accentFrom} ${s.accentTo} rounded-full`}
-                        initial={{ width: "0%" }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 5.5, ease: "linear" }}
+                      <span
+                        className={`anim-progress absolute inset-y-0 left-0 bg-gradient-to-r ${s.accentFrom} ${s.accentTo} rounded-full`}
                         key={active}
                       />
                     </span>
@@ -401,7 +392,7 @@ export function Home() {
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12">
             <div>
               <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Hizmetlerimiz</span>
-              <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900 leading-tight">
+              <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight">
                 Her ihtiyacın<br className="hidden sm:block" />
                 <span className="bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent"> bir çözümü var.</span>
               </h2>
@@ -413,14 +404,10 @@ export function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PAGE_SERVICES.map((s, i) => (
-              <motion.div
+              <FadeUp
                 key={s.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
-                whileHover={{ y: -4 }}
-                className="group bg-white rounded-2xl p-6 border border-slate-100 hover:border-transparent hover:shadow-xl hover:shadow-slate-200/60 transition-all cursor-pointer"
+                delay={i < 3 ? `delay-${(i + 1) * 100}` : `delay-${Math.min((i - 2) * 100, 500)}`}
+                className="hover-lift group bg-white rounded-2xl p-6 border border-slate-100 hover:border-transparent hover:shadow-xl hover:shadow-slate-200/60 transition-all cursor-pointer"
               >
                 <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-5 text-2xl shadow-lg group-hover:scale-110 transition-transform`}>
                   {s.icon}
@@ -430,7 +417,7 @@ export function Home() {
                 <div className="mt-4 flex items-center gap-1 text-xs font-bold text-slate-400 group-hover:text-indigo-500 transition-colors">
                   Detaylı Bilgi <ArrowRight className="w-3 h-3" />
                 </div>
-              </motion.div>
+              </FadeUp>
             ))}
           </div>
         </div>
@@ -441,10 +428,7 @@ export function Home() {
       ══════════════════════════════════════════════════════════ */}
       <section className="py-20 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+          <FadeUp
             className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-50 via-violet-50 to-indigo-50 border border-pink-100"
           >
             {/* Floating blobs — hidden on mobile for performance */}
@@ -459,7 +443,7 @@ export function Home() {
                   <span className="text-pink-700 text-xs font-bold uppercase tracking-widest">Çocuk Diş Hekimliği</span>
                 </div>
 
-                <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900 leading-tight mb-5">
+                <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight mb-5">
                   Küçük dişler,
                   <br />
                   <span className="bg-gradient-to-r from-pink-500 to-violet-600 bg-clip-text text-transparent">büyük gülüşler.</span>
@@ -506,10 +490,8 @@ export function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-pink-50/60 via-transparent to-transparent lg:block hidden" />
 
                 {/* Floating stat */}
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute bottom-6 right-6 bg-white rounded-2xl shadow-xl px-5 py-4 flex items-center gap-3"
+                <div
+                  className="anim-float absolute bottom-6 right-6 bg-white rounded-2xl shadow-xl px-5 py-4 flex items-center gap-3"
                 >
                   <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-xl">
                     😄
@@ -518,10 +500,10 @@ export function Home() {
                     <p className="font-black text-slate-800">5.000+</p>
                     <p className="text-slate-400 text-xs">Mutlu Çocuk Hasta</p>
                   </div>
-                </motion.div>
+                </div>
               </div>
             </div>
-          </motion.div>
+          </FadeUp>
         </div>
       </section>
 
@@ -531,10 +513,7 @@ export function Home() {
       <section className="py-24 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+            <FadeUp
               className="relative"
             >
               <div className="grid grid-cols-2 gap-3">
@@ -558,22 +537,19 @@ export function Home() {
                 </div>
               </div>
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
-                  className="pointer-events-auto w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl border border-white/50 cursor-pointer">
+                <div
+                  className="pointer-events-auto w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl border border-white/50 cursor-pointer hover:scale-110 transition-transform">
                   <Play className="w-6 h-6 text-slate-900 fill-slate-900 ml-0.5" />
-                </motion.div>
+                </div>
               </div>
-            </motion.div>
+            </FadeUp>
 
-            <motion.div
-              initial={{ opacity: 0, x: 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
+            <FadeUp
               className="space-y-8"
             >
               <div>
                 <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Neden Biz?</span>
-                <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900 leading-tight">
+                <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-tight">
                   Positive Dental<br /><span className="italic">farkını</span> hisset.
                 </h2>
               </div>
@@ -587,14 +563,14 @@ export function Home() {
                   { icon: "🛡️", title: "Steril & Güvenli",     desc: "Uluslararası sterilizasyon protokolü." },
                   { icon: "🌍", title: "International Patients", desc: "Yabancı hastalar için özel paketler." },
                 ].map((w, i) => (
-                  <motion.div key={w.title} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  <FadeUp key={w.title} delay={`delay-${(i + 1) * 100}`}
                     className="flex gap-3 p-4 rounded-2xl bg-slate-50 hover:bg-indigo-50 transition-colors group">
                     <span className="text-2xl flex-shrink-0">{w.icon}</span>
                     <div>
                       <p className="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">{w.title}</p>
                       <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{w.desc}</p>
                     </div>
-                  </motion.div>
+                  </FadeUp>
                 ))}
               </div>
               <a
@@ -605,7 +581,7 @@ export function Home() {
               >
                 <Calendar className="w-5 h-5" /> Online Randevu Al
               </a>
-            </motion.div>
+            </FadeUp>
           </div>
         </div>
       </section>
@@ -617,12 +593,12 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Hasta Yorumları</span>
-            <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">Gülüşler konuşuyor.</h2>
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900">Gülüşler konuşuyor.</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {TESTIMONIALS.map((t, i) => (
-              <motion.div key={i}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+              <FadeUp key={i}
+                delay={`delay-${(i + 1) * 100}`}
                 className={`relative bg-white rounded-3xl p-7 border border-slate-100 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/50 transition-all ${i === 1 ? "lg:-translate-y-4" : ""}`}>
                 <div className="absolute top-5 right-6 text-5xl text-slate-100 font-serif leading-none select-none">"</div>
                 <div className="flex gap-1 mb-4">
@@ -641,10 +617,10 @@ export function Home() {
                     <span className="text-xs bg-green-100 text-green-700 font-semibold px-2.5 py-1 rounded-full">Doğrulandı</span>
                   </div>
                 </div>
-              </motion.div>
+              </FadeUp>
             ))}
           </div>
-          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          <FadeUp
             className="mt-10 flex items-center justify-center gap-4">
             <div className="flex items-center gap-1">
               {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="w-5 h-5 text-amber-400 fill-amber-400" />)}
@@ -652,7 +628,7 @@ export function Home() {
             <p className="text-slate-600 text-sm">
               <span className="font-black text-slate-900">4.9/5</span> ortalama · <span className="font-bold">1.200+ Google Yorumu</span>
             </p>
-          </motion.div>
+          </FadeUp>
         </div>
       </section>
 
@@ -665,12 +641,9 @@ export function Home() {
             {STATS.map((s, i) => {
               const Icon = s.icon;
               return (
-                <motion.div
+                <FadeUp
                   key={s.label}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
+                  delay={`delay-${Math.min((i + 1) * 100, 500)}`}
                   className="relative flex flex-col items-center justify-center py-10 px-6 text-center group overflow-hidden"
                 >
                   {/* hover glow */}
@@ -683,7 +656,7 @@ export function Home() {
 
                   <p className="font-display text-3xl font-black text-white tracking-tight">{s.value}</p>
                   <p className="text-slate-500 text-xs uppercase tracking-widest mt-1.5 font-medium">{s.label}</p>
-                </motion.div>
+                </FadeUp>
               );
             })}
           </div>
@@ -713,8 +686,7 @@ export function Home() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Top label */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          <FadeUp
             className="flex flex-col items-center text-center mb-16"
           >
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/8 text-indigo-300 text-xs font-black uppercase tracking-widest mb-6">
@@ -733,7 +705,7 @@ export function Home() {
               Bebekten büyükbabaya, her yaştan her bireye özel tedavi protokolleri.
               Tek bir çatı altında tüm ailenizin gülüşünü koruyoruz.
             </p>
-          </motion.div>
+          </FadeUp>
 
           {/* Family cards grid */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
@@ -775,14 +747,10 @@ export function Home() {
                 img: "https://images.unsplash.com/photo-1575267685970-7fbabf6ed7b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=600&q=75&auto=format",
               },
             ].map((card, i) => (
-              <motion.div
+              <FadeUp
                 key={card.label}
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.09 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                className="relative group rounded-3xl overflow-hidden border border-white/8 cursor-default"
+                delay={`delay-${Math.min((i + 1) * 100, 500)}`}
+                className="hover-lift relative group rounded-3xl overflow-hidden border border-white/8 cursor-default"
               >
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden">
@@ -808,13 +776,12 @@ export function Home() {
                   <p className="text-slate-400 text-xs leading-relaxed">{card.desc}</p>
                   <div className={`mt-4 h-0.5 rounded-full bg-gradient-to-r ${card.color} opacity-60`} />
                 </div>
-              </motion.div>
+              </FadeUp>
             ))}
           </div>
 
           {/* Center feature: family photo + stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          <FadeUp
             className="relative rounded-3xl overflow-hidden border border-white/10 mb-14"
           >
             {/* BG image */}
@@ -862,30 +829,28 @@ export function Home() {
               </div>
 
               {/* Floating benefit badges */}
-              <motion.div
-                animate={{ y: [0, -6, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-6 right-6 lg:right-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 hidden sm:flex flex-col gap-1"
+              <div
+                className="anim-float absolute top-6 right-6 lg:right-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 hidden sm:flex flex-col gap-1"
               >
                 <span className="text-white font-black text-sm">Aile Paketi</span>
                 <span className="text-indigo-300 text-xs font-bold">%20 İndirim</span>
-              </motion.div>
+              </div>
 
-              <motion.div
-                animate={{ y: [0, 6, 0] }} transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-6 right-6 lg:right-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 hidden sm:flex items-center gap-2.5"
+              <div
+                className="anim-float absolute bottom-6 right-6 lg:right-12 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 hidden sm:flex items-center gap-2.5"
+                style={{ animationDelay: "1s" }}
               >
                 <span className="text-2xl">🦷</span>
                 <div>
                   <p className="text-white font-black text-xs">Ücretsiz</p>
                   <p className="text-slate-300 text-xs">İlk Muayene</p>
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </FadeUp>
 
           {/* Bottom trust strip */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          <FadeUp
             className="grid grid-cols-2 sm:grid-cols-4 gap-4"
           >
             {[
@@ -894,12 +859,9 @@ export function Home() {
               { icon: "📋", value: "Aile Paketi", label: "Toplu İndirim" },
               { icon: "📍", value: "4 Klinik", label: "Size Yakın" },
             ].map((item, i) => (
-              <motion.div
+              <ScaleIn
                 key={item.label}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.07 }}
+                delay={`delay-${Math.min((i + 1) * 100, 500)}`}
                 className="flex items-center gap-3 bg-white/5 border border-white/8 rounded-2xl px-5 py-4 hover:bg-white/8 transition-colors"
               >
                 <span className="text-2xl flex-shrink-0">{item.icon}</span>
@@ -907,9 +869,9 @@ export function Home() {
                   <p className="text-white font-black text-sm">{item.value}</p>
                   <p className="text-slate-500 text-xs">{item.label}</p>
                 </div>
-              </motion.div>
+              </ScaleIn>
             ))}
-          </motion.div>
+          </FadeUp>
 
           {/* Footer note */}
           <p className="text-center text-slate-600 text-xs mt-8">

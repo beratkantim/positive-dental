@@ -118,3 +118,29 @@ body {
 .delay-300 { animation-delay: 300ms; }
 .delay-400 { animation-delay: 400ms; }
 .delay-500 { animation-delay: 500ms; }
+
+/* ── MOBİL OPTİMİZASYON ───────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Blur efektlerini mobilde kapat — GPU'yu rahatlatır */
+  .blur-\[130px\], .blur-\[120px\], .blur-\[110px\],
+  .blur-\[100px\], .blur-\[80px\], .blur-\[70px\],
+  .blur-\[60px\], .blur-\[160px\] {
+    display: none !important;
+  }
+
+  /* backdrop-blur mobilde kapalı — scroll'da GPU recompositing engelle */
+  .backdrop-blur-sm, .backdrop-blur-md, .backdrop-blur-lg {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Sonsuz animasyonları mobilde durdur — pil tasarrufu */
+  .anim-float {
+    animation: none !important;
+  }
+
+  /* Shadow'ları mobilde hafiflet */
+  .shadow-2xl {
+    box-shadow: 0 4px 16px -4px rgba(0,0,0,0.1) !important;
+  }
+}

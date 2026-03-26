@@ -185,7 +185,7 @@ export function Header() {
       </div>
 
       {/* ── Ana navigasyon ────────────────────────────────────── */}
-      <div className="bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+      <div className="bg-white md:bg-white/95 md:backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-[60px] gap-2">
 
