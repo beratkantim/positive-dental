@@ -1,6 +1,5 @@
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { SmilePositive } from "../components/SmilePositive";
-import { BookingWizard } from "../components/BookingWizard";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router";
 import { SEO } from "../components/SEO";
 import {
@@ -14,9 +13,21 @@ import { useTable } from "../hooks/useSupabase";
 import type { HeroSlide, Testimonial } from "@/lib/supabase";
 import livePositiveLogo from "../../assets/live-positive-logo.webp";
 
+// Sayfa altındaki ağır bileşenler — kullanıcı scroll edince yüklenir
+const SmilePositive = lazy(() => import("../components/SmilePositive").then(m => ({ default: m.SmilePositive })));
+const BookingWizard = lazy(() => import("../components/BookingWizard").then(m => ({ default: m.BookingWizard })));
+
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
 const BOOKING_URL = "https://randevu.positivedental.com";
+
+// Unsplash görselleri mobilde küçük boyutta iste
+function responsiveImg(url: string, desktopW = 900, mobileW = 480): string {
+  if (!url || !url.includes("unsplash.com")) return url;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const w = isMobile ? mobileW : desktopW;
+  return url.replace(/[?&]w=\d+/, `?w=${w}`).replace(/[?&]q=\d+/, `&q=${isMobile ? 60 : 80}`);
+}
 
 // ─── TAG COLOR → ICON MAP ────────────────────────────────────────────────────
 
@@ -292,7 +303,7 @@ export function Home() {
 
                   <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl aspect-[4/3]">
                     <ImageWithFallback
-                      src={slide.image}
+                      src={responsiveImg(slide.image)}
                       alt={slide.title.replace("\n", " ")}
                       className="w-full h-full object-cover"
                       loading={active === 0 ? "eager" : "lazy"}
@@ -380,7 +391,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           BOOKING WIZARD
       ══════════════════════════════════════════════════════════ */}
-      <BookingWizard />
+      <Suspense fallback={null}><BookingWizard /></Suspense>
 
       {/* ══════════════════════════════════════════════════════════
           SERVICES
@@ -621,7 +632,7 @@ export function Home() {
                 </div>
                 <p className="text-slate-600 leading-relaxed mb-6 relative z-10">{t.text}</p>
                 <div className="flex items-center gap-3">
-                  <img src={t.img} alt={t.name} className="w-11 h-11 rounded-full object-cover object-top" loading="lazy" decoding="async" width="44" height="44" />
+                  <img src={responsiveImg(t.img, 200, 100)} alt={t.name} className="w-11 h-11 rounded-full object-cover object-top" loading="lazy" decoding="async" width="44" height="44" />
                   <div>
                     <p className="font-bold text-slate-800 text-sm">{t.name}</p>
                     <p className="text-xs text-slate-400">{t.role}</p>
@@ -682,7 +693,7 @@ export function Home() {
       {/* ══════════════════════════════════════════════════════════
           GÜLÜŞ TASARIMI
       ══════════════════════════════════════════════════════════ */}
-      <SmilePositive />
+      <Suspense fallback={null}><SmilePositive /></Suspense>
 
       {/* ══════════════════════════════════════════════════════════
           CTA — AİLENİZİN DİŞ KLİNİĞİ
