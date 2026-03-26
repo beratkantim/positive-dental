@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "postinstall": "chmod +x node_modules/.bin/vite 2>/dev/null || true",
     "build": "vite build",
     "dev": "vite"
   },
