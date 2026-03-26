@@ -14,11 +14,11 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
   return (
     <div className="group bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-indigo-100/40 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col">
       {/* Fotoğraf */}
-      <div className="relative h-56 overflow-hidden bg-gradient-to-br from-indigo-50 to-violet-50">
+      <div className="relative h-72 overflow-hidden bg-gradient-to-br from-indigo-50 to-violet-50">
         <img
           src={doctor.photo}
           alt={doctor.name}
-          className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
         />
         {/* Şube etiketi */}
         <div className="absolute top-3 left-3">

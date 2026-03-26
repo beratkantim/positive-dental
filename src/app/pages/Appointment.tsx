@@ -165,7 +165,7 @@ function Step1({
                   <img
                     src={doc.photo}
                     alt={doc.name}
-                    className="w-14 h-14 rounded-xl object-cover object-top"
+                    className="w-14 h-14 rounded-xl object-cover object-center"
                   />
                   {selected && (
                     <div className="absolute -top-1 -right-1 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center shadow">
@@ -593,7 +593,7 @@ function Step4({
       {/* Doktor kartı mini */}
       <div className="flex items-center gap-4 p-4 rounded-2xl bg-gradient-to-r from-indigo-500/15 to-violet-600/15 border border-indigo-500/25">
         <img src={doctor.photo} alt={doctor.name}
-          className="w-16 h-16 rounded-xl object-cover object-top flex-shrink-0" />
+          className="w-16 h-16 rounded-xl object-cover object-center flex-shrink-0" />
         <div>
           <p className="text-xs font-bold text-indigo-400 uppercase tracking-wide">{doctor.specialty}</p>
           <p className="text-white font-bold">{doctor.name}</p>
