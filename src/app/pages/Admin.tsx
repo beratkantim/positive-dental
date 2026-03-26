@@ -15,39 +15,63 @@ function slugify(text: string): string {
     .replace(/^_|_$/g, "");
 }
 
-function convertToWebp(file: File, maxWidth = 800): Promise<Blob> {
+function readFileAsDataURL(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = () => reject(new Error("Dosya okunamadı"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function convertToWebp(dataUrl: string, maxWidth = 800): Promise<Blob> {
   return new Promise((resolve, reject) => {
     const img = new Image();
+    img.crossOrigin = "anonymous";
     img.onload = () => {
-      const scale = Math.min(1, maxWidth / img.width);
-      const w = Math.round(img.width * scale);
-      const h = Math.round(img.height * scale);
-      const canvas = document.createElement("canvas");
-      canvas.width = w;
-      canvas.height = h;
-      const ctx = canvas.getContext("2d")!;
-      ctx.drawImage(img, 0, 0, w, h);
-      canvas.toBlob(
-        blob => blob ? resolve(blob) : reject(new Error("WebP dönüştürme başarısız")),
-        "image/webp",
-        0.85
-      );
+      try {
+        const scale = Math.min(1, maxWidth / img.width);
+        const w = Math.round(img.width * scale);
+        const h = Math.round(img.height * scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { reject(new Error("Canvas desteklenmiyor")); return; }
+        ctx.drawImage(img, 0, 0, w, h);
+        canvas.toBlob(
+          blob => {
+            if (blob) resolve(blob);
+            else reject(new Error("WebP dönüştürme başarısız"));
+          },
+          "image/webp",
+          0.85
+        );
+      } catch (err) {
+        reject(err);
+      }
     };
     img.onerror = () => reject(new Error("Görsel yüklenemedi"));
-    img.src = URL.createObjectURL(file);
+    img.src = dataUrl;
   });
 }
 
 async function uploadImage(file: File, bucket: string, fileName: string): Promise<string> {
-  const webpBlob = await convertToWebp(file);
+  // 1. Dosyayı base64 olarak oku
+  const dataUrl = await readFileAsDataURL(file);
+
+  // 2. Canvas ile WebP'ye dönüştür
+  const webpBlob = await convertToWebp(dataUrl);
   const path = `${fileName}.webp`;
 
+  // 3. Supabase Storage'a yükle
   const { error } = await supabase.storage
     .from(bucket)
     .upload(path, webpBlob, { contentType: "image/webp", upsert: true });
 
-  if (error) throw error;
+  if (error) throw new Error(`Yükleme hatası: ${error.message}`);
 
+  // 4. Public URL al
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return data.publicUrl;
 }
@@ -70,8 +94,9 @@ function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = "Fotoğ
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      setError("Lütfen bir görsel dosyası seçin");
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/bmp", "image/tiff", "image/heic", "image/heif", "image/avif"];
+    if (!file.type.startsWith("image/") && !validTypes.includes(file.type)) {
+      setError("Desteklenen formatlar: JPG, PNG, WebP, GIF, BMP, AVIF");
       return;
     }
 
@@ -79,13 +104,19 @@ function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = "Fotoğ
     setUploading(true);
 
     try {
-      const localPreview = URL.createObjectURL(file);
-      setPreview(localPreview);
+      // Yerel önizleme göster
+      const localUrl = URL.createObjectURL(file);
+      setPreview(localUrl);
+
+      // WebP'ye çevir ve yükle
       const url = await uploadImage(file, bucket, fileName);
+
+      URL.revokeObjectURL(localUrl);
       setPreview(url);
       onUploaded(url);
     } catch (err: any) {
-      setError(err.message || "Yükleme başarısız");
+      console.error("Upload error:", err);
+      setError(err.message || "Yükleme başarısız. Supabase Storage bucket'ını kontrol edin.");
       setPreview(currentUrl);
     } finally {
       setUploading(false);
