@@ -5,43 +5,57 @@ import {
   Building2, Wifi, Shield, Cpu, Users, Calendar, ArrowRight, ExternalLink,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
+import { useTable } from "../hooks/useSupabase";
+import type { BranchData } from "@/lib/supabase";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
-const LOCATIONS = [
-  {
-    city: "İstanbul",
-    district: "Nişantaşı",
-    count: 1,
-    color: "from-indigo-500 to-violet-600",
-    clinics: [
-      {
-        name: "Nişantaşı Şubesi",
-        address: "Teşvikiye Mah., Vali Konağı Cad. No:34/2, Nişantaşı / Şişli",
-        phone: "0212 555 01 01",
-        email: "nisantasi@positivedental.com",
-        hours: "Pzt–Cum: 09:00–20:00 | Cts: 09:00–18:00",
-        mapsQuery: "Positive+Dental+Studio+Nişantaşı+İstanbul",
-      },
-    ],
-  },
-  {
-    city: "Adana",
-    district: "Türkmenbaşı",
-    count: 1,
-    color: "from-violet-500 to-purple-600",
-    clinics: [
-      {
-        name: "Türkmenbaşı Şubesi",
-        address: "Türkmenbaşı Mah., Atatürk Cad. No:89/1, Seyhan / Adana",
-        phone: "0322 555 02 02",
-        email: "adana@positivedental.com",
-        hours: "Pzt–Cum: 09:00–20:00 | Cts: 09:00–18:00",
-        mapsQuery: "Positive+Dental+Studio+Adana+Türkmenbaşı",
-      },
-    ],
-  },
-];
+const CITY_COLORS: Record<string, string> = {
+  "İstanbul": "from-indigo-500 to-violet-600",
+  "Adana": "from-violet-500 to-purple-600",
+};
+
+interface LocationGroup {
+  city: string;
+  district: string;
+  count: number;
+  color: string;
+  clinics: {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    hours: string;
+    mapsQuery: string;
+  }[];
+}
+
+function branchesToLocations(branches: BranchData[]): LocationGroup[] {
+  const cityMap = new Map<string, LocationGroup>();
+  for (const b of branches) {
+    const district = b.name.replace(b.city, "").trim();
+    if (!cityMap.has(b.city)) {
+      cityMap.set(b.city, {
+        city: b.city,
+        district,
+        count: 0,
+        color: CITY_COLORS[b.city] || "from-indigo-500 to-violet-600",
+        clinics: [],
+      });
+    }
+    const group = cityMap.get(b.city)!;
+    group.count++;
+    group.clinics.push({
+      name: `${district} Şubesi`,
+      address: b.address || "",
+      phone: b.phone || "",
+      email: b.email || "",
+      hours: b.working_hours || "",
+      mapsQuery: b.map_url || `Positive+Dental+Studio+${b.city}+${district}`.replace(/\s+/g, "+"),
+    });
+  }
+  return Array.from(cityMap.values());
+}
 
 const FEATURES = [
   { icon: Cpu,     title: "Modern Ekipman",  desc: "Son teknoloji 3D tarama ve dijital sistemler" },
@@ -52,7 +66,18 @@ const FEATURES = [
 
 export function Locations() {
   const [activeCity, setActiveCity] = useState("İstanbul");
-  const activeLoc = LOCATIONS.find((l) => l.city === activeCity)!;
+  const { data: branches, loading } = useTable<BranchData>("branches", "sort_order");
+
+  const LOCATIONS = branchesToLocations(branches);
+  const activeLoc = LOCATIONS.find((l) => l.city === activeCity) || LOCATIONS[0];
+
+  if (loading || LOCATIONS.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <>
