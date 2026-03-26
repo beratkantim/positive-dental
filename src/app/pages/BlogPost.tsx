@@ -5,10 +5,47 @@ import {
   ArrowRight, Tag, Sparkles, CheckCircle2, Facebook,
   Twitter, Link2, ChevronRight,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BlogPostSEO } from "../components/SEO";
-import { getPostBySlug, getRelatedPosts, BLOG_POSTS, type BlogPost } from "../data/blogData";
+import { supabase } from "@/lib/supabase";
+import type { BlogPost as BlogPostDB } from "@/lib/supabase";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  categoryColor: string;
+  author: string;
+  authorTitle: string;
+  date: string;
+  readTime: string;
+  image: string;
+  keywords: string[];
+  metaDescription: string;
+  content: string;
+  featured?: boolean;
+}
+
+function mapPost(p: BlogPostDB): BlogPost {
+  return {
+    slug: p.slug,
+    title: p.title,
+    excerpt: p.excerpt,
+    category: p.category,
+    categoryColor: p.category_color,
+    author: p.author,
+    authorTitle: p.author_title,
+    date: p.published_at ? new Date(p.published_at).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" }) : "",
+    readTime: p.read_time,
+    image: p.image,
+    keywords: p.keywords || [],
+    metaDescription: p.meta_description,
+    content: p.content,
+    featured: p.is_featured,
+  };
+}
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
@@ -75,14 +112,37 @@ function RelatedCard({ post }: { post: BlogPost }) {
 
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const post = getPostBySlug(slug ?? "");
+  const [post, setPost] = useState<BlogPost | null>(null);
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const [single, all] = await Promise.all([
+        supabase.from("blog_posts").select("*").eq("slug", slug ?? "").single(),
+        supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
+      ]);
+      if (single.data) setPost(mapPost(single.data));
+      if (all.data) setAllPosts(all.data.map(mapPost));
+      setLoading(false);
+    }
+    load();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!post) return <Navigate to="/blog" replace />;
 
-  const related = getRelatedPosts(post.slug, post.category, 3);
-  const currentIndex = BLOG_POSTS.findIndex((p) => p.slug === post.slug);
-  const prevPost = currentIndex > 0 ? BLOG_POSTS[currentIndex - 1] : null;
-  const nextPost = currentIndex < BLOG_POSTS.length - 1 ? BLOG_POSTS[currentIndex + 1] : null;
+  const related = allPosts.filter((p) => p.category === post.category && p.slug !== post.slug).slice(0, 3);
+  const currentIndex = allPosts.findIndex((p) => p.slug === post.slug);
+  const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+  const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
 
   return (
     <>
@@ -328,7 +388,7 @@ export function BlogPost() {
               </Link>
             </div>
             <div className="grid md:grid-cols-3 gap-5">
-              {BLOG_POSTS
+              {allPosts
                 .filter((p) => p.slug !== post.slug)
                 .slice(0, 3)
                 .map((p, i) => (

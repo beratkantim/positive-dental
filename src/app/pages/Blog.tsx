@@ -6,8 +6,56 @@ import {
   Calendar, User, TrendingUp, Star, BadgeDollarSign,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
-import { BLOG_POSTS, BLOG_CATEGORIES, type BlogPost } from "../data/blogData";
+import { useTable } from "../hooks/useSupabase";
+import type { BlogPost as BlogPostType } from "@/lib/supabase";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+
+const BLOG_CATEGORIES = [
+  "Tümü",
+  "Fiyat Rehberi",
+  "İmplantoloji",
+  "Estetik Diş Hekimliği",
+  "Ortodonti",
+  "Çocuk Diş Hekimliği",
+  "Genel Diş Hekimliği",
+  "Periodontoloji",
+];
+
+interface BlogPost {
+  slug: string;
+  title: string;
+  excerpt: string;
+  category: string;
+  categoryColor: string;
+  author: string;
+  authorTitle: string;
+  date: string;
+  readTime: string;
+  image: string;
+  keywords: string[];
+  metaDescription: string;
+  content: string;
+  featured?: boolean;
+}
+
+function mapBlogPost(p: BlogPostType): BlogPost {
+  return {
+    slug: p.slug,
+    title: p.title,
+    excerpt: p.excerpt,
+    category: p.category,
+    categoryColor: p.category_color,
+    author: p.author,
+    authorTitle: p.author_title,
+    date: p.published_at ? new Date(p.published_at).toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric" }) : "",
+    readTime: p.read_time,
+    image: p.image,
+    keywords: p.keywords || [],
+    metaDescription: p.meta_description,
+    content: p.content,
+    featured: p.is_featured,
+  };
+}
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
@@ -134,6 +182,9 @@ function FeaturedCard({ post }: { post: BlogPost }) {
 export function Blog() {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: rawPosts, loading } = useTable<BlogPostType>("blog_posts", "created_at", false);
+
+  const BLOG_POSTS = rawPosts.map(mapBlogPost);
 
   const filtered = BLOG_POSTS.filter((post) => {
     const matchCategory = selectedCategory === "Tümü" || post.category === selectedCategory;
@@ -150,6 +201,14 @@ export function Blog() {
   const featuredPosts = BLOG_POSTS.filter((p) => p.featured);
   const regularPosts = filtered.filter((p) => !p.featured || selectedCategory !== "Tümü" || searchQuery);
   const showFeatured = selectedCategory === "Tümü" && !searchQuery;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -5,7 +5,8 @@ import {
   CheckCircle, MapPin, Stethoscope, ArrowRight, ArrowLeft, AlertCircle,
   MessageSquare, Star, ChevronDown
 } from "lucide-react";
-import { DOCTORS, BRANCHES, type Doctor } from "../data/doctorsData";
+import { useTable } from "../hooks/useSupabase";
+import type { Doctor } from "@/lib/supabase";
 
 /* ─── Sabitler ───────────────────────────────────────── */
 const SERVICES = [
@@ -104,17 +105,19 @@ function Step1({
   selectedDoctor, setSelectedDoctor,
   selectedService, setSelectedService,
   onNext,
+  doctors,
 }: {
   selectedDoctor: Doctor | null;
   setSelectedDoctor: (d: Doctor) => void;
   selectedService: string;
   setSelectedService: (s: string) => void;
   onNext: () => void;
+  doctors: Doctor[];
 }) {
   const [branchFilter, setBranchFilter] = useState<"all" | "adana" | "istanbul">("all");
   const [showAll, setShowAll] = useState(false);
 
-  const filtered = branchFilter === "all" ? DOCTORS : DOCTORS.filter(d => d.branch === branchFilter);
+  const filtered = branchFilter === "all" ? doctors : doctors.filter(d => d.branch === branchFilter);
 
   return (
     <div className="space-y-8">
@@ -667,13 +670,15 @@ export function Appointment() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const { data: DOCTORS, loading: doctorsLoading } = useTable<Doctor>("doctors", "sort_order");
+
   // URL'den doktor otomatik seç
   useEffect(() => {
-    if (doctorId) {
+    if (doctorId && DOCTORS.length > 0) {
       const found = DOCTORS.find(d => d.id === doctorId);
       if (found) setSelectedDoctor(found);
     }
-  }, [doctorId]);
+  }, [doctorId, DOCTORS]);
 
   function handleSubmit() {
     setSubmitting(true);
@@ -719,6 +724,7 @@ export function Appointment() {
               selectedService={selectedService}
               setSelectedService={setSelectedService}
               onNext={() => setStep(1)}
+              doctors={DOCTORS}
             />
           )}
           {step === 1 && (

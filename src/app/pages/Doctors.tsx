@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Link } from "react-router";
 import { Calendar, MapPin, GraduationCap, Star, ChevronRight, Phone, ExternalLink } from "lucide-react";
-import { DOCTORS, BRANCHES, type Branch, type Doctor } from "../data/doctorsData";
+import { useTable } from "../hooks/useSupabase";
+import type { Doctor, BranchData } from "@/lib/supabase";
+
+type Branch = "adana" | "istanbul";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
@@ -21,7 +24,7 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
         <div className="absolute top-3 left-3">
           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-sm text-indigo-700 shadow-sm border border-indigo-100">
             <MapPin className="w-3 h-3" />
-            {doctor.branchLabel}
+            {doctor.branch_label}
           </span>
         </div>
       </div>
@@ -93,6 +96,14 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
 
 export function Doctors() {
   const [activeBranch, setActiveBranch] = useState<Branch | "all">("all");
+  const { data: DOCTORS, loading } = useTable<Doctor>("doctors", "sort_order");
+  const { data: branchRows } = useTable<BranchData>("branches");
+
+  const BRANCHES = branchRows.map((b) => ({
+    id: b.slug.includes("adana") ? ("adana" as Branch) : ("istanbul" as Branch),
+    label: b.name,
+    icon: b.slug.includes("adana") ? "🌟" : "✨",
+  }));
 
   const filtered = activeBranch === "all"
     ? DOCTORS
@@ -100,6 +111,14 @@ export function Doctors() {
 
   const adanaDoctors = filtered.filter((d) => d.branch === "adana");
   const istanbulDoctors = filtered.filter((d) => d.branch === "istanbul");
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0D1235" }}>
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#0D1235" }}>
