@@ -12,9 +12,14 @@ import { Insurance } from "./pages/Insurance";
 import { PriceList } from "./pages/PriceList";
 import { Doctors } from "./pages/Doctors";
 import { Appointment } from "./pages/Appointment";
+import { AdminPanel } from "./pages/Admin";
 import { Layout } from "./components/Layout";
 
 export const router = createBrowserRouter([
+  {
+    path: "/admin",
+    Component: AdminPanel,
+  },
   {
     path: "/",
     Component: Layout,
