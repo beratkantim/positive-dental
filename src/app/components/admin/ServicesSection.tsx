@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import {
   supabase, slugify, Card, Badge, LoadingSpinner, EmptyState,
-  FormField,
+  FormField, usePagination, Pagination,
 } from "./shared";
 import type { TreatmentCategory, Treatment } from "../../../lib/supabase";
 
@@ -80,6 +80,7 @@ function TreatmentsList() {
       : items.filter(t => t.category_id === filterCat);
 
   const formatPrice = (p: number) => p > 0 ? `₺${p.toLocaleString("tr-TR")}` : "—";
+  const { page, setPage, totalPages, paged, total, perPage } = usePagination(filtered, 50);
 
   return (
     <>
@@ -131,7 +132,7 @@ function TreatmentsList() {
           <EmptyState icon="🦷" title="Tedavi bulunamadı" desc="Yeni tedavi eklemek için butona tıklayın" />
         ) : (
           <div className="divide-y divide-gray-50">
-            {filtered.map(t => (
+            {paged.map(t => (
               <div key={t.id} className="flex items-center gap-4 p-4">
                 <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-lg flex-shrink-0">
                   {getCatIcon(t.category_id)}
@@ -179,6 +180,7 @@ function TreatmentsList() {
             ))}
           </div>
         )}
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} total={total} perPage={perPage} />
       </Card>
     </>
   );

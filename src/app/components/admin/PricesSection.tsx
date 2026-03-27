@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import {
   supabase, slugify, Card, Badge, LoadingSpinner, EmptyState,
-  FormField, ImageUpload, type PriceItem,
+  FormField, ImageUpload, usePagination, Pagination, type PriceItem,
 } from "./shared";
 
 interface PriceCategory {
@@ -54,6 +54,7 @@ export function PricesSection() {
   useEffect(() => { load(); }, []);
 
   const filtered = filterCat ? items.filter(i => i.category === filterCat) : items;
+  const { page, setPage, totalPages, paged, total, perPage } = usePagination(filtered, 50);
   const catNames = cats.map(c => c.name);
 
   const deleteItem = async (id: string) => {
@@ -237,7 +238,7 @@ export function PricesSection() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {filtered.map(item => (
+                {paged.map(item => (
                   <>
                     <tr key={item.id} className={`transition-colors ${editing?.id === item.id ? "bg-indigo-50" : "hover:bg-gray-50"}`}>
                       <td className="px-4 py-3 text-gray-500 text-xs">{item.category}</td>
@@ -288,6 +289,7 @@ export function PricesSection() {
             </table>
           </div>
         )}
+        <Pagination page={page} totalPages={totalPages} setPage={setPage} total={total} perPage={perPage} />
       </Card>
     </div>
   );
