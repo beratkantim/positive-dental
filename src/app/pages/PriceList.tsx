@@ -5,13 +5,51 @@ import {
   Sparkles, ArrowRight, CheckCircle2, X,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
+import { useTable } from "../hooks/useSupabase";
+import type { PriceItem } from "@/lib/supabase";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
-/* ─────────────────────────────────────────────────────────────────
-   FİYAT VERİSİ
-───────────────────────────────────────────────────────────────── */
-const PRICE_GROUPS = [
+const CATEGORY_STYLE: Record<string, { emoji: string; color: string; lightBg: string; borderColor: string; tagColor: string }> = {
+  "Muayene Fiyatları":        { emoji: "🔍", color: "from-indigo-500 to-violet-600", lightBg: "bg-indigo-50", borderColor: "border-indigo-200", tagColor: "bg-indigo-100 text-indigo-700" },
+  "Koruyucu Diş Hekimliği":   { emoji: "🛡️", color: "from-teal-500 to-cyan-600",   lightBg: "bg-teal-50",   borderColor: "border-teal-200",   tagColor: "bg-teal-100 text-teal-700" },
+  "Çocuk Diş Tedavileri":     { emoji: "🌈", color: "from-pink-500 to-rose-600",    lightBg: "bg-pink-50",   borderColor: "border-pink-200",   tagColor: "bg-pink-100 text-pink-700" },
+  "Dolgu ve Kanal Tedavileri": { emoji: "🦷", color: "from-amber-500 to-orange-500", lightBg: "bg-amber-50",  borderColor: "border-amber-200",  tagColor: "bg-amber-100 text-amber-700" },
+  "Diş Estetiği Tedavileri":  { emoji: "✨", color: "from-violet-500 to-purple-600", lightBg: "bg-violet-50", borderColor: "border-violet-200", tagColor: "bg-violet-100 text-violet-700" },
+  "Diş Beyazlatma":           { emoji: "💎", color: "from-sky-500 to-blue-600",     lightBg: "bg-sky-50",    borderColor: "border-sky-200",    tagColor: "bg-sky-100 text-sky-700" },
+  "Diş Çekimi Fiyatları":     { emoji: "🔧", color: "from-rose-500 to-red-600",     lightBg: "bg-rose-50",   borderColor: "border-rose-200",   tagColor: "bg-rose-100 text-rose-700" },
+  "İmplant Tedavisi":         { emoji: "🔩", color: "from-slate-600 to-slate-800",  lightBg: "bg-slate-50",  borderColor: "border-slate-300",  tagColor: "bg-slate-200 text-slate-700" },
+  "Ortodontik Tedaviler":     { emoji: "😁", color: "from-green-500 to-emerald-600", lightBg: "bg-green-50",  borderColor: "border-green-200",  tagColor: "bg-green-100 text-green-700" },
+  "Protez Tedavileri":        { emoji: "🦾", color: "from-orange-500 to-amber-600", lightBg: "bg-orange-50", borderColor: "border-orange-200", tagColor: "bg-orange-100 text-orange-700" },
+  "Ağız ve Çene Cerrahisi":   { emoji: "🏥", color: "from-red-600 to-rose-700",     lightBg: "bg-red-50",    borderColor: "border-red-200",    tagColor: "bg-red-100 text-red-700" },
+  "Dijital Diş Hekimliği":    { emoji: "🖥️", color: "from-indigo-600 to-blue-700",  lightBg: "bg-indigo-50", borderColor: "border-indigo-200", tagColor: "bg-indigo-100 text-indigo-700" },
+};
+
+function formatPrice(min: number, max: number): string {
+  if (min === 0 && max === 0) return "Ücretsiz";
+  if (max > min) return `₺${min.toLocaleString("tr-TR")} – ₺${max.toLocaleString("tr-TR")}`;
+  return `₺${min.toLocaleString("tr-TR")}`;
+}
+
+function buildPriceGroups(items: PriceItem[]) {
+  const map = new Map<string, { name: string; price: string; note: string | null }[]>();
+  for (const item of items) {
+    if (!map.has(item.category)) map.set(item.category, []);
+    map.get(item.category)!.push({
+      name: item.name,
+      price: formatPrice(item.price_min, item.price_max),
+      note: item.price_note || null,
+    });
+  }
+  return Array.from(map.entries()).map(([cat, catItems]) => {
+    const style = CATEGORY_STYLE[cat] || { emoji: "💰", color: "from-gray-500 to-gray-600", lightBg: "bg-gray-50", borderColor: "border-gray-200", tagColor: "bg-gray-100 text-gray-700" };
+    const id = cat.toLowerCase().replace(/[^a-zğüşıöç0-9]+/g, "-");
+    return { id, label: cat, ...style, items: catItems };
+  });
+}
+
+/* Hardcoded fiyat verisi kaldırıldı — artık Supabase'den çekiliyor */
+const _LEGACY_PRICE_GROUPS = [
   {
     id: "muayene",
     label: "Muayene Fiyatları",
@@ -237,6 +275,9 @@ export function PriceList() {
   const [openGroups, setOpenGroups] = useState<Set<string>>(new Set(["muayene"]));
   const [search, setSearch] = useState("");
   const [expandAll, setExpandAll] = useState(false);
+  const { data: priceItems, loading: pricesLoading } = useTable<PriceItem>("price_items", "sort_order");
+
+  const PRICE_GROUPS = priceItems.length > 0 ? buildPriceGroups(priceItems) : _LEGACY_PRICE_GROUPS;
 
   const toggleGroup = (id: string) => {
     setOpenGroups((prev) => {

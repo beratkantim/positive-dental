@@ -11,6 +11,7 @@ import { BranchesSection } from "../components/admin/BranchesSection";
 import { HeroSection } from "../components/admin/HeroSection";
 import { ServicesSection } from "../components/admin/ServicesSection";
 import { AnalyticsSection } from "../components/admin/AnalyticsSection";
+import { PricesSection } from "../components/admin/PricesSection";
 
 // ── SIMPLE LIST SECTIONS ──────────────────────────────────────
 function SimpleSection({ title, table, icon }: { title: string; table: string; icon: string }) {
@@ -66,7 +67,7 @@ export function AdminPanel() {
       case "services":     return <ServicesSection />;
       case "branches":     return <BranchesSection />;
       case "analytics":    return <AnalyticsSection />;
-      case "prices":       return <SimpleSection title="Fiyat Listesi" table="price_items" icon="💰" />;
+      case "prices":       return <PricesSection />;
       case "users":        return <SimpleSection title="Kullanıcılar" table="admin_users" icon="👥" />;
       default:             return <Dashboard onNavigate={setActive} />;
     }
