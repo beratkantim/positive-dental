@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/**/*.js": {
+      "runtime": "@vercel/node@3"
+    }
+  },
   "redirects": [
     { "source": "/kids", "destination": "/cocuk-dis-hekimligi", "permanent": true },
     { "source": "/services", "destination": "/hizmetlerimiz", "permanent": true },
