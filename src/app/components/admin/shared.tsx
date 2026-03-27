@@ -291,7 +291,7 @@ export const NAV_ITEMS: { id: Section; label: string; icon: string; badge?: stri
   { id: "dashboard",    label: "Dashboard",        icon: "📊" },
   { id: "hero",         label: "Hero Slider",       icon: "🖼️" },
   { id: "doctors",      label: "Doktorlar",         icon: "👨‍⚕️" },
-  { id: "services",     label: "Hizmetler",         icon: "🦷" },
+  { id: "services",     label: "Tedaviler",         icon: "🦷" },
   { id: "blog",         label: "Blog",              icon: "📝" },
   { id: "branches",     label: "Şubeler",           icon: "📍" },
   { id: "testimonials", label: "Yorumlar",          icon: "⭐" },

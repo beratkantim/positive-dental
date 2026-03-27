@@ -28,6 +28,17 @@ export interface Doctor {
   sort_order: number;
 }
 
+export interface TreatmentCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  icon: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
 export interface Service {
   id: string;
   title: string;
@@ -41,6 +52,9 @@ export interface Service {
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
+  category_id: string | null;
+  // joined
+  category?: TreatmentCategory;
 }
 
 export interface BlogPost {
