@@ -1,3 +1,11 @@
+/**
+ * ⚠️ SEO KRİTİK — Route path'lerini değiştirme!
+ *
+ * Tüm path'ler Türkçe SEO URL'lere çevrilmiştir (ör: /hizmetlerimiz, /hakkimizda).
+ * Eski İngilizce path'ler vercel.json'da 301 redirect ile yönlendirilir.
+ * Path değiştirmek SEO sıralamalarını bozar ve 404 hatalarına neden olur.
+ * Değişiklik gerekiyorsa önce kullanıcıya danışın.
+ */
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router";
 import { Layout } from "./components/Layout";

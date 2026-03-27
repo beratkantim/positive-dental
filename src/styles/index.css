@@ -1,3 +1,13 @@
+/*
+ * ⚠️ PERFORMANS + SEO KRİTİK CSS
+ *
+ * Bu dosyadaki mobil optimizasyon kuralları (blur gizleme, backdrop-filter kapatma,
+ * shadow hafifletme, sonsuz animasyon durdurma) Lighthouse performans skoru için
+ * özel ayarlanmıştır. content-lazy sınıfı below-the-fold render optimizasyonu sağlar.
+ * Animasyon sınıfları (anim-fade-up, anim-scale-in vb.) framer-motion yerine
+ * CSS-only çalışır — bundle size'ı küçültür.
+ * Değişiklik gerekiyorsa önce kullanıcıya danışın.
+ */
 @import "./fonts.css";
 @import "tailwindcss";
 @import "./theme.css";

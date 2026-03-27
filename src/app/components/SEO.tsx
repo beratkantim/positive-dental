@@ -1,3 +1,14 @@
+/**
+ * ⚠️ SEO KRİTİK DOSYA — DEĞİŞTİRME!
+ *
+ * Bu component tüm sayfaların meta tag'lerini yönetir.
+ * - title şablonu: "{sayfa} | Positive Dental Studio"
+ * - canonical URL'ler full path olarak basılır
+ * - Open Graph ve Twitter Card meta'ları dahildir
+ * - JSON-LD structured data (Organization, BreadcrumbList) dahildir
+ *
+ * Değişiklik gerekiyorsa önce kullanıcıya danışın.
+ */
 import { Helmet } from "react-helmet-async";
 
 const SITE_NAME = "Positive Dental Studio";
