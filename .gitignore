@@ -1,4 +1,11 @@
-
 dist/
-.claude/
 node_modules/
+.claude/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+coverage/
+.vscode/
+.idea/

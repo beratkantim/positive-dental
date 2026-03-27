@@ -8,7 +8,6 @@
  * CSS-only çalışır — bundle size'ı küçültür.
  * Değişiklik gerekiyorsa önce kullanıcıya danışın.
  */
-@import "./fonts.css";
 @import "tailwindcss";
 @import "./theme.css";
 
