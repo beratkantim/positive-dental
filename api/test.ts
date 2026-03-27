@@ -1,3 +1,3 @@
-export default function handler() {
-  return new Response("calisiyor", { status: 200 });
+export default function handler(req: any, res: any) {
+  res.status(200).send("calisiyor");
 }
