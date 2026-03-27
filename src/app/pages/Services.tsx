@@ -30,6 +30,7 @@ interface ServiceItem {
   lightBg: string;
   lightText: string;
   icon: string;
+  image: string;
 }
 
 function mapService(s: ServiceDB): ServiceItem {
@@ -42,6 +43,7 @@ function mapService(s: ServiceDB): ServiceItem {
     lightBg: light.bg,
     lightText: light.text,
     icon: s.icon,
+    image: s.image || "",
   };
 }
 
@@ -192,8 +194,15 @@ export function Services() {
                   viewport={{ once: true }}
                   transition={{ delay: (i % 3) * 0.1 }}
                   whileHover={{ y: -6 }}
-                  className="group bg-white rounded-3xl p-7 border border-slate-100 hover:border-transparent hover:shadow-2xl hover:shadow-slate-200/60 transition-all"
+                  className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:border-transparent hover:shadow-2xl hover:shadow-slate-200/60 transition-all"
                 >
+                  {s.image && (
+                    <div className="relative h-44 overflow-hidden">
+                      <ImageWithFallback src={s.image} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
+                    </div>
+                  )}
+                  <div className="p-7">
                   <div className={`w-13 h-13 rounded-2xl bg-gradient-to-br ${s.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform text-2xl`}
                     style={{ width: 52, height: 52 }}>
                     {s.icon}
@@ -212,6 +221,7 @@ export function Services() {
                     className={`inline-flex items-center gap-1.5 text-sm font-bold ${s.lightText} group-hover:gap-2 transition-all`}>
                     Randevu Al <ArrowRight className="w-3.5 h-3.5" />
                   </a>
+                  </div>
                 </motion.div>
               );
             })}

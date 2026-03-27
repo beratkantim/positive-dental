@@ -198,7 +198,15 @@ function ServiceForm({ service, onSave, onCancel }: {
           <FormField label="Özellikler (her satıra bir)" value={form.features} onChange={v => setForm(f => ({ ...f, features: v }))} multiline />
         </div>
 
-        <FormField label="Görsel URL" value={form.image} onChange={v => setForm(f => ({ ...f, image: v }))} />
+        <div className="md:col-span-2">
+          <ImageUpload
+            currentUrl={form.image}
+            bucket="services"
+            fileName={form.title ? slugify(form.title) : ""}
+            onUploaded={url => setForm(f => ({ ...f, image: url }))}
+            label="Hizmet Fotoğrafı"
+          />
+        </div>
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />
 
         <div className="flex items-center gap-6">
