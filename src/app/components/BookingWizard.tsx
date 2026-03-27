@@ -133,8 +133,15 @@ export function BookingWizard() {
   const selectedDay     = AVAILABLE_DAYS.find(d => d.date === day);
 
   // Filtered options — doctors filtered by selected branch
+  // d.branch = slug ("adana"/"istanbul"), d.branches = array of IDs/slugs
+  const branchSlug = selectedBranch?.slug;
   const filteredDoctors = clinicId
-    ? activeDoctors.filter(d => d.branch === selectedBranch?.slug || d.branches?.includes(clinicId))
+    ? activeDoctors.filter(d =>
+        d.branch === branchSlug ||
+        d.branches?.includes(clinicId) ||
+        d.branches?.includes(branchSlug || "") ||
+        d.branch_label === selectedBranch?.name
+      )
     : activeDoctors;
 
   const canNext = () => {
