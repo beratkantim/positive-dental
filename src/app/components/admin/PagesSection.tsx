@@ -5,6 +5,7 @@ const PAGE_GROUPS: { group: string; label: string; icon: string }[] = [
   { group: "hakkimizda", label: "Hakkımızda Sayfası", icon: "📖" },
   { group: "cocuk", label: "Çocuk Diş Hekimliği", icon: "👶" },
   { group: "seo_anasayfa", label: "Ana Sayfa SEO Metni", icon: "🔍" },
+  { group: "hakkimizda_eeat", label: "Hakkımızda EEAT (FAQ + Şirket)", icon: "🏢" },
 ];
 
 const EXCLUDED_GROUPS = ["genel", "iletişim", "sosyal_medya", "istatistikler"];
@@ -13,6 +14,7 @@ const TEXTAREA_KEYS = [
   "about_story", "about_mission", "about_vision", "about_values",
   "kids_description", "kids_features",
   "seo_homepage_content",
+  "eeat_faq", "eeat_company",
 ];
 
 export function PagesSection() {

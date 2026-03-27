@@ -1,10 +1,12 @@
+import { useState, useEffect } from "react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import {
   Award, Users, Heart, Target, Eye, CheckCircle2,
-  Sparkles, Brain, Star, Calendar, Phone, ArrowRight, Play,
+  Sparkles, Brain, Star, Calendar, Phone, ArrowRight, Play, ChevronDown,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { SEO } from "../components/SEO";
+import { supabase } from "@/lib/supabase";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
@@ -55,7 +57,40 @@ const WHY_US = [
   "Sterilizasyon güvencesi",
 ];
 
+const DEFAULT_FAQ = [
+  { q: "Positive Dental Studio Kimdir?", a: "Positive Dental Studio, 2011 yılından bu yana Adana Türkmenbaşı ve İstanbul Nişantaşı'nda hizmet veren modern diş kliniğidir. 25'ten fazla uzman hekimimizle implant, ortodonti, estetik diş hekimliği ve çocuk diş hekimliği başta olmak üzere tüm diş tedavilerinde yüksek kaliteli hizmet sunuyoruz." },
+  { q: "Hangi tedavi hizmetlerini sunuyorsunuz?", a: "Genel diş hekimliği, implant tedavisi, ortodonti (şeffaf plak ve braket), estetik diş hekimliği (laminate veneer, zirkonyum kaplama, diş beyazlatma), çocuk diş hekimliği, endodonti (kanal tedavisi), periodontoloji (diş eti tedavisi), ağız ve çene cerrahisi ile dijital anestezi hizmetleri sunmaktayız." },
+  { q: "Randevu nasıl alabilirim?", a: "Web sitemiz üzerinden 7/24 online randevu alabilir, 0850 123 45 67 numaralı randevu hattımızı arayabilir veya WhatsApp üzerinden bize ulaşabilirsiniz. İlk muayene değerlendirmemiz ücretsizdir." },
+  { q: "Hangi şehirlerde kliniğiniz var?", a: "Şu anda İstanbul Nişantaşı ve Adana Türkmenbaşı olmak üzere 2 şubemizde hizmet vermekteyiz. Her iki kliniğimiz de son teknoloji cihazlarla donatılmıştır." },
+  { q: "Anlaşmalı kurumlarınız ve sigortalarınız var mı?", a: "Evet, birçok özel sağlık sigortası ve kurumsal anlaşmamız mevcuttur. Anlaşmalı kurum ve sigorta listemizi web sitemizdeki ilgili sayfalardan inceleyebilirsiniz." },
+];
+
+const DEFAULT_COMPANY = {
+  unvan: "Positive Dental Studio Ağız ve Diş Sağlığı A.Ş.",
+  vergi_dairesi: "Seyhan Vergi Dairesi",
+  vergi_no: "1234567890",
+  ticaret_sicil: "12345",
+  tescil_tarihi: "2011",
+  mersis_no: "0123456789012345",
+  merkez: "Adana, Türkiye",
+};
+
 export function About() {
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [eeat, setEeat] = useState<{ faq: typeof DEFAULT_FAQ; company: typeof DEFAULT_COMPANY }>({ faq: DEFAULT_FAQ, company: DEFAULT_COMPANY });
+
+  useEffect(() => {
+    supabase.from("site_settings").select("key,value").eq("group_name", "hakkimizda_eeat").then(({ data }) => {
+      if (!data || data.length === 0) return;
+      const map: Record<string, string> = {};
+      data.forEach(d => { map[d.key] = d.value || ""; });
+      try {
+        if (map.eeat_faq) setEeat(prev => ({ ...prev, faq: JSON.parse(map.eeat_faq) }));
+        if (map.eeat_company) setEeat(prev => ({ ...prev, company: JSON.parse(map.eeat_company) }));
+      } catch { /* fallback to defaults */ }
+    });
+  }, []);
+
   return (
     <>
       <SEO
@@ -386,6 +421,57 @@ export function About() {
                 </motion.div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          EEAT — FAQ + Şirket Bilgileri
+      ══════════════════════════════════════════════════════════ */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Sıkça Sorulan Sorular</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-slate-900">Merak Edilenler</h2>
+          </div>
+
+          <div className="space-y-3 mb-16">
+            {eeat.faq.map((item, i) => (
+              <div key={i} className="bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm">
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between p-5 text-left hover:bg-slate-50 transition"
+                >
+                  <span className="font-bold text-slate-800 pr-4">{item.q}</span>
+                  <ChevronDown className={`w-5 h-5 text-slate-400 flex-shrink-0 transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+                </button>
+                {openFaq === i && (
+                  <div className="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-4">
+                    {item.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
+            <h3 className="text-lg font-bold text-slate-900 mb-6">Şirket Bilgileri</h3>
+            <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
+              {[
+                ["Şirket Ünvanı", eeat.company.unvan],
+                ["Vergi Dairesi", eeat.company.vergi_dairesi],
+                ["Vergi No", eeat.company.vergi_no],
+                ["Ticaret Sicil No", eeat.company.ticaret_sicil],
+                ["Kuruluş Yılı", eeat.company.tescil_tarihi],
+                ["Mersis No", eeat.company.mersis_no],
+                ["Merkez", eeat.company.merkez],
+              ].map(([label, value]) => (
+                <div key={label}>
+                  <dt className="text-slate-400 text-xs uppercase tracking-wider mb-0.5">{label}</dt>
+                  <dd className="text-slate-800 font-medium">{value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
       </section>
