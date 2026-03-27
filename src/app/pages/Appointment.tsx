@@ -6,25 +6,14 @@ import {
   MessageSquare, Star, ChevronDown
 } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
-import type { Doctor } from "@/lib/supabase";
+import type { Doctor, Service, Branch } from "@/lib/supabase";
 
-/* ─── Sabitler ───────────────────────────────────────── */
-const SERVICES = [
-  "Genel Muayene",
-  "Diş Temizliği",
-  "Diş Beyazlatma",
-  "Gülüş Tasarımı",
-  "Zirkonyum Kaplama",
-  "Lamine Veneer",
-  "Dental İmplant",
-  "Ortodonti / Braket",
-  "Invisalign",
-  "Kanal Tedavisi",
-  "Diş Eti Tedavisi",
-  "Çocuk Diş Hekimliği",
-  "Kompozit Bonding",
-  "All-on-4 / All-on-6",
-  "Diğer",
+/* ─── Fallback hizmetler (Supabase'den yüklenemezse) ── */
+const FALLBACK_SERVICES = [
+  "Genel Muayene", "Diş Temizliği", "Diş Beyazlatma", "Gülüş Tasarımı",
+  "Zirkonyum Kaplama", "Lamine Veneer", "Dental İmplant", "Ortodonti / Braket",
+  "Invisalign", "Kanal Tedavisi", "Diş Eti Tedavisi", "Çocuk Diş Hekimliği",
+  "Kompozit Bonding", "All-on-4 / All-on-6", "Diğer",
 ];
 
 const TIME_SLOTS = [
@@ -106,6 +95,8 @@ function Step1({
   selectedService, setSelectedService,
   onNext,
   doctors,
+  services,
+  branchOptions,
 }: {
   selectedDoctor: Doctor | null;
   setSelectedDoctor: (d: Doctor) => void;
@@ -113,6 +104,8 @@ function Step1({
   setSelectedService: (s: string) => void;
   onNext: () => void;
   doctors: Doctor[];
+  services: string[];
+  branchOptions: { id: string; label: string }[];
 }) {
   const [branchFilter, setBranchFilter] = useState<"all" | "adana" | "istanbul">("all");
   const [showAll, setShowAll] = useState(false);
@@ -127,11 +120,7 @@ function Step1({
           Doktor Seçin
         </h2>
         <div className="flex flex-wrap gap-2 mb-5">
-          {[
-            { id: "all", label: "Tüm Şubeler" },
-            { id: "adana", label: "Adana Türkmenbaşı" },
-            { id: "istanbul", label: "İstanbul Nişantaşı" },
-          ].map(b => (
+          {branchOptions.map(b => (
             <button
               key={b.id}
               onClick={() => setBranchFilter(b.id as any)}
@@ -197,7 +186,7 @@ function Step1({
           Hizmet / Tedavi Seçin
         </h2>
         <div className="flex flex-wrap gap-2">
-          {(showAll ? SERVICES : SERVICES.slice(0, 9)).map(srv => (
+          {(showAll ? services : services.slice(0, 9)).map(srv => (
             <button
               key={srv}
               onClick={() => setSelectedService(srv)}
@@ -215,7 +204,7 @@ function Step1({
               onClick={() => setShowAll(true)}
               className="flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-semibold text-slate-400 border border-white/10 bg-white/5 hover:text-white transition-all"
             >
-              +{SERVICES.length - 9} daha <ChevronDown className="w-3.5 h-3.5" />
+              +{services.length - 9} daha <ChevronDown className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
@@ -671,6 +660,16 @@ export function Appointment() {
   const [submitted, setSubmitted] = useState(false);
 
   const { data: DOCTORS, loading: doctorsLoading } = useTable<Doctor>("doctors", "sort_order");
+  const { data: rawServices } = useTable<Service>("services", "sort_order");
+  const { data: rawBranches } = useTable<Branch>("branches", "sort_order");
+
+  const SERVICES = rawServices.length > 0
+    ? rawServices.filter(s => s.is_active).map(s => s.title)
+    : FALLBACK_SERVICES;
+
+  const branchOptions = rawBranches.length > 0
+    ? [{ id: "all", label: "Tüm Şubeler" }, ...rawBranches.filter(b => b.is_active).map(b => ({ id: b.slug, label: b.name }))]
+    : [{ id: "all", label: "Tüm Şubeler" }, { id: "adana", label: "Adana Türkmenbaşı" }, { id: "istanbul", label: "İstanbul Nişantaşı" }];
 
   // URL'den doktor otomatik seç
   useEffect(() => {
@@ -725,6 +724,8 @@ export function Appointment() {
               setSelectedService={setSelectedService}
               onNext={() => setStep(1)}
               doctors={DOCTORS}
+              services={SERVICES}
+              branchOptions={branchOptions}
             />
           )}
           {step === 1 && (

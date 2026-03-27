@@ -4,31 +4,10 @@ import {
   ChevronDown, ChevronRight, ChevronLeft, Check,
   MapPin, Stethoscope, UserRound, CalendarDays, CheckCircle2, X,
 } from "lucide-react";
+import { useTable } from "../hooks/useSupabase";
+import type { Branch, Service, Doctor } from "@/lib/supabase";
 
-// ── DATA ─────────────────────────────────────────────────────────────────────
-
-const CLINICS = [
-  "İstanbul – Nişantaşı",
-  "Adana – Türkmenbaşı",
-];
-
-const SERVICES: Record<string, string[]> = {
-  "İstanbul – Nişantaşı":  ["Estetik Diş Hekimliği", "İmplant", "Ortodonti", "Genel Muayene", "Lamine Tedavisi", "Dijital Anestezi", "Gülüş Tasarımı (DSD)", "Çocuk Diş Hekimliği"],
-  "Adana – Türkmenbaşı":   ["Estetik Diş Hekimliği", "İmplant", "Ortodonti", "Genel Muayene", "Protez & Zirkonyum", "Çocuk Diş Hekimliği", "Diş Beyazlatma"],
-};
-
-const DOCTORS: Record<string, string[]> = {
-  "Estetik Diş Hekimliği": ["Dr. Ayşe Yılmaz", "Dr. Zeynep Demir"],
-  "İmplant":               ["Dr. Mehmet Kaya", "Dr. Ali Şahin"],
-  "Ortodonti":             ["Dr. Zeynep Demir", "Dr. Selin Arslan"],
-  "Genel Muayene":         ["Dr. Emre Çelik", "Dr. Fatma Kara", "Dr. Berk Öztürk"],
-  "Lamine Tedavisi":       ["Dr. Ayşe Yılmaz", "Dr. Emre Çelik"],
-  "Dijital Anestezi":      ["Dr. Berk Öztürk", "Dr. Fatma Kara"],
-  "Gülüş Tasarımı (DSD)":  ["Dr. Berk Öztürk", "Dr. Emre Çelik"],
-  "Protez & Zirkonyum":    ["Dr. Ali Şahin", "Dr. Fatma Kara"],
-  "Çocuk Diş Hekimliği":  ["Dr. Selin Arslan", "Dr. Fatma Kara"],
-  "Diş Beyazlatma":        ["Dr. Ali Şahin", "Dr. Fatma Kara"],
-};
+// ── DATE HELPERS ──────────────────────────────────────────────────────────────
 
 function getAvailableDays() {
   const days: { label: string; date: string; slots: string[] }[] = [];
@@ -64,9 +43,10 @@ const STEPS = [
 // ── DROPDOWN ─────────────────────────────────────────────────────────────────
 
 function Dropdown({ placeholder, value, options, onChange }: {
-  placeholder: string; value: string; options: string[]; onChange: (v: string) => void;
+  placeholder: string; value: string; options: { label: string; value: string }[]; onChange: (v: string) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const selected = options.find(o => o.value === value);
   return (
     <div className="relative">
       <button
@@ -74,8 +54,8 @@ function Dropdown({ placeholder, value, options, onChange }: {
         onClick={() => setOpen((o) => !o)}
         className="w-full flex items-center justify-between gap-3 px-5 py-4 bg-white border border-slate-200 hover:border-indigo-300 rounded-2xl text-left transition-all shadow-sm"
       >
-        <span className={value ? "text-slate-800 font-semibold" : "text-slate-400"}>
-          {value || placeholder}
+        <span className={selected ? "text-slate-800 font-semibold" : "text-slate-400"}>
+          {selected?.label || placeholder}
         </span>
         <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`} />
       </button>
@@ -91,17 +71,17 @@ function Dropdown({ placeholder, value, options, onChange }: {
           >
             {options.map((opt) => (
               <button
-                key={opt}
+                key={opt.value}
                 type="button"
-                onClick={() => { onChange(opt); setOpen(false); }}
+                onClick={() => { onChange(opt.value); setOpen(false); }}
                 className={`w-full text-left px-5 py-3.5 text-sm transition-colors flex items-center justify-between ${
-                  value === opt
+                  value === opt.value
                     ? "bg-indigo-50 text-indigo-700 font-bold"
                     : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}
               >
-                {opt}
-                {value === opt && <Check className="w-4 h-4 text-indigo-500" />}
+                {opt.label}
+                {value === opt.value && <Check className="w-4 h-4 text-indigo-500" />}
               </button>
             ))}
           </motion.div>
@@ -126,20 +106,41 @@ function StepHeader({ step, title, sub }: { step: number; title: string; sub: st
 // ── MAIN ─────────────────────────────────────────────────────────────────────
 
 export function BookingWizard() {
+  // Supabase data
+  const { data: branches } = useTable<Branch>("branches", "sort_order");
+  const { data: services } = useTable<Service>("services", "sort_order");
+  const { data: doctors }  = useTable<Doctor>("doctors", "sort_order");
+
+  const activeBranches = branches.filter(b => b.is_active);
+  const activeServices = services.filter(s => s.is_active);
+  const activeDoctors  = doctors.filter(d => d.is_active);
+
+  // Wizard state
   const [step, setStep] = useState(1);
-  const [clinic,  setClinic]  = useState("");
-  const [service, setService] = useState("");
-  const [doctor,  setDoctor]  = useState("");
-  const [day,     setDay]     = useState("");
-  const [slot,    setSlot]    = useState("");
-  const [name,    setName]    = useState("");
-  const [phone,   setPhone]   = useState("");
-  const [done,    setDone]    = useState(false);
+  const [clinicId, setClinicId]   = useState("");
+  const [serviceId, setServiceId] = useState("");
+  const [doctorId, setDoctorId]   = useState("");
+  const [day, setDay]     = useState("");
+  const [slot, setSlot]   = useState("");
+  const [name, setName]   = useState("");
+  const [phone, setPhone] = useState("");
+  const [done, setDone]   = useState(false);
+
+  // Derived
+  const selectedBranch  = activeBranches.find(b => b.id === clinicId);
+  const selectedService = activeServices.find(s => s.id === serviceId);
+  const selectedDoctor  = activeDoctors.find(d => d.id === doctorId);
+  const selectedDay     = AVAILABLE_DAYS.find(d => d.date === day);
+
+  // Filtered options — doctors filtered by selected branch
+  const filteredDoctors = clinicId
+    ? activeDoctors.filter(d => d.branch === selectedBranch?.slug || d.branches?.includes(clinicId))
+    : activeDoctors;
 
   const canNext = () => {
-    if (step === 1) return !!clinic;
-    if (step === 2) return !!service;
-    if (step === 3) return !!doctor;
+    if (step === 1) return !!clinicId;
+    if (step === 2) return !!serviceId;
+    if (step === 3) return !!doctorId;
     if (step === 4) return !!day && !!slot;
     if (step === 5) return name.trim().length > 1 && phone.trim().length > 9;
     return false;
@@ -148,17 +149,16 @@ export function BookingWizard() {
   const handleNext = () => { if (step < 5) setStep(step + 1); else setDone(true); };
   const handleBack = () => { if (step > 1) setStep(step - 1); };
   const reset = () => {
-    setStep(1); setClinic(""); setService(""); setDoctor("");
+    setStep(1); setClinicId(""); setServiceId(""); setDoctorId("");
     setDay(""); setSlot(""); setName(""); setPhone(""); setDone(false);
   };
 
-  const selectedDay = AVAILABLE_DAYS.find((d) => d.date === day);
-  const serviceOptions = clinic ? SERVICES[clinic] ?? [] : [];
-  const doctorOptions  = DOCTORS[service] ?? [];
+  const clinicLabel  = selectedBranch?.name || "";
+  const serviceLabel = selectedService?.title || "";
+  const doctorLabel  = selectedDoctor?.name || "";
 
   return (
     <section className="py-24 bg-white relative overflow-hidden">
-      {/* Subtle background blobs */}
       <div className="absolute top-0 left-1/3 w-[600px] h-[600px] rounded-full bg-indigo-100/50 blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-100/50 blur-[100px] pointer-events-none" />
 
@@ -193,11 +193,7 @@ export function BookingWizard() {
                         : isActive
                         ? "linear-gradient(135deg,#eef2ff,#ede9fe)"
                         : "#f8fafc",
-                      borderColor: isDone
-                        ? "transparent"
-                        : isActive
-                        ? "#818cf8"
-                        : "#e2e8f0",
+                      borderColor: isDone ? "transparent" : isActive ? "#818cf8" : "#e2e8f0",
                       scale: isActive ? 1.08 : 1,
                     }}
                     transition={{ duration: 0.3 }}
@@ -233,7 +229,6 @@ export function BookingWizard() {
 
           <AnimatePresence mode="wait">
             {done ? (
-              /* ── SUCCESS ── */
               <motion.div
                 key="success"
                 initial={{ opacity: 0, scale: 0.96 }}
@@ -252,13 +247,13 @@ export function BookingWizard() {
                 <h3 className="font-display text-3xl font-black text-slate-900 mb-2">Randevunuz Alındı!</h3>
                 <p className="text-slate-500 mb-6 text-sm leading-relaxed">
                   SMS ve e-posta onayı gönderildi.<br />
-                  <span className="text-slate-700 font-semibold">{name}</span> · <span className="text-indigo-600 font-semibold">{clinic}</span>
+                  <span className="text-slate-700 font-semibold">{name}</span> · <span className="text-indigo-600 font-semibold">{clinicLabel}</span>
                 </p>
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 text-left space-y-2.5 mb-6">
                   {[
-                    { l: "Klinik", v: clinic  },
-                    { l: "Hizmet", v: service },
-                    { l: "Doktor", v: doctor  },
+                    { l: "Klinik", v: clinicLabel },
+                    { l: "Hizmet", v: serviceLabel },
+                    { l: "Doktor", v: doctorLabel },
                     { l: "Tarih",  v: `${selectedDay?.label} – ${slot}` },
                   ].map((r) => (
                     <div key={r.l} className="flex justify-between text-sm">
@@ -282,80 +277,87 @@ export function BookingWizard() {
                 className="p-8"
               >
 
-                {/* ── STEP 1 ── */}
+                {/* ── STEP 1: KLİNİK ── */}
                 {step === 1 && (
                   <div className="space-y-4">
                     <StepHeader step={1} title="Klinik Seçin" sub="Size en yakın kliniği seçin" />
                     <Dropdown
                       placeholder="Klinik Seç"
-                      value={clinic}
-                      options={CLINICS}
-                      onChange={(v) => { setClinic(v); setService(""); setDoctor(""); }}
+                      value={clinicId}
+                      options={activeBranches.map(b => ({ label: b.name, value: b.id }))}
+                      onChange={(v) => { setClinicId(v); setServiceId(""); setDoctorId(""); }}
                     />
-                    {clinic && (
+                    {clinicLabel && (
                       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                         className="text-indigo-500 text-sm flex items-center gap-1.5 font-medium">
-                        <MapPin className="w-3.5 h-3.5" /> {clinic} seçildi
+                        <MapPin className="w-3.5 h-3.5" /> {clinicLabel} seçildi
                       </motion.p>
                     )}
                   </div>
                 )}
 
-                {/* ── STEP 2 ── */}
+                {/* ── STEP 2: HİZMET ── */}
                 {step === 2 && (
                   <div className="space-y-4">
-                    <StepHeader step={2} title="Hizmet Seçin" sub={`${clinic} · Mevcut hizmetler`} />
+                    <StepHeader step={2} title="Hizmet Seçin" sub={`${clinicLabel} · Mevcut hizmetler`} />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {serviceOptions.map((s) => (
-                        <button key={s} onClick={() => { setService(s); setDoctor(""); }}
+                      {activeServices.map((s) => (
+                        <button key={s.id} onClick={() => { setServiceId(s.id); setDoctorId(""); }}
                           className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left text-sm font-semibold transition-all ${
-                            service === s
+                            serviceId === s.id
                               ? "bg-indigo-50 border-indigo-300 text-indigo-700"
                               : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900"
                           }`}
                         >
-                          {service === s
+                          {serviceId === s.id
                             ? <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />
                             : <div className="w-4 h-4 rounded-full border border-slate-300 flex-shrink-0" />
                           }
-                          {s}
+                          {s.title}
                         </button>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* ── STEP 3 ── */}
+                {/* ── STEP 3: DOKTOR ── */}
                 {step === 3 && (
                   <div className="space-y-4">
-                    <StepHeader step={3} title="Doktor Seçin" sub={`${service} uzmanlarımız`} />
+                    <StepHeader step={3} title="Doktor Seçin" sub={`${serviceLabel} uzmanlarımız`} />
                     <div className="space-y-2">
-                      {doctorOptions.map((d) => (
-                        <button key={d} onClick={() => setDoctor(d)}
+                      {filteredDoctors.map((d) => (
+                        <button key={d.id} onClick={() => setDoctorId(d.id)}
                           className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl border text-left transition-all ${
-                            doctor === d
+                            doctorId === d.id
                               ? "bg-indigo-50 border-indigo-300"
                               : "bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300"
                           }`}
                         >
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 text-white font-black text-sm shadow-md">
-                            {d.split(" ").slice(-1)[0][0]}
-                          </div>
+                          {d.photo ? (
+                            <img src={d.photo} alt={d.name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
+                          ) : (
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 text-white font-black text-sm shadow-md">
+                              {d.name.split(" ").slice(-1)[0][0]}
+                            </div>
+                          )}
                           <div className="flex-1">
-                            <p className={`font-bold text-sm ${doctor === d ? "text-indigo-700" : "text-slate-800"}`}>{d}</p>
-                            <p className="text-slate-400 text-xs">{service}</p>
+                            <p className={`font-bold text-sm ${doctorId === d.id ? "text-indigo-700" : "text-slate-800"}`}>{d.name}</p>
+                            <p className="text-slate-400 text-xs">{d.specialty}</p>
                           </div>
-                          {doctor === d && <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />}
+                          {doctorId === d.id && <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />}
                         </button>
                       ))}
+                      {filteredDoctors.length === 0 && (
+                        <p className="text-slate-400 text-sm text-center py-6">Bu şubede doktor bulunamadı</p>
+                      )}
                     </div>
                   </div>
                 )}
 
-                {/* ── STEP 4 ── */}
+                {/* ── STEP 4: TARİH ── */}
                 {step === 4 && (
                   <div className="space-y-5">
-                    <StepHeader step={4} title="Tarih & Saat" sub={`${doctor} · Müsait günler`} />
+                    <StepHeader step={4} title="Tarih & Saat" sub={`${doctorLabel} · Müsait günler`} />
                     <div className="flex gap-2 overflow-x-auto pb-1">
                       {AVAILABLE_DAYS.map((d) => (
                         <button key={d.date} onClick={() => { setDay(d.date); setSlot(""); }}
@@ -391,15 +393,15 @@ export function BookingWizard() {
                   </div>
                 )}
 
-                {/* ── STEP 5 ── */}
+                {/* ── STEP 5: ONAYLA ── */}
                 {step === 5 && (
                   <div className="space-y-5">
                     <StepHeader step={5} title="Bilgileriniz" sub="Son adım — onaylayın" />
                     <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
                       {[
-                        { l: "Klinik", v: clinic  },
-                        { l: "Hizmet", v: service },
-                        { l: "Doktor", v: doctor  },
+                        { l: "Klinik", v: clinicLabel },
+                        { l: "Hizmet", v: serviceLabel },
+                        { l: "Doktor", v: doctorLabel },
                         { l: "Tarih",  v: `${selectedDay?.label} – ${slot}` },
                       ].map((r) => (
                         <div key={r.l} className="flex justify-between text-sm">
@@ -462,10 +464,9 @@ export function BookingWizard() {
           )}
         </div>
 
-        {/* Alt bilgi */}
         <p className="mt-6 text-center text-slate-400 text-xs">
           Telefonla randevu: &nbsp;
-          <a href="tel:+908501234567" className="text-indigo-500 hover:text-indigo-600 font-semibold transition-colors">
+          <a href="tel:+908501234567" title="Hemen ara: 0850 123 45 67" className="text-indigo-500 hover:text-indigo-600 font-semibold transition-colors">
             0850 123 45 67
           </a>
           &nbsp;· Pzt – Cmt 09:00–20:00
