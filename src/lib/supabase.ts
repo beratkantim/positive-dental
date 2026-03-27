@@ -39,6 +39,25 @@ export interface TreatmentCategory {
   created_at: string;
 }
 
+export interface Treatment {
+  id: string;
+  category_id: string | null;
+  title: string;
+  title_en: string;
+  price: number;
+  discount_rate: number;
+  cost: number;
+  currency: string;
+  tooth_type: number | null;
+  duration_minutes: number;
+  exam_type: number | null;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  // joined
+  category?: TreatmentCategory;
+}
+
 export interface Service {
   id: string;
   title: string;
