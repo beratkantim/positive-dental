@@ -17,7 +17,6 @@
     { "source": "/sitemap-blog.xml", "destination": "/api/sitemap-blog.xml" },
     { "source": "/sitemap-services.xml", "destination": "/api/sitemap-services.xml" },
     { "source": "/robots.txt", "destination": "/api/robots.txt" },
-    { "source": "/api/(.*)", "destination": "/api/$1" },
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/admin/(.*)", "destination": "/index.html" },
     { "source": "/assets/(.*)", "destination": "/assets/$1" },
