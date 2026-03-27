@@ -63,16 +63,25 @@ export function Footer() {
     });
   }, []);
 
-  let quickLinks: { to: string; label: string }[] = [];
-  let serviceList: string[] = [];
-  try { quickLinks = JSON.parse(vals.footer_links); } catch { quickLinks = JSON.parse(FALLBACK.footer_links); }
-  try { serviceList = JSON.parse(vals.footer_services); } catch { serviceList = JSON.parse(FALLBACK.footer_services); }
+  // Dinamik sütunlar (footer_columns) veya eski format (footer_links + footer_services)
+  let footerColumns: { title: string; items: { label: string; url: string }[] }[] = [];
+  try {
+    const parsed = JSON.parse(vals["footer_columns"] || "");
+    if (Array.isArray(parsed) && parsed.length > 0) footerColumns = parsed;
+  } catch { /* fallback */ }
 
-  const socials = Object.entries(ICON_MAP)
-    .map(([key, { Icon, bg }]) => ({ Icon, href: vals[key] || "#", label: key, bg }))
-    .filter(s => s.href && s.href !== "#" && s.href.trim() !== "");
+  // Fallback: eski yapıdan oku
+  if (footerColumns.length === 0) {
+    let quickLinks: { to: string; label: string }[] = [];
+    let serviceList: string[] = [];
+    try { quickLinks = JSON.parse(vals.footer_links); } catch { quickLinks = JSON.parse(FALLBACK.footer_links); }
+    try { serviceList = JSON.parse(vals.footer_services); } catch { serviceList = JSON.parse(FALLBACK.footer_services); }
+    footerColumns = [
+      { title: "Hızlı Erişim", items: quickLinks.map(l => ({ label: l.label, url: l.to })) },
+      { title: "Hizmetlerimiz", items: serviceList.map(s => ({ label: s, url: "/hizmetlerimiz" })) },
+    ];
+  }
 
-  // "#" olan sosyal medyaları da göster (placeholder)
   const allSocials = Object.entries(ICON_MAP).map(([key, { Icon, bg }]) => ({
     Icon, href: vals[key] || "#", label: key.replace("social_", ""), bg,
   }));
@@ -80,7 +89,7 @@ export function Footer() {
   return (
     <footer className="bg-[#0D1235] text-blue-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${Math.min(footerColumns.length + 2, 5)} gap-10`}>
 
           {/* About */}
           <div>
@@ -104,29 +113,25 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Hızlı Erişim</h3>
-            <ul className="space-y-2.5">
-              {quickLinks.map(item => (
-                <li key={item.to}>
-                  <Link to={item.to} className="text-sm text-blue-300 hover:text-white transition-colors hover:translate-x-1 inline-block">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h3 className="text-white font-semibold mb-4">Hizmetlerimiz</h3>
-            <ul className="space-y-2.5">
-              {serviceList.map(service => (
-                <li key={service} className="text-sm text-blue-300">{service}</li>
-              ))}
-            </ul>
-          </div>
+          {/* Dinamik sütunlar */}
+          {footerColumns.map((col, i) => (
+            <div key={i}>
+              <h3 className="text-white font-semibold mb-4">{col.title}</h3>
+              <ul className="space-y-2.5">
+                {col.items.map((item, j) => (
+                  <li key={j}>
+                    {item.url && item.url !== "#" ? (
+                      <Link to={item.url} className="text-sm text-blue-300 hover:text-white transition-colors hover:translate-x-1 inline-block">
+                        {item.label}
+                      </Link>
+                    ) : (
+                      <span className="text-sm text-blue-300">{item.label}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
 
           {/* Contact */}
           <div>

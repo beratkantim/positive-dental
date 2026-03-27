@@ -1,35 +1,99 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase, Card, LoadingSpinner, FormField, type SiteSetting } from "./shared";
 
-interface FooterLink { to: string; label: string; }
+interface FooterItem { label: string; url: string; }
+interface FooterColumn { title: string; type: "links" | "text" | "contact" | "social"; items: FooterItem[]; }
+
+// site_settings'ten gelen diğer alanlar
+interface FooterMeta {
+  slogan: string;
+  about: string;
+  copyright: string;
+  phone: string;
+  email: string;
+  hours: string;
+  hours_note: string;
+  socials: Record<string, string>;
+}
+
+const DEFAULT_COLUMNS: FooterColumn[] = [
+  {
+    title: "Hızlı Erişim",
+    type: "links",
+    items: [
+      { label: "Ana Sayfa", url: "/" },
+      { label: "Hizmetlerimiz", url: "/hizmetlerimiz" },
+      { label: "Fiyat Listesi", url: "/fiyat-listesi" },
+      { label: "Hakkımızda", url: "/hakkimizda" },
+      { label: "Kliniklerimiz", url: "/kliniklerimiz" },
+      { label: "Blog", url: "/blog" },
+      { label: "İletişim", url: "/iletisim" },
+    ],
+  },
+  {
+    title: "Hizmetlerimiz",
+    type: "links",
+    items: [
+      { label: "Genel Diş Hekimliği", url: "/hizmetlerimiz" },
+      { label: "İmplant Tedavisi", url: "/hizmetlerimiz" },
+      { label: "Estetik Diş Hekimliği", url: "/hizmetlerimiz" },
+      { label: "Ortodonti", url: "/hizmetlerimiz" },
+      { label: "Çocuk Diş Hekimliği", url: "/cocuk-dis-hekimligi" },
+    ],
+  },
+];
+
+const SOCIAL_KEYS = ["social_facebook", "social_x", "social_youtube", "social_instagram", "social_linkedin", "social_whatsapp"];
+const SOCIAL_LABELS: Record<string, string> = {
+  social_facebook: "Facebook", social_x: "X (Twitter)", social_youtube: "YouTube",
+  social_instagram: "Instagram", social_linkedin: "LinkedIn", social_whatsapp: "WhatsApp",
+};
 
 export function FooterSection() {
-  const [settings, setSettings] = useState<SiteSetting[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [values, setValues] = useState<Record<string, string>>({});
+  const [columns, setColumns] = useState<FooterColumn[]>(DEFAULT_COLUMNS);
+  const [meta, setMeta] = useState<FooterMeta>({
+    slogan: "Where positivity begins", about: "", copyright: "© 2026 Positive Dental Studio. Tüm hakları saklıdır.",
+    phone: "0850 123 45 67", email: "info@positivedental.com", hours: "Pzt – Cmt: 09:00 – 20:00", hours_note: "Cumartesi: 09:00 – 18:00",
+    socials: {},
+  });
 
-  // Link yönetimi
-  const [links, setLinks] = useState<FooterLink[]>([]);
-  const [services, setServices] = useState<string[]>([]);
-  const [newLinkTo, setNewLinkTo] = useState("");
-  const [newLinkLabel, setNewLinkLabel] = useState("");
-  const [newService, setNewService] = useState("");
+  // Düzenleme
+  const [editCol, setEditCol] = useState<number | null>(null);
+  const [editItem, setEditItem] = useState<{ col: number; idx: number } | null>(null);
+  const [newItemLabel, setNewItemLabel] = useState("");
+  const [newItemUrl, setNewItemUrl] = useState("");
+  const [newColTitle, setNewColTitle] = useState("");
+
+  // Sürükle-bırak
+  const dragCol = useRef<number | null>(null);
+  const dragItem = useRef<{ col: number; idx: number } | null>(null);
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await supabase.from("site_settings").select("*")
-        .in("group_name", ["footer", "footer_social"])
-        .order("group_name");
+      const { data } = await supabase.from("site_settings").select("*").in("group_name", ["footer", "footer_social"]);
       const items = data || [];
-      setSettings(items);
       const vals: Record<string, string> = {};
       items.forEach(s => { vals[s.key] = s.value; });
-      setValues(vals);
 
-      // Links & services parse
-      try { setLinks(JSON.parse(vals["footer_links"] || "[]")); } catch { setLinks([]); }
-      try { setServices(JSON.parse(vals["footer_services"] || "[]")); } catch { setServices([]); }
+      // Columns
+      try {
+        const parsed = JSON.parse(vals["footer_columns"] || "");
+        if (Array.isArray(parsed) && parsed.length > 0) setColumns(parsed);
+      } catch { /* fallback */ }
+
+      // Meta
+      setMeta({
+        slogan: vals["footer_slogan"] || meta.slogan,
+        about: vals["footer_about"] || "",
+        copyright: vals["footer_copyright"] || meta.copyright,
+        phone: vals["footer_phone"] || meta.phone,
+        email: vals["footer_email"] || meta.email,
+        hours: vals["footer_hours"] || meta.hours,
+        hours_note: vals["footer_hours_note"] || meta.hours_note,
+        socials: Object.fromEntries(SOCIAL_KEYS.map(k => [k, vals[k] || "#"])),
+      });
 
       setLoading(false);
     };
@@ -38,48 +102,101 @@ export function FooterSection() {
 
   const saveAll = async () => {
     setSaving(true);
-    // Links ve services'i JSON olarak güncelle
-    const finalValues = {
-      ...values,
-      footer_links: JSON.stringify(links),
-      footer_services: JSON.stringify(services),
+    const updates: Record<string, string> = {
+      footer_columns: JSON.stringify(columns),
+      footer_slogan: meta.slogan,
+      footer_about: meta.about,
+      footer_copyright: meta.copyright,
+      footer_phone: meta.phone,
+      footer_email: meta.email,
+      footer_hours: meta.hours,
+      footer_hours_note: meta.hours_note,
+      ...meta.socials,
     };
-    for (const key of Object.keys(finalValues)) {
-      await supabase.from("site_settings").update({ value: finalValues[key] }).eq("key", key);
+
+    // footer_columns yoksa ekle
+    const { data: existing } = await supabase.from("site_settings").select("key").eq("key", "footer_columns");
+    if (!existing || existing.length === 0) {
+      await supabase.from("site_settings").insert({ key: "footer_columns", value: JSON.stringify(columns), label: "Footer Sütunları", type: "json", group_name: "footer" });
+    }
+
+    for (const [key, value] of Object.entries(updates)) {
+      await supabase.from("site_settings").update({ value }).eq("key", key);
     }
     setSaving(false);
-    alert("Footer ayarları kaydedildi!");
+    alert("Footer kaydedildi!");
   };
 
-  const addLink = () => {
-    if (!newLinkTo || !newLinkLabel) return;
-    setLinks([...links, { to: newLinkTo, label: newLinkLabel }]);
-    setNewLinkTo("");
-    setNewLinkLabel("");
+  // ── Sütun işlemleri
+  const addColumn = () => {
+    if (!newColTitle.trim()) return;
+    setColumns([...columns, { title: newColTitle.trim(), type: "links", items: [] }]);
+    setNewColTitle("");
+  };
+  const removeColumn = (i: number) => {
+    if (!confirm(`"${columns[i].title}" sütunu silinecek. Emin misiniz?`)) return;
+    setColumns(columns.filter((_, idx) => idx !== i));
+  };
+  const moveColumn = (from: number, to: number) => {
+    if (to < 0 || to >= columns.length) return;
+    const n = [...columns];
+    [n[from], n[to]] = [n[to], n[from]];
+    setColumns(n);
   };
 
-  const removeLink = (i: number) => setLinks(links.filter((_, idx) => idx !== i));
-
-  const addService = () => {
-    if (!newService.trim()) return;
-    setServices([...services, newService.trim()]);
-    setNewService("");
+  // ── Öğe işlemleri
+  const addItem = (colIdx: number) => {
+    if (!newItemLabel.trim()) return;
+    const n = [...columns];
+    n[colIdx].items.push({ label: newItemLabel.trim(), url: newItemUrl.trim() || "#" });
+    setColumns(n);
+    setNewItemLabel("");
+    setNewItemUrl("");
+  };
+  const removeItem = (colIdx: number, itemIdx: number) => {
+    const n = [...columns];
+    n[colIdx].items.splice(itemIdx, 1);
+    setColumns(n);
+  };
+  const moveItem = (colIdx: number, from: number, to: number) => {
+    if (to < 0 || to >= columns[colIdx].items.length) return;
+    const n = [...columns];
+    [n[colIdx].items[from], n[colIdx].items[to]] = [n[colIdx].items[to], n[colIdx].items[from]];
+    setColumns(n);
   };
 
-  const removeService = (i: number) => setServices(services.filter((_, idx) => idx !== i));
+  // Sürükle-bırak sütun
+  const onDragStartCol = (i: number) => { dragCol.current = i; };
+  const onDropCol = (i: number) => {
+    if (dragCol.current === null || dragCol.current === i) return;
+    moveColumn(dragCol.current, i);
+    dragCol.current = null;
+  };
+
+  // Sürükle-bırak öğe
+  const onDragStartItem = (col: number, idx: number) => { dragItem.current = { col, idx }; };
+  const onDropItem = (col: number, idx: number) => {
+    if (!dragItem.current || (dragItem.current.col === col && dragItem.current.idx === idx)) return;
+    if (dragItem.current.col === col) {
+      moveItem(col, dragItem.current.idx, idx);
+    } else {
+      // Sütunlar arası taşıma
+      const n = [...columns];
+      const [moved] = n[dragItem.current.col].items.splice(dragItem.current.idx, 1);
+      n[col].items.splice(idx, 0, moved);
+      setColumns(n);
+    }
+    dragItem.current = null;
+  };
 
   if (loading) return <LoadingSpinner />;
-
-  // Grupla
-  const footerSettings = settings.filter(s => s.group_name === "footer" && s.type !== "json");
-  const socialSettings = settings.filter(s => s.group_name === "footer_social");
 
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-black text-gray-900">Footer Yönetimi</h1>
-          <p className="text-gray-500 text-sm mt-0.5">Alt bilgi alanını düzenleyin</p>
+          <p className="text-gray-500 text-sm mt-0.5">Sütunları sürükleyerek sıralayın, öğe ekleyin/çıkarın</p>
         </div>
         <button onClick={saveAll} disabled={saving}
           className="px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold rounded-xl text-sm hover:from-indigo-400 hover:to-violet-500 transition disabled:opacity-60">
@@ -87,128 +204,188 @@ export function FooterSection() {
         </button>
       </div>
 
-      {/* Genel Footer Ayarları */}
+      {/* ── GENEL BİLGİLER ── */}
       <Card className="p-5">
         <h3 className="font-bold text-gray-900 mb-4">Genel Bilgiler</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {footerSettings.map(s => (
-            <div key={s.key} className={s.type === "textarea" ? "md:col-span-2" : ""}>
-              <FormField
-                label={s.label}
-                value={values[s.key] || ""}
-                onChange={v => setValues(prev => ({ ...prev, [s.key]: v }))}
-                multiline={s.type === "textarea"}
-              />
-            </div>
-          ))}
+          <FormField label="Slogan" value={meta.slogan} onChange={v => setMeta(m => ({ ...m, slogan: v }))} />
+          <FormField label="Copyright" value={meta.copyright} onChange={v => setMeta(m => ({ ...m, copyright: v }))} />
+          <div className="md:col-span-2">
+            <FormField label="Açıklama" value={meta.about} onChange={v => setMeta(m => ({ ...m, about: v }))} multiline />
+          </div>
+          <FormField label="Telefon" value={meta.phone} onChange={v => setMeta(m => ({ ...m, phone: v }))} />
+          <FormField label="Email" value={meta.email} onChange={v => setMeta(m => ({ ...m, email: v }))} />
+          <FormField label="Çalışma Saatleri" value={meta.hours} onChange={v => setMeta(m => ({ ...m, hours: v }))} />
+          <FormField label="Çalışma Saatleri Notu" value={meta.hours_note} onChange={v => setMeta(m => ({ ...m, hours_note: v }))} />
         </div>
       </Card>
 
-      {/* Sosyal Medya Linkleri */}
+      {/* ── SOSYAL MEDYA ── */}
       <Card className="p-5">
-        <h3 className="font-bold text-gray-900 mb-4">Sosyal Medya Linkleri</h3>
+        <h3 className="font-bold text-gray-900 mb-4">Sosyal Medya</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {socialSettings.map(s => (
-            <FormField
-              key={s.key}
-              label={s.label}
-              value={values[s.key] || ""}
-              onChange={v => setValues(prev => ({ ...prev, [s.key]: v }))}
-            />
+          {SOCIAL_KEYS.map(k => (
+            <FormField key={k} label={SOCIAL_LABELS[k]} value={meta.socials[k] || ""}
+              onChange={v => setMeta(m => ({ ...m, socials: { ...m.socials, [k]: v } }))} />
           ))}
         </div>
       </Card>
 
-      {/* Hızlı Erişim Linkleri */}
+      {/* ── SÜTUNLAR (Sürükle-Bırak) ── */}
       <Card className="p-5">
-        <h3 className="font-bold text-gray-900 mb-4">Hızlı Erişim Linkleri</h3>
-        <div className="space-y-2 mb-4">
-          {links.map((link, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-              <span className="text-sm font-mono text-gray-500 flex-shrink-0 w-40 truncate">{link.to}</span>
-              <span className="text-sm font-semibold text-gray-900 flex-1">{link.label}</span>
-              <div className="flex gap-1">
-                {i > 0 && (
-                  <button onClick={() => { const n = [...links]; [n[i-1], n[i]] = [n[i], n[i-1]]; setLinks(n); }}
-                    className="px-2 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded">↑</button>
-                )}
-                {i < links.length - 1 && (
-                  <button onClick={() => { const n = [...links]; [n[i], n[i+1]] = [n[i+1], n[i]]; setLinks(n); }}
-                    className="px-2 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded">↓</button>
-                )}
-                <button onClick={() => removeLink(i)}
-                  className="px-2 py-1 text-xs text-red-500 hover:bg-red-50 rounded">Sil</button>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-bold text-gray-900">Footer Sütunları</h3>
+          <span className="text-xs text-gray-400">Sürükleyerek sıralayın</span>
+        </div>
+
+        <div className="space-y-4">
+          {columns.map((col, colIdx) => (
+            <div
+              key={colIdx}
+              draggable
+              onDragStart={() => onDragStartCol(colIdx)}
+              onDragOver={e => e.preventDefault()}
+              onDrop={() => onDropCol(colIdx)}
+              className="border border-gray-200 rounded-2xl overflow-hidden bg-white hover:border-indigo-200 transition-colors"
+            >
+              {/* Sütun başlığı */}
+              <div className="flex items-center gap-3 p-4 bg-gray-50 cursor-grab active:cursor-grabbing">
+                <span className="text-gray-400 text-lg cursor-grab">⠿</span>
+                <div className="flex-1">
+                  {editCol === colIdx ? (
+                    <input
+                      autoFocus
+                      value={col.title}
+                      onChange={e => { const n = [...columns]; n[colIdx].title = e.target.value; setColumns(n); }}
+                      onBlur={() => setEditCol(null)}
+                      onKeyDown={e => { if (e.key === "Enter") setEditCol(null); }}
+                      className="px-2 py-1 rounded-lg border border-indigo-300 text-sm font-bold focus:outline-none"
+                    />
+                  ) : (
+                    <span className="font-bold text-gray-900 text-sm">{col.title}</span>
+                  )}
+                  <span className="ml-2 text-xs text-gray-400">{col.items.length} öğe</span>
+                </div>
+                <div className="flex gap-1">
+                  <button onClick={() => setEditCol(colIdx)}
+                    className="px-2 py-1 text-xs text-indigo-600 hover:bg-indigo-50 rounded">Adı Düzenle</button>
+                  <button onClick={() => moveColumn(colIdx, colIdx - 1)} disabled={colIdx === 0}
+                    className="px-2 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded disabled:opacity-30">←</button>
+                  <button onClick={() => moveColumn(colIdx, colIdx + 1)} disabled={colIdx === columns.length - 1}
+                    className="px-2 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded disabled:opacity-30">→</button>
+                  <button onClick={() => removeColumn(colIdx)}
+                    className="px-2 py-1 text-xs text-red-500 hover:bg-red-50 rounded">Sil</button>
+                </div>
+              </div>
+
+              {/* Öğeler */}
+              <div className="p-3 space-y-1">
+                {col.items.map((item, itemIdx) => (
+                  <div
+                    key={itemIdx}
+                    draggable
+                    onDragStart={e => { e.stopPropagation(); onDragStartItem(colIdx, itemIdx); }}
+                    onDragOver={e => { e.preventDefault(); e.stopPropagation(); }}
+                    onDrop={e => { e.stopPropagation(); onDropItem(colIdx, itemIdx); }}
+                    className="flex items-center gap-2 p-2.5 bg-gray-50 rounded-xl hover:bg-indigo-50 transition-colors cursor-grab active:cursor-grabbing group"
+                  >
+                    <span className="text-gray-300 text-sm cursor-grab group-hover:text-indigo-400">⠿</span>
+                    <span className="text-sm font-medium text-gray-900 flex-1">{item.label}</span>
+                    <span className="text-xs text-gray-400 font-mono truncate max-w-32">{item.url}</span>
+                    <button onClick={() => {
+                      setEditItem({ col: colIdx, idx: itemIdx });
+                      setNewItemLabel(item.label);
+                      setNewItemUrl(item.url);
+                    }} className="px-1.5 py-0.5 text-xs text-indigo-500 hover:bg-indigo-100 rounded opacity-0 group-hover:opacity-100">✎</button>
+                    <button onClick={() => removeItem(colIdx, itemIdx)}
+                      className="px-1.5 py-0.5 text-xs text-red-400 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100">✕</button>
+                  </div>
+                ))}
+
+                {/* Yeni öğe ekle */}
+                <div className="flex gap-2 pt-2">
+                  <input value={editItem?.col === colIdx ? newItemLabel : (editItem ? "" : newItemLabel)}
+                    onChange={e => setNewItemLabel(e.target.value)} placeholder="Etiket"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 text-xs focus:border-indigo-400 outline-none" />
+                  <input value={editItem?.col === colIdx ? newItemUrl : (editItem ? "" : newItemUrl)}
+                    onChange={e => setNewItemUrl(e.target.value)} placeholder="URL"
+                    className="flex-1 px-2.5 py-1.5 rounded-lg border border-gray-200 text-xs font-mono focus:border-indigo-400 outline-none"
+                    onKeyDown={e => {
+                      if (e.key === "Enter") {
+                        if (editItem && editItem.col === colIdx) {
+                          const n = [...columns];
+                          n[editItem.col].items[editItem.idx] = { label: newItemLabel, url: newItemUrl };
+                          setColumns(n);
+                          setEditItem(null);
+                          setNewItemLabel("");
+                          setNewItemUrl("");
+                        } else {
+                          addItem(colIdx);
+                        }
+                      }
+                    }} />
+                  <button onClick={() => {
+                    if (editItem && editItem.col === colIdx) {
+                      const n = [...columns];
+                      n[editItem.col].items[editItem.idx] = { label: newItemLabel, url: newItemUrl };
+                      setColumns(n);
+                      setEditItem(null);
+                      setNewItemLabel("");
+                      setNewItemUrl("");
+                    } else {
+                      addItem(colIdx);
+                    }
+                  }} className="px-3 py-1.5 bg-indigo-500 text-white font-bold rounded-lg text-xs hover:bg-indigo-400 transition">
+                    {editItem?.col === colIdx ? "Güncelle" : "Ekle"}
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
-        <div className="flex gap-2">
-          <input value={newLinkTo} onChange={e => setNewLinkTo(e.target.value)} placeholder="URL (ör: /blog)"
-            className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none" />
-          <input value={newLinkLabel} onChange={e => setNewLinkLabel(e.target.value)} placeholder="Etiket (ör: Blog)"
+
+        {/* Yeni sütun ekle */}
+        <div className="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+          <input value={newColTitle} onChange={e => setNewColTitle(e.target.value)} placeholder="Yeni sütun başlığı..."
             className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none"
-            onKeyDown={e => { if (e.key === "Enter") addLink(); }} />
-          <button onClick={addLink} className="px-4 py-2 bg-indigo-500 text-white font-bold rounded-xl text-sm hover:bg-indigo-400 transition">Ekle</button>
+            onKeyDown={e => { if (e.key === "Enter") addColumn(); }} />
+          <button onClick={addColumn}
+            className="px-4 py-2 bg-indigo-500 text-white font-bold rounded-xl text-sm hover:bg-indigo-400 transition">
+            + Sütun Ekle
+          </button>
         </div>
       </Card>
 
-      {/* Hizmet Listesi */}
-      <Card className="p-5">
-        <h3 className="font-bold text-gray-900 mb-4">Footer Hizmet Listesi</h3>
-        <div className="space-y-2 mb-4">
-          {services.map((s, i) => (
-            <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-              <span className="text-sm font-semibold text-gray-900">{s}</span>
-              <div className="flex gap-1">
-                {i > 0 && (
-                  <button onClick={() => { const n = [...services]; [n[i-1], n[i]] = [n[i], n[i-1]]; setServices(n); }}
-                    className="px-2 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded">↑</button>
-                )}
-                {i < services.length - 1 && (
-                  <button onClick={() => { const n = [...services]; [n[i], n[i+1]] = [n[i+1], n[i]]; setServices(n); }}
-                    className="px-2 py-1 text-xs text-gray-500 hover:bg-gray-200 rounded">↓</button>
-                )}
-                <button onClick={() => removeService(i)}
-                  className="px-2 py-1 text-xs text-red-500 hover:bg-red-50 rounded">Sil</button>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input value={newService} onChange={e => setNewService(e.target.value)} placeholder="Hizmet adı..."
-            className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none"
-            onKeyDown={e => { if (e.key === "Enter") addService(); }} />
-          <button onClick={addService} className="px-4 py-2 bg-indigo-500 text-white font-bold rounded-xl text-sm hover:bg-indigo-400 transition">Ekle</button>
-        </div>
-      </Card>
-
-      {/* Önizleme */}
-      <Card className="p-5 bg-[#0D1235] text-white">
+      {/* ── ÖNİZLEME ── */}
+      <Card className="p-5 bg-[#0D1235]">
         <h3 className="font-bold text-white mb-4">Önizleme</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
+        <div className={`grid gap-6 text-sm`} style={{ gridTemplateColumns: `1fr repeat(${columns.length}, 1fr)` }}>
+          {/* About sütunu */}
           <div>
-            <p className="text-white font-medium">{values["footer_slogan"]}</p>
-            <p className="text-blue-300 mt-1 text-xs">{values["footer_about"]?.slice(0, 80)}...</p>
+            <p className="text-white font-medium text-xs">{meta.slogan}</p>
+            <p className="text-blue-300 mt-1 text-xs leading-relaxed">{meta.about?.slice(0, 100)}{meta.about?.length > 100 ? "..." : ""}</p>
+            <div className="flex gap-1 mt-2">
+              {SOCIAL_KEYS.filter(k => meta.socials[k] && meta.socials[k] !== "#").map(k => (
+                <span key={k} className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[8px] text-white">
+                  {SOCIAL_LABELS[k][0]}
+                </span>
+              ))}
+            </div>
           </div>
-          <div>
-            <p className="text-white font-semibold mb-2">Hızlı Erişim</p>
-            {links.slice(0, 5).map((l, i) => (
-              <p key={i} className="text-blue-300 text-xs">{l.label}</p>
-            ))}
-            {links.length > 5 && <p className="text-blue-400 text-xs">+{links.length - 5} daha</p>}
-          </div>
-          <div>
-            <p className="text-white font-semibold mb-2">Hizmetler</p>
-            {services.map((s, i) => (
-              <p key={i} className="text-blue-300 text-xs">{s}</p>
-            ))}
-          </div>
-          <div>
-            <p className="text-white font-semibold mb-2">İletişim</p>
-            <p className="text-blue-300 text-xs">{values["footer_phone"]}</p>
-            <p className="text-blue-300 text-xs">{values["footer_email"]}</p>
-            <p className="text-blue-300 text-xs">{values["footer_hours"]}</p>
-          </div>
+          {/* Dinamik sütunlar */}
+          {columns.map((col, i) => (
+            <div key={i}>
+              <p className="text-white font-semibold text-xs mb-2">{col.title}</p>
+              {col.items.slice(0, 6).map((item, j) => (
+                <p key={j} className="text-blue-300 text-xs">{item.label}</p>
+              ))}
+              {col.items.length > 6 && <p className="text-blue-400 text-xs">+{col.items.length - 6} daha</p>}
+            </div>
+          ))}
+        </div>
+        <div className="border-t border-white/10 mt-4 pt-3 flex justify-between text-xs">
+          <span className="text-slate-500">{meta.copyright}</span>
+          <span className="text-blue-300">{meta.phone} · {meta.email}</span>
         </div>
       </Card>
     </div>
