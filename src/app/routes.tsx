@@ -4,6 +4,8 @@ import { Layout } from "./components/Layout";
 
 // Sadece Home eager yüklenir (ilk sayfa), diğerleri lazy
 import { Home } from "./pages/Home";
+import { NotFound } from "./pages/NotFound";
+import { ErrorPage } from "./pages/ErrorPage";
 
 // Retry wrapper: deploy sonrası eski chunk hash'leri cache'te kalırsa otomatik reload
 function lazyRetry<T extends React.ComponentType<any>>(
@@ -53,24 +55,27 @@ export const router = createBrowserRouter([
   {
     path: "/admin",
     element: <SuspenseWrap><AdminPanel /></SuspenseWrap>,
+    errorElement: <ErrorPage />,
   },
   {
     path: "/",
     Component: Layout,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, Component: Home },
-      { path: "hizmetlerimiz",    element: <SuspenseWrap><Services /></SuspenseWrap> },
-      { path: "hakkimizda",       element: <SuspenseWrap><About /></SuspenseWrap> },
-      { path: "kliniklerimiz",   element: <SuspenseWrap><Locations /></SuspenseWrap> },
-      { path: "iletisim",     element: <SuspenseWrap><Contact /></SuspenseWrap> },
-      { path: "cocuk-dis-hekimligi",        element: <SuspenseWrap><Kids /></SuspenseWrap> },
-      { path: "blog",        element: <SuspenseWrap><Blog /></SuspenseWrap> },
-      { path: "blog/:slug",  element: <SuspenseWrap><BlogPost /></SuspenseWrap> },
-      { path: "anlasmali-kurumlar",    element: <SuspenseWrap><Partners /></SuspenseWrap> },
-      { path: "anlasmali-sigortalar",   element: <SuspenseWrap><Insurance /></SuspenseWrap> },
-      { path: "fiyat-listesi",      element: <SuspenseWrap><PriceList /></SuspenseWrap> },
-      { path: "doktorlarimiz",     element: <SuspenseWrap><Doctors /></SuspenseWrap> },
-      { path: "randevu",     element: <SuspenseWrap><Appointment /></SuspenseWrap> },
+      { path: "hizmetlerimiz",       element: <SuspenseWrap><Services /></SuspenseWrap> },
+      { path: "hakkimizda",          element: <SuspenseWrap><About /></SuspenseWrap> },
+      { path: "kliniklerimiz",       element: <SuspenseWrap><Locations /></SuspenseWrap> },
+      { path: "iletisim",            element: <SuspenseWrap><Contact /></SuspenseWrap> },
+      { path: "cocuk-dis-hekimligi", element: <SuspenseWrap><Kids /></SuspenseWrap> },
+      { path: "blog",                element: <SuspenseWrap><Blog /></SuspenseWrap> },
+      { path: "blog/:slug",          element: <SuspenseWrap><BlogPost /></SuspenseWrap> },
+      { path: "anlasmali-kurumlar",  element: <SuspenseWrap><Partners /></SuspenseWrap> },
+      { path: "anlasmali-sigortalar",element: <SuspenseWrap><Insurance /></SuspenseWrap> },
+      { path: "fiyat-listesi",       element: <SuspenseWrap><PriceList /></SuspenseWrap> },
+      { path: "doktorlarimiz",       element: <SuspenseWrap><Doctors /></SuspenseWrap> },
+      { path: "randevu",             element: <SuspenseWrap><Appointment /></SuspenseWrap> },
+      { path: "*",                   Component: NotFound },
     ],
   },
 ]);
