@@ -133,25 +133,32 @@ export function BookingWizard() {
   const selectedDay     = AVAILABLE_DAYS.find(d => d.date === day);
 
   // Filtered options — doctors filtered by selected branch
-  const branchSlug = selectedBranch?.slug;
+  const branchSlug = selectedBranch?.slug || "";
   const branchName = selectedBranch?.name || "";
-  const branchCity = selectedBranch?.city || "";
+  const branchCity = selectedBranch?.city?.toLowerCase() || "";
+
+  // Şube slug'ından kısa tanımlayıcı çıkar: "istanbul-nisantasi" → "istanbul", "adana-turkmenbasi" → "adana"
+  const branchShort = branchSlug.split("-")[0] || "";
+
   const matchedDoctors = clinicId
     ? activeDoctors.filter(d => {
-        // Try every possible match
-        if (d.branch === branchSlug) return true;
-        if (d.branch === clinicId) return true;
-        if (d.branches?.includes(clinicId)) return true;
-        if (d.branches?.includes(branchSlug || "")) return true;
+        // branches array'inde kısa isim var mı ("adana", "istanbul")
+        if (d.branches?.includes(branchShort)) return true;
+        // branch alanında kısa isim var mı
+        if (d.branch === branchShort) return true;
+        // branches array'inde tam slug var mı
+        if (d.branches?.includes(branchSlug)) return true;
+        // branch_label veya branches_labels'da şube adı var mı
         if (d.branch_label === branchName) return true;
-        if (d.branches_labels?.some(l => l === branchName)) return true;
-        // Partial match on city name
-        if (branchCity && d.branch_label?.toLowerCase().includes(branchCity.toLowerCase())) return true;
-        if (branchName && d.branch_label?.toLowerCase().includes(branchName.split(" ")[0]?.toLowerCase())) return true;
+        if (d.branches_labels?.includes(branchName)) return true;
+        // Şehir ismiyle eşleşme
+        if (branchCity && d.branch_label?.toLowerCase().includes(branchCity)) return true;
+        if (branchCity && d.branches_labels?.some(l => l.toLowerCase().includes(branchCity))) return true;
         return false;
       })
     : activeDoctors;
-  // Fallback: if filter returns empty, show all doctors
+
+  // Fallback: filtre boş dönerse tüm doktorları göster
   const filteredDoctors = matchedDoctors.length > 0 ? matchedDoctors : activeDoctors;
 
   const canNext = () => {
