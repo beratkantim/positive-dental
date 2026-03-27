@@ -1,17 +1,18 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+export const config = { runtime: "edge" };
 
-const SITE_URL = "https://positivedental.com";
-
-export default function handler(_req: VercelRequest, res: VercelResponse) {
+export default function handler() {
   const txt = `User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: ${SITE_URL}/sitemap_29471.xml
+Sitemap: https://positivedental.com/sitemap_29471.xml
 `;
 
-  res.setHeader("Content-Type", "text/plain; charset=utf-8");
-  res.setHeader("Cache-Control", "public, s-maxage=86400");
-  res.status(200).send(txt);
+  return new Response(txt, {
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "public, s-maxage=86400",
+    },
+  });
 }

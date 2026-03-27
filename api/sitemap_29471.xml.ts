@@ -1,10 +1,9 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { SITE_URL, xmlHeader } from "./_supabase";
+import { SITE_URL } from "./_supabase";
 
-export default function handler(_req: VercelRequest, res: VercelResponse) {
+export default function handler() {
   const today = new Date().toISOString().split("T")[0];
 
-  const xml = `${xmlHeader()}
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>${SITE_URL}/sitemap-static.xml</loc>
@@ -20,7 +19,10 @@ export default function handler(_req: VercelRequest, res: VercelResponse) {
   </sitemap>
 </sitemapindex>`;
 
-  res.setHeader("Content-Type", "application/xml; charset=utf-8");
-  res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
-  res.status(200).send(xml);
+  return new Response(xml, {
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+    },
+  });
 }

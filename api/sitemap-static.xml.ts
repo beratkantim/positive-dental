@@ -1,5 +1,4 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { SITE_URL, xmlHeader } from "./_supabase";
+import { SITE_URL } from "./_supabase";
 
 const STATIC_PAGES = [
   { path: "/", priority: "1.0", changefreq: "daily" },
@@ -16,7 +15,7 @@ const STATIC_PAGES = [
   { path: "/randevu", priority: "0.7", changefreq: "monthly" },
 ];
 
-export default function handler(_req: VercelRequest, res: VercelResponse) {
+export default function handler() {
   const today = new Date().toISOString().split("T")[0];
 
   const urls = STATIC_PAGES.map(p => `  <url>
@@ -26,12 +25,15 @@ export default function handler(_req: VercelRequest, res: VercelResponse) {
     <priority>${p.priority}</priority>
   </url>`).join("\n");
 
-  const xml = `${xmlHeader()}
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls}
 </urlset>`;
 
-  res.setHeader("Content-Type", "application/xml; charset=utf-8");
-  res.setHeader("Cache-Control", "public, s-maxage=3600, stale-while-revalidate=86400");
-  res.status(200).send(xml);
+  return new Response(xml, {
+    headers: {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+    },
+  });
 }
