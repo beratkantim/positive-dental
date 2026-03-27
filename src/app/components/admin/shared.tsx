@@ -5,6 +5,19 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY as string;
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
+// ── AUDIT LOG ────────────────────────────────────────────────
+export async function logAction(action: string, tableName: string, recordId = "", details = "") {
+  const { data: session } = await supabase.auth.getSession();
+  const email = session?.session?.user?.email || "unknown";
+  await supabase.from("audit_logs").insert({
+    user_email: email,
+    action,
+    table_name: tableName,
+    record_id: recordId,
+    details: details.slice(0, 500),
+  }).then(() => {}); // fire and forget
+}
+
 // ── IMAGE UPLOAD (WebP dönüştürme + otomatik adlandırma) ─────
 export function slugify(text: string): string {
   const trMap: Record<string, string> = { ç: "c", ğ: "g", ı: "i", ö: "o", ş: "s", ü: "u", Ç: "c", Ğ: "g", İ: "i", Ö: "o", Ş: "s", Ü: "u" };
@@ -212,7 +225,7 @@ export type Section =
   | "dashboard" | "hero" | "doctors" | "services"
   | "blog" | "branches" | "testimonials" | "messages"
   | "prices" | "settings" | "users" | "analytics"
-  | "partners" | "insurances" | "pages" | "footer";
+  | "partners" | "insurances" | "pages" | "footer" | "audit_log";
 
 // ── HELPERS ──────────────────────────────────────────────────
 export function Badge({ children, color = "indigo" }: { children: React.ReactNode; color?: string }) {
@@ -354,4 +367,5 @@ export const NAV_ITEMS: { id: Section; label: string; icon: string; badge?: stri
   { id: "analytics",    label: "Analitik",           icon: "📈" },
   { id: "settings",     label: "Site Ayarları",     icon: "⚙️" },
   { id: "users",        label: "Kullanıcılar",      icon: "👥" },
+  { id: "audit_log",    label: "İşlem Kayıtları",   icon: "📋" },
 ];

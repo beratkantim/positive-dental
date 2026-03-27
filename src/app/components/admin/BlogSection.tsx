@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, type BlogPost } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, type BlogPost } from "./shared";
 import { sanitizeHTML } from "@/lib/sanitize";
 
 export const BLOG_CATEGORY_OPTIONS = [
@@ -32,12 +32,14 @@ export function BlogSection() {
       is_published: !val,
       published_at: !val ? new Date().toISOString() : null,
     }).eq("id", id);
+    await logAction("toggle_publish", "blog_posts", id, `Yazı ${!val ? "yayınlandı" : "yayından alındı"}`);
     load();
   };
 
   const deletePost = async (id: string) => {
     if (!confirm("Bu yazıyı silmek istediğinize emin misiniz?")) return;
     await supabase.from("blog_posts").delete().eq("id", id);
+    await logAction("delete", "blog_posts", id, "Blog yazısı silindi");
     load();
   };
 
@@ -162,8 +164,10 @@ function BlogForm({ post, onSave, onCancel }: { post: BlogPost | null; onSave: (
     };
     if (post?.id) {
       await supabase.from("blog_posts").update(payload).eq("id", post.id);
+      await logAction("update", "blog_posts", post.id, `Yazı güncellendi: ${payload.title}`);
     } else {
       await supabase.from("blog_posts").insert(payload);
+      await logAction("create", "blog_posts", "", `Yazı eklendi: ${payload.title}`);
     }
     setSaving(false);
     onSave();

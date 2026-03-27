@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, Card, LoadingSpinner, type SiteSetting } from "./shared";
+import { supabase, logAction, Card, LoadingSpinner, type SiteSetting } from "./shared";
 
 export function SettingsSection() {
   const [settings, setSettings] = useState<SiteSetting[]>([]);
@@ -24,6 +24,7 @@ export function SettingsSection() {
     for (const key of Object.keys(values)) {
       await supabase.from("site_settings").update({ value: values[key] }).eq("key", key);
     }
+    await logAction("update", "site_settings", "", "Site ayarları güncellendi");
     setSaving(false);
     alert("Ayarlar kaydedildi!");
   };

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  supabase, slugify, Card, Badge, LoadingSpinner, EmptyState,
+  supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState,
   FormField, usePagination, Pagination,
 } from "./shared";
 import type { TreatmentCategory, Treatment } from "../../../lib/supabase";
@@ -54,12 +54,14 @@ function TreatmentsList() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("treatments").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "treatments", id, `Tedavi ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteItem = async (id: string) => {
     if (!confirm("Bu tedaviyi silmek istediğinize emin misiniz?")) return;
     await supabase.from("treatments").delete().eq("id", id);
+    await logAction("delete", "treatments", id, "Tedavi silindi");
     load();
   };
 
@@ -227,8 +229,10 @@ function TreatmentForm({ treatment, categories, onSave, onCancel }: {
     };
     if (treatment?.id) {
       await supabase.from("treatments").update(payload).eq("id", treatment.id);
+      await logAction("update", "treatments", treatment.id, `Tedavi güncellendi: ${payload.title}`);
     } else {
       await supabase.from("treatments").insert(payload);
+      await logAction("create", "treatments", "", `Tedavi eklendi: ${payload.title}`);
     }
     setSaving(false);
     onSave();
@@ -319,12 +323,14 @@ function CategoriesList() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("treatment_categories").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "treatment_categories", id, `Kategori ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteCategory = async (id: string) => {
     if (!confirm("Bu kategoriyi silmek istediğinize emin misiniz?")) return;
     await supabase.from("treatment_categories").delete().eq("id", id);
+    await logAction("delete", "treatment_categories", id, "Tedavi kategorisi silindi");
     load();
   };
 
@@ -410,8 +416,10 @@ function CategoryForm({ category, onSave, onCancel }: {
     const payload = { ...form, slug: form.slug || slugify(form.name) };
     if (category?.id) {
       await supabase.from("treatment_categories").update(payload).eq("id", category.id);
+      await logAction("update", "treatment_categories", category.id, `Kategori güncellendi: ${payload.name}`);
     } else {
       await supabase.from("treatment_categories").insert(payload);
+      await logAction("create", "treatment_categories", "", `Kategori eklendi: ${payload.name}`);
     }
     setSaving(false);
     onSave();

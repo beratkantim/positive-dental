@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  supabase, slugify, Card, Badge, LoadingSpinner, EmptyState,
+  supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState,
   FormField, ImageUpload, usePagination, Pagination, type PriceItem,
 } from "./shared";
 

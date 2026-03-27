@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type HeroSlide } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type HeroSlide } from "./shared";
 
 export function HeroSection() {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
@@ -18,12 +18,14 @@ export function HeroSection() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("hero_slides").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "hero_slides", id, `Slide ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteSlide = async (id: string) => {
     if (!confirm("Bu slide'ı silmek istediğinize emin misiniz?")) return;
     await supabase.from("hero_slides").delete().eq("id", id);
+    await logAction("delete", "hero_slides", id, "Slide silindi");
     load();
   };
 
@@ -123,8 +125,10 @@ function HeroForm({ slide, onSave, onCancel }: {
     };
     if (slide?.id) {
       await supabase.from("hero_slides").update(payload).eq("id", slide.id);
+      await logAction("update", "hero_slides", slide.id, `Slide güncellendi: ${payload.title}`);
     } else {
       await supabase.from("hero_slides").insert(payload);
+      await logAction("create", "hero_slides", "", `Slide eklendi: ${payload.title}`);
     }
     setSaving(false);
     onSave();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Testimonial } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Testimonial } from "./shared";
 
 export function TestimonialsSection() {
   const [items, setItems] = useState<Testimonial[]>([]);
@@ -18,17 +18,20 @@ export function TestimonialsSection() {
 
   const toggleApprove = async (id: string, val: boolean) => {
     await supabase.from("testimonials").update({ is_approved: !val }).eq("id", id);
+    await logAction("toggle_approve", "testimonials", id, `Yorum ${!val ? "onaylandı" : "onayı kaldırıldı"}`);
     load();
   };
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("testimonials").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "testimonials", id, `Yorum ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteItem = async (id: string) => {
     if (!confirm("Bu yorumu silmek istediğinize emin misiniz?")) return;
     await supabase.from("testimonials").delete().eq("id", id);
+    await logAction("delete", "testimonials", id, "Yorum silindi");
     load();
   };
 
@@ -130,8 +133,10 @@ function TestimonialForm({ testimonial, onSave, onCancel }: {
     setSaving(true);
     if (testimonial?.id) {
       await supabase.from("testimonials").update(form).eq("id", testimonial.id);
+      await logAction("update", "testimonials", testimonial.id, `Yorum güncellendi: ${form.name}`);
     } else {
       await supabase.from("testimonials").insert(form);
+      await logAction("create", "testimonials", "", `Yorum eklendi: ${form.name}`);
     }
     setSaving(false);
     onSave();

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, Card, Badge, LoadingSpinner, EmptyState, type ContactMessage } from "./shared";
+import { supabase, logAction, Card, Badge, LoadingSpinner, EmptyState, type ContactMessage } from "./shared";
 
 export function MessagesSection() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
@@ -17,12 +17,14 @@ export function MessagesSection() {
 
   const markRead = async (id: string) => {
     await supabase.from("contact_messages").update({ is_read: true }).eq("id", id);
+    await logAction("update", "contact_messages", id, "Mesaj okundu olarak işaretlendi");
     load();
   };
 
   const deleteMsg = async (id: string) => {
     if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
     await supabase.from("contact_messages").delete().eq("id", id);
+    await logAction("delete", "contact_messages", id, "Mesaj silindi");
     setSelected(null);
     load();
   };

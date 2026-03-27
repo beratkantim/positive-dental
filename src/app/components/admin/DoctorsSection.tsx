@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor, type Service } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor, type Service } from "./shared";
 import { getDoctors, type DentsoftDoctor } from "@/lib/dentsoft";
 
 const BRANCH_OPTIONS = [
@@ -24,12 +24,14 @@ export function DoctorsSection() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("doctors").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "doctors", id, `Doktor ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteDoctor = async (id: string) => {
     if (!confirm("Bu doktoru silmek istediğinize emin misiniz?")) return;
     await supabase.from("doctors").delete().eq("id", id);
+    await logAction("delete", "doctors", id, "Doktor silindi");
     load();
   };
 
@@ -195,8 +197,10 @@ function DoctorForm({ doctor, onSave, onCancel }: {
     };
     if (doctor?.id) {
       await supabase.from("doctors").update(payload).eq("id", doctor.id);
+      await logAction("update", "doctors", doctor.id, `Doktor güncellendi: ${payload.name}`);
     } else {
       await supabase.from("doctors").insert(payload);
+      await logAction("create", "doctors", "", `Doktor eklendi: ${payload.name}`);
     }
     setSaving(false);
     onSave();

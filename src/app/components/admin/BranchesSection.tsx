@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type BranchData } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type BranchData } from "./shared";
 
 export function BranchesSection() {
   const [branches, setBranches] = useState<BranchData[]>([]);
@@ -18,12 +18,14 @@ export function BranchesSection() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("branches").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "branches", id, `Şube ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteBranch = async (id: string) => {
     if (!confirm("Bu şubeyi silmek istediğinize emin misiniz?")) return;
     await supabase.from("branches").delete().eq("id", id);
+    await logAction("delete", "branches", id, "Şube silindi");
     load();
   };
 
@@ -125,8 +127,10 @@ function BranchForm({ branch, onSave, onCancel }: {
     setSaving(true);
     if (branch?.id) {
       await supabase.from("branches").update(form).eq("id", branch.id);
+      await logAction("update", "branches", branch.id, `Şube güncellendi: ${form.name}`);
     } else {
       await supabase.from("branches").insert(form);
+      await logAction("create", "branches", "", `Şube eklendi: ${form.name}`);
     }
     setSaving(false);
     onSave();
