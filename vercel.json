@@ -1,4 +1,15 @@
 {
+  "redirects": [
+    { "source": "/kids", "destination": "/cocuk-dis-hekimligi", "permanent": true },
+    { "source": "/services", "destination": "/hizmetlerimiz", "permanent": true },
+    { "source": "/about", "destination": "/hakkimizda", "permanent": true },
+    { "source": "/locations", "destination": "/kliniklerimiz", "permanent": true },
+    { "source": "/contact", "destination": "/iletisim", "permanent": true },
+    { "source": "/partners", "destination": "/anlasmali-kurumlar", "permanent": true },
+    { "source": "/insurance", "destination": "/anlasmali-sigortalar", "permanent": true },
+    { "source": "/prices", "destination": "/fiyat-listesi", "permanent": true },
+    { "source": "/doctors", "destination": "/doktorlarimiz", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
