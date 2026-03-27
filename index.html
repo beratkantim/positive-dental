@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="tr">
   <head>
+    <!-- 1. Charset & Viewport -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- SEO Defaults -->
+    <!-- 2. Title -->
     <title>Positive Dental Studio — Adana & İstanbul Diş Kliniği</title>
+
+    <!-- 3. Description & SEO meta -->
     <meta name="description" content="Positive Dental Studio — Adana Türkmenbaşı ve İstanbul Nişantaşı'nda modern diş kliniği. İmplant, estetik diş hekimliği, ortodonti, çocuk diş hekimliği. Ücretsiz ilk muayene." />
     <meta name="keywords" content="diş kliniği, diş hekimi, implant, ortodonti, estetik diş, adana diş, istanbul diş, positive dental" />
     <meta name="robots" content="noindex, nofollow" />
+
+    <!-- 4. Canonical -->
     <link rel="canonical" href="https://positivedental.com" />
 
-    <!-- Open Graph -->
+    <!-- 5. Preconnect & DNS prefetch (CSS/font'lardan önce bağlantı kur) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
+    <!-- 6. CSS files (font non-blocking) -->
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" /></noscript>
+
+    <!-- 7. Social metatags (Open Graph & Twitter) -->
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="tr_TR" />
     <meta property="og:site_name" content="Positive Dental Studio" />
     <meta property="og:title" content="Positive Dental Studio — Modern Diş Kliniği" />
     <meta property="og:description" content="Adana ve İstanbul'da uzman kadrosuyla hizmet veren modern diş kliniği. Ücretsiz ilk muayene." />
     <meta property="og:url" content="https://positivedental.com" />
-
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Preconnect: dış kaynaklar -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="dns-prefetch" href="https://images.unsplash.com" />
-
-    <!-- Font: display=swap ile non-blocking — sadece kullanılan ağırlıklar -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" /></noscript>
-
-    <!-- Favicon -->
+    <!-- 8. Favicon & other meta -->
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230D1235'/><path d='M32 14v36M14 32h36' stroke='%2300BCD4' stroke-width='10' stroke-linecap='round'/></svg>" type="image/svg+xml" />
-
-    <!-- Theme color -->
     <meta name="theme-color" content="#0D1235" />
   </head>
 
   <body>
+    <!-- 9. JS — body'de, head'den uzakta -->
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
