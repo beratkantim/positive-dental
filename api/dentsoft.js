@@ -31,7 +31,9 @@ module.exports = function handler(req, res) {
     "http://localhost:5173",
     "http://localhost:3000",
   ];
-  var corsOrigin = allowedOrigins.includes(ORIGIN) ? ORIGIN : allowedOrigins[0];
+  // Vercel preview URL'leri de kabul et
+  var isVercelPreview = ORIGIN && ORIGIN.endsWith(".vercel.app");
+  var corsOrigin = allowedOrigins.includes(ORIGIN) || isVercelPreview ? ORIGIN : allowedOrigins[0];
   res.setHeader("Access-Control-Allow-Origin", corsOrigin);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
