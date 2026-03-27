@@ -34,6 +34,7 @@ export interface Service {
   color_to: string;
   image: string;
   price_range: string;
+  features: string[];
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;

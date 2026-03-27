@@ -9,6 +9,7 @@ import { SettingsSection } from "../components/admin/SettingsSection";
 import { TestimonialsSection } from "../components/admin/TestimonialsSection";
 import { BranchesSection } from "../components/admin/BranchesSection";
 import { HeroSection } from "../components/admin/HeroSection";
+import { ServicesSection } from "../components/admin/ServicesSection";
 
 // ── SIMPLE LIST SECTIONS ──────────────────────────────────────
 function SimpleSection({ title, table, icon }: { title: string; table: string; icon: string }) {
@@ -61,7 +62,7 @@ export function AdminPanel() {
       case "testimonials": return <TestimonialsSection />;
       case "settings":     return <SettingsSection />;
       case "hero":         return <HeroSection />;
-      case "services":     return <SimpleSection title="Hizmetler" table="services" icon="🦷" />;
+      case "services":     return <ServicesSection />;
       case "branches":     return <BranchesSection />;
       case "prices":       return <SimpleSection title="Fiyat Listesi" table="price_items" icon="💰" />;
       case "users":        return <SimpleSection title="Kullanıcılar" table="admin_users" icon="👥" />;

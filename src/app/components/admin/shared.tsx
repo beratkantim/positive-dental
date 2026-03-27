@@ -168,7 +168,7 @@ export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = 
 // ── TYPES ────────────────────────────────────────────────────
 export type Branch = "adana" | "istanbul";
 export interface Doctor { id: string; name: string; title: string; specialty: string; branch: Branch; branch_label: string; photo: string; bio: string; education: string[]; expertise: string[]; booking_url: string; is_active: boolean; sort_order: number; }
-export interface Service { id: string; title: string; description: string; icon: string; color_from: string; color_to: string; image: string; price_range: string; is_featured: boolean; is_active: boolean; sort_order: number; }
+export interface Service { id: string; title: string; description: string; icon: string; color_from: string; color_to: string; image: string; price_range: string; features: string[]; is_featured: boolean; is_active: boolean; sort_order: number; }
 export interface BlogPost { id: string; slug: string; title: string; excerpt: string; category: string; category_color: string; author: string; author_title: string; content: string; image: string; keywords: string[]; meta_description: string; read_time: string; is_featured: boolean; is_published: boolean; published_at: string; created_at: string; }
 export interface BranchData { id: string; slug: string; name: string; city: string; address: string; phone: string; email: string; map_url: string; working_hours: string; image: string; is_active: boolean; }
 export interface Testimonial { id: string; name: string; role: string; text: string; rating: number; image: string; branch: string; is_approved: boolean; is_active: boolean; created_at: string; }

@@ -6,65 +6,44 @@ import {
 } from "lucide-react";
 import { motion } from "motion/react";
 import { SEO } from "../components/SEO";
+import { useTable } from "../hooks/useSupabase";
+import type { Service as ServiceDB } from "@/lib/supabase";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
-const SERVICES = [
-  {
-    icon: Smile,
-    title: "Genel Diş Hekimliği",
-    description: "Rutin kontroller ve temel tedavilerle ağız sağlığınızı koruyun",
-    features: ["Dijital tarama ve muayene", "Laser destekli diş taşı temizliği", "Kompozit dolgu tedavisi", "Kanal tedavisi", "Diş çekimi"],
-    gradient: "from-teal-500 to-cyan-600",
-    lightBg: "bg-teal-50",
-    lightText: "text-teal-600",
-  },
-  {
-    icon: Cpu,
-    title: "İmplant Tedavisi",
-    description: "3D planlama ile hassas ve kalıcı implant uygulamaları",
-    features: ["3D implant planlaması", "Aynı gün implant yükleme", "Kemik augmentasyonu", "Dijital ölçü ve protez", "Uzun vadeli garanti"],
-    gradient: "from-indigo-500 to-violet-600",
-    lightBg: "bg-indigo-50",
-    lightText: "text-indigo-600",
-  },
-  {
-    icon: Sparkles,
-    title: "Estetik Diş Hekimliği",
-    description: "Digital Smile Design ile hayalinizdeki gülüşü yaratıyoruz",
-    features: ["Digital Smile Design (DSD)", "Laser diş beyazlatma", "Porselen laminalar", "Gülüş simülasyonu", "Diş eti estetiği"],
-    gradient: "from-violet-500 to-purple-600",
-    lightBg: "bg-violet-50",
-    lightText: "text-violet-600",
-  },
-  {
-    icon: Activity,
-    title: "Ortodonti",
-    description: "Şeffaf plak ve tel tedavisi ile mükemmel diş dizilimi",
-    features: ["3D ortodonti planlaması", "Şeffaf plak tedavisi", "Metal / seramik braket", "Sanal tedavi önizleme", "Online tedavi takibi"],
-    gradient: "from-sky-500 to-blue-600",
-    lightBg: "bg-sky-50",
-    lightText: "text-sky-600",
-  },
-  {
-    icon: Baby,
-    title: "Çocuk Diş Hekimliği",
-    description: "Çocuklara özel güven veren ve eğlenceli tedavi ortamı",
-    features: ["Çocuk dostu klinik tasarımı", "Koruyucu fissür örtücü", "Florür uygulaması", "Süt dişi takibi", "Ebeveyn bilgilendirme"],
-    gradient: "from-pink-500 to-rose-500",
-    lightBg: "bg-pink-50",
-    lightText: "text-pink-600",
-  },
-  {
-    icon: Crown,
-    title: "Protez & Kronlar",
-    description: "Bilgisayar destekli tasarım ile aynı gün protez imkanı",
-    features: ["Aynı gün porselen kron", "Dijital köprü tasarımı", "Hassas protezler", "Dijital renk eşleştirme", "Zirkonyum kronlar"],
-    gradient: "from-amber-500 to-orange-500",
-    lightBg: "bg-amber-50",
-    lightText: "text-amber-600",
-  },
-];
+// Gradient → light bg/text mapping
+const LIGHT_MAP: Record<string, { bg: string; text: string }> = {
+  "from-teal-500": { bg: "bg-teal-50", text: "text-teal-600" },
+  "from-indigo-500": { bg: "bg-indigo-50", text: "text-indigo-600" },
+  "from-violet-500": { bg: "bg-violet-50", text: "text-violet-600" },
+  "from-sky-500": { bg: "bg-sky-50", text: "text-sky-600" },
+  "from-pink-500": { bg: "bg-pink-50", text: "text-pink-600" },
+  "from-amber-500": { bg: "bg-amber-50", text: "text-amber-600" },
+  "from-emerald-500": { bg: "bg-emerald-50", text: "text-emerald-600" },
+};
+
+interface ServiceItem {
+  title: string;
+  description: string;
+  features: string[];
+  gradient: string;
+  lightBg: string;
+  lightText: string;
+  icon: string;
+}
+
+function mapService(s: ServiceDB): ServiceItem {
+  const light = LIGHT_MAP[s.color_from] || { bg: "bg-indigo-50", text: "text-indigo-600" };
+  return {
+    title: s.title,
+    description: s.description,
+    features: s.features || [],
+    gradient: `${s.color_from} ${s.color_to}`,
+    lightBg: light.bg,
+    lightText: light.text,
+    icon: s.icon,
+  };
+}
 
 const TECH = [
   { icon: Cpu,   title: "3D Dijital Tarama",  desc: "Mikron hassasiyetinde ölçü" },
@@ -81,6 +60,17 @@ const STEPS = [
 ];
 
 export function Services() {
+  const { data: rawServices, loading } = useTable<ServiceDB>("services", "sort_order");
+  const SERVICES = rawServices.map(mapService);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <>
       <SEO
@@ -194,7 +184,6 @@ export function Services() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {SERVICES.map((s, i) => {
-              const Icon = s.icon;
               return (
                 <motion.div
                   key={s.title}
@@ -205,9 +194,9 @@ export function Services() {
                   whileHover={{ y: -6 }}
                   className="group bg-white rounded-3xl p-7 border border-slate-100 hover:border-transparent hover:shadow-2xl hover:shadow-slate-200/60 transition-all"
                 >
-                  <div className={`w-13 h-13 rounded-2xl bg-gradient-to-br ${s.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform`}
+                  <div className={`w-13 h-13 rounded-2xl bg-gradient-to-br ${s.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform text-2xl`}
                     style={{ width: 52, height: 52 }}>
-                    <Icon className="w-6 h-6 text-white" />
+                    {s.icon}
                   </div>
                   <h3 className="font-black text-slate-900 text-base mb-2">{s.title}</h3>
                   <p className="text-slate-500 text-sm mb-5 leading-relaxed">{s.description}</p>

@@ -1,21 +1,23 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
-
-// ─── DATA ─────────────────────────────────────────────────────────────────────
-
-const PAGE_SERVICES = [
-  { title: "İmplant Tedavisi",     desc: "Kalıcı, doğal görünümlü diş çözümleri. Aynı gün implant mümkün.", icon: "🔩", color: "from-violet-500 to-purple-600" },
-  { title: "Estetik & Gülüş",     desc: "Veneer, beyazlatma, dijital gülüş simülasyonu ile hayalindeki gülüş.", icon: "✨", color: "from-indigo-500 to-violet-600" },
-  { title: "Ortodonti",            desc: "Şeffaf plak ve modern braketlerle görünmez, ağrısız tedavi.", icon: "😁", color: "from-sky-500 to-blue-600" },
-  { title: "Genel Diş Hekimliği", desc: "Rutin kontrol, kanal, dolgu — önce sağlık, sonra estetik.", icon: "🦷", color: "from-teal-500 to-cyan-600" },
-  { title: "Çocuk Diş Hekimliği", desc: "Çocuğunuzun dişçi korkusunu sevgiye dönüştürüyoruz.", icon: "🌟", color: "from-amber-400 to-orange-500" },
-  { title: "Protez & Zirkonyum",  desc: "Doğal görünüm, uzun ömür. Tek seans dijital protez.", icon: "💎", color: "from-emerald-500 to-green-600" },
-];
-
-// ─── COMPONENT ────────────────────────────────────────────────────────────────
+import { useTable } from "../../hooks/useSupabase";
+import type { Service } from "@/lib/supabase";
 
 export function ServicesGrid() {
+  const { data: services } = useTable<Service>("services", "sort_order");
+
+  const items = services.length > 0
+    ? services.map(s => ({ title: s.title, desc: s.description, icon: s.icon, color: `${s.color_from} ${s.color_to}` }))
+    : [
+        { title: "İmplant Tedavisi", desc: "Kalıcı, doğal görünümlü diş çözümleri.", icon: "🔩", color: "from-violet-500 to-purple-600" },
+        { title: "Estetik & Gülüş", desc: "Veneer, beyazlatma, dijital gülüş simülasyonu.", icon: "✨", color: "from-indigo-500 to-violet-600" },
+        { title: "Ortodonti", desc: "Şeffaf plak ve modern braketlerle tedavi.", icon: "😁", color: "from-sky-500 to-blue-600" },
+        { title: "Genel Diş Hekimliği", desc: "Rutin kontrol, kanal, dolgu.", icon: "🦷", color: "from-teal-500 to-cyan-600" },
+        { title: "Çocuk Diş Hekimliği", desc: "Çocuğunuzun dişçi korkusunu sevgiye dönüştürüyoruz.", icon: "🌟", color: "from-amber-400 to-orange-500" },
+        { title: "Protez & Zirkonyum", desc: "Doğal görünüm, uzun ömür.", icon: "💎", color: "from-emerald-500 to-green-600" },
+      ];
+
   return (
     <section className="py-16 sm:py-24 bg-[#FAFAF8] content-lazy">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +35,7 @@ export function ServicesGrid() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {PAGE_SERVICES.map((s, i) => (
+          {items.map((s, i) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
