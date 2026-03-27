@@ -110,13 +110,38 @@ function RelatedCard({ post }: { post: BlogPost }) {
   );
 }
 
+// SSR data'yı oku
+function getBlogSSR(): { post: BlogPostDB | null; posts: BlogPostDB[] } | null {
+  try {
+    const ssr = (window as any).__SSR_DATA__;
+    if (ssr?.data?.blog_post) {
+      const result = { post: ssr.data.blog_post, posts: ssr.data.blog_posts || [] };
+      // Kullandıktan sonra temizle
+      delete ssr.data.blog_post;
+      delete ssr.data.blog_posts;
+      return result;
+    }
+  } catch {}
+  return null;
+}
+
 export function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  const ssrData = getBlogSSR();
+
+  const [post, setPost] = useState<BlogPost | null>(() =>
+    ssrData?.post ? mapPost(ssrData.post) : null
+  );
+  const [allPosts, setAllPosts] = useState<BlogPost[]>(() =>
+    ssrData?.posts?.length ? ssrData.posts.map(mapPost) : []
+  );
+  const [loading, setLoading] = useState(() => !ssrData?.post);
 
   useEffect(() => {
+    // SSR verisi zaten varsa fetch etme
+    if (post && allPosts.length > 0) return;
+
     async function load() {
       const [single, all] = await Promise.all([
         supabase.from("blog_posts").select("*").eq("slug", slug ?? "").single(),
