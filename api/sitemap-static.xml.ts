@@ -1,39 +1,23 @@
-import { SITE_URL } from "./_supabase";
-
-const STATIC_PAGES = [
-  { path: "/", priority: "1.0", changefreq: "daily" },
-  { path: "/hizmetlerimiz", priority: "0.9", changefreq: "weekly" },
-  { path: "/doktorlarimiz", priority: "0.9", changefreq: "weekly" },
-  { path: "/fiyat-listesi", priority: "0.9", changefreq: "weekly" },
-  { path: "/hakkimizda", priority: "0.8", changefreq: "monthly" },
-  { path: "/kliniklerimiz", priority: "0.8", changefreq: "monthly" },
-  { path: "/iletisim", priority: "0.8", changefreq: "monthly" },
-  { path: "/blog", priority: "0.8", changefreq: "daily" },
-  { path: "/cocuk-dis-hekimligi", priority: "0.7", changefreq: "monthly" },
-  { path: "/anlasmali-kurumlar", priority: "0.6", changefreq: "monthly" },
-  { path: "/anlasmali-sigortalar", priority: "0.6", changefreq: "monthly" },
-  { path: "/randevu", priority: "0.7", changefreq: "monthly" },
+const SITE = "https://positive-dental.vercel.app";
+const PAGES = [
+  { p: "/", pr: "1.0", ch: "daily" },
+  { p: "/hizmetlerimiz", pr: "0.9", ch: "weekly" },
+  { p: "/doktorlarimiz", pr: "0.9", ch: "weekly" },
+  { p: "/fiyat-listesi", pr: "0.9", ch: "weekly" },
+  { p: "/hakkimizda", pr: "0.8", ch: "monthly" },
+  { p: "/kliniklerimiz", pr: "0.8", ch: "monthly" },
+  { p: "/iletisim", pr: "0.8", ch: "monthly" },
+  { p: "/blog", pr: "0.8", ch: "daily" },
+  { p: "/cocuk-dis-hekimligi", pr: "0.7", ch: "monthly" },
+  { p: "/anlasmali-kurumlar", pr: "0.6", ch: "monthly" },
+  { p: "/anlasmali-sigortalar", pr: "0.6", ch: "monthly" },
+  { p: "/randevu", pr: "0.7", ch: "monthly" },
 ];
 
 export default function handler() {
-  const today = new Date().toISOString().split("T")[0];
-
-  const urls = STATIC_PAGES.map(p => `  <url>
-    <loc>${SITE_URL}${p.path}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>${p.changefreq}</changefreq>
-    <priority>${p.priority}</priority>
-  </url>`).join("\n");
-
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls}
-</urlset>`;
-
-  return new Response(xml, {
-    headers: {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
-    },
+  const d = new Date().toISOString().split("T")[0];
+  const urls = PAGES.map(x => `  <url><loc>${SITE}${x.p}</loc><lastmod>${d}</lastmod><changefreq>${x.ch}</changefreq><priority>${x.pr}</priority></url>`).join("\n");
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>`, {
+    headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, s-maxage=3600" },
   });
 }

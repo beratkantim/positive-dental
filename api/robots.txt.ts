@@ -1,5 +1,3 @@
-export const config = { runtime: "edge" };
-
 export default function handler() {
   const txt = `User-agent: *
 Allow: /

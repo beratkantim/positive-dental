@@ -1,6 +1,3 @@
-// Vercel Serverless Function — Node.js runtime
-export const config = { runtime: "nodejs" };
-
 const BASE = "https://api.dentsoft.com.tr/Api/v1";
 const TOKEN = process.env.DENTSOFT_BEARER_TOKEN || "";
 const CLINIC_NISANTASI = process.env.DENTSOFT_CLINIC_ID_NISANTASI || "";
