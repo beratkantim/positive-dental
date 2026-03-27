@@ -1,5 +1,5 @@
 // ── Dentsoft API Proxy ─────────────────────────────────────────
-// Frontend → /api/dentsoft/Clinic/DoctorList?ClinicID=xxx
+// Frontend → /api/dentsoft?path=Clinic/DoctorList&ClinicID=xxx
 // Proxy  → https://api.dentsoft.com.tr/Api/v1/Clinic/DoctorList?ClinicID=xxx
 
 const BASE = "https://api.dentsoft.com.tr/Api/v1";
@@ -19,7 +19,6 @@ const ALLOWED_PATHS = [
 ];
 
 export default async function handler(req: Request) {
-  // CORS preflight
   if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: {
@@ -32,29 +31,26 @@ export default async function handler(req: Request) {
 
   try {
     const url = new URL(req.url);
-    // Path: /api/dentsoft/Clinic/DoctorList → Clinic/DoctorList
-    let apiPath = url.pathname.replace(/^\/api\/dentsoft\/?/, "");
-    // Vercel bazen path parametrelerini query'ye ekler
-    if (!apiPath && url.searchParams.has("path")) {
-      const pathParam = url.searchParams.getAll("path");
-      apiPath = pathParam.join("/");
-    }
-    // Temizle
-    apiPath = apiPath.replace(/^\/+|\/+$/g, "");
+    const apiPath = url.searchParams.get("path") || "";
 
-    // Güvenlik
+    if (!apiPath) {
+      return Response.json({ error: "path parametresi gerekli" }, { status: 400 });
+    }
+
     const isAllowed = ALLOWED_PATHS.some(p => apiPath.startsWith(p));
     if (!isAllowed) {
-      return Response.json({ error: "Bu endpoint'e erişim izni yok" }, { status: 403 });
+      return Response.json({ error: "Bu endpoint'e erişim izni yok", path: apiPath }, { status: 403 });
     }
 
     if (!TOKEN) {
       return Response.json({ error: "Dentsoft Bearer Token yapılandırılmamış" }, { status: 500 });
     }
 
-    // Query params
-    const query = new URLSearchParams(url.search);
-    query.delete("path"); // Vercel catch-all
+    // Query params — path hariç hepsini Dentsoft'a ilet
+    const query = new URLSearchParams();
+    url.searchParams.forEach((val, key) => {
+      if (key !== "path") query.set(key, val);
+    });
 
     if (!query.has("ClinicID") && CLINIC_NISANTASI) {
       query.set("ClinicID", CLINIC_NISANTASI);
@@ -63,7 +59,6 @@ export default async function handler(req: Request) {
     const targetUrl = `${BASE}/${apiPath}${query.toString() ? "?" + query.toString() : ""}`;
     console.log("[Dentsoft proxy]", req.method, targetUrl);
 
-    // Fetch
     const fetchOpts: RequestInit = {
       method: req.method || "GET",
       headers: {

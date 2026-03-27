@@ -98,16 +98,19 @@ export interface DentsoftAppointment {
 
 // ── Helper ─────────────────────────────────────────────────────
 
+function buildUrl(path: string, params?: Record<string, string>): string {
+  const qs = new URLSearchParams({ path, ...params });
+  return `${PROXY}?${qs.toString()}`;
+}
+
 async function dsGet<T>(path: string, params?: Record<string, string>): Promise<DentsoftResponse<T>> {
-  const qs = params ? "?" + new URLSearchParams(params).toString() : "";
-  const res = await fetch(`${PROXY}/${path}${qs}`);
+  const res = await fetch(buildUrl(path, params));
   if (!res.ok) throw new Error(`Dentsoft API hatası: ${res.status}`);
   return res.json();
 }
 
 async function dsPost<T>(path: string, params?: Record<string, string>, body?: Record<string, any>): Promise<DentsoftResponse<T>> {
-  const qs = params ? "?" + new URLSearchParams(params).toString() : "";
-  const res = await fetch(`${PROXY}/${path}${qs}`, {
+  const res = await fetch(buildUrl(path, params), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
@@ -117,7 +120,7 @@ async function dsPost<T>(path: string, params?: Record<string, string>, body?: R
 }
 
 async function dsPut<T>(path: string, body?: Record<string, any>): Promise<DentsoftResponse<T>> {
-  const res = await fetch(`${PROXY}/${path}`, {
+  const res = await fetch(buildUrl(path), {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: body ? JSON.stringify(body) : undefined,
