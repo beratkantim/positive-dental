@@ -1,4 +1,5 @@
-const https = require("https");
+// DentSoft API Proxy — ES Module format (package.json has "type": "module")
+import https from "https";
 
 const BASE = "https://clinic.dentsoft.com.tr";
 const TOKEN = process.env.DENTSOFT_BEARER_TOKEN || "";
@@ -20,11 +21,8 @@ function fetchJson(url, method, token) {
       let body = "";
       res.on("data", (chunk) => { body += chunk; });
       res.on("end", () => {
-        try {
-          resolve(JSON.parse(body));
-        } catch (e) {
-          resolve({ raw: body.substring(0, 500), parseError: true });
-        }
+        try { resolve(JSON.parse(body)); }
+        catch (e) { resolve({ raw: body.substring(0, 500), parseError: true }); }
       });
     });
     req.on("error", reject);
@@ -32,7 +30,7 @@ function fetchJson(url, method, token) {
   });
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -42,7 +40,7 @@ module.exports = async function handler(req, res) {
   try {
     const apiPath = (req.query && req.query.path) || "";
 
-    // Debug endpoint
+    // Health check
     if (!apiPath || apiPath === "health") {
       return res.status(200).json({
         ok: true,
@@ -53,27 +51,23 @@ module.exports = async function handler(req, res) {
       });
     }
 
-    // Build query params (exclude 'path' from forwarded params)
+    // Build params
     const params = new URLSearchParams();
     if (req.query) {
       for (const [k, v] of Object.entries(req.query)) {
         if (k !== "path") params.set(k, String(v));
       }
     }
-    if (!params.has("ClinicID")) {
-      params.set("ClinicID", CLINIC);
-    }
+    if (!params.has("ClinicID")) params.set("ClinicID", CLINIC);
 
     const targetUrl = BASE + "/Api/v1/" + apiPath + "?" + params.toString();
-
     const data = await fetchJson(targetUrl, req.method, TOKEN);
 
     return res.status(200).json(data);
   } catch (error) {
     return res.status(500).json({
       error: "Proxy error",
-      message: String(error && error.message ? error.message : error),
-      stack: String(error && error.stack ? error.stack.substring(0, 300) : ""),
+      message: String(error?.message || error),
     });
   }
-};
+}
