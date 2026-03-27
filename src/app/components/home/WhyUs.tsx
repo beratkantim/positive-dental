@@ -17,7 +17,7 @@ export function WhyUs() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-3">
                 <div className="rounded-2xl overflow-hidden h-52">
-                  <ImageWithFallback src="https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=400&q=75&auto=format" alt="Gülen hasta" className="w-full h-full object-cover" />
+                  <ImageWithFallback src="https://images.unsplash.com/photo-1769559893692-c6d0623bf8e4?w=400&q=75&auto=format" alt="Gülen hasta" className="w-full h-full object-cover" width={400} height={208} />
                 </div>
                 <div className="bg-gradient-to-br from-indigo-500 to-violet-600 rounded-2xl p-5 text-white">
                   <p className="font-display text-4xl font-black">%100</p>
@@ -30,7 +30,7 @@ export function WhyUs() {
                   <p className="text-slate-400 text-sm mt-1">Yıl Deneyim</p>
                 </div>
                 <div className="rounded-2xl overflow-hidden h-52">
-                  <ImageWithFallback src="https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=400&q=75&auto=format" alt="Mutlu çift" className="w-full h-full object-cover" />
+                  <ImageWithFallback src="https://images.unsplash.com/photo-1763739906082-a6093d4939f9?w=400&q=75&auto=format" alt="Mutlu çift" className="w-full h-full object-cover" width={400} height={208} />
                 </div>
               </div>
             </div>

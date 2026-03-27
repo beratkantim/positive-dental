@@ -235,6 +235,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
                   src={responsiveImg(slide.image)}
                   alt={slide.title.replace("\n", " ")}
                   className="w-full h-full object-cover"
+                  width={520} height={390}
                   loading={active === 0 ? "eager" : "lazy"}
                   fetchPriority={active === 0 ? "high" : undefined}
                 />

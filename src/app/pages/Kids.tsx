@@ -174,6 +174,8 @@ export function Kids() {
                     src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=600&q=75&auto=format"
                     alt="Mutlu çocuk dişçide"
                     className="w-full h-full object-cover"
+                    width={600}
+                    height={400}
                   />
                 </div>
 
@@ -183,6 +185,8 @@ export function Kids() {
                     src="https://images.unsplash.com/photo-1622408064430-9728776f96e6?w=400&q=75&auto=format"
                     alt="Diş fırçalayan çocuk"
                     className="w-full h-full object-cover"
+                    width={400}
+                    height={300}
                   />
                 </div>
 
@@ -192,6 +196,8 @@ export function Kids() {
                     src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=400&q=75&auto=format"
                     alt="Çocuk muayenesi"
                     className="w-full h-full object-cover"
+                    width={400}
+                    height={240}
                   />
                 </div>
 
@@ -449,6 +455,8 @@ export function Kids() {
                   src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=600&q=75&auto=format"
                   alt="Çocuk muayenesi"
                   className="absolute inset-0 w-full h-full object-cover opacity-40"
+                  width={600}
+                  height={400}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-[#0D1235] via-transparent to-transparent" />
                 <div className="relative z-10 p-10 flex flex-col justify-end h-full">

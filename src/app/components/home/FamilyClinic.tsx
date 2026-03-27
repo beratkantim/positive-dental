@@ -98,6 +98,8 @@ export function FamilyClinic() {
                   src={card.img}
                   alt={card.label}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  width={400}
+                  height={208}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235] via-[#0D1235]/40 to-transparent" />
                 {/* Emoji badge */}
@@ -130,6 +132,8 @@ export function FamilyClinic() {
               src="https://images.unsplash.com/photo-1772723246543-213f2a4fc526?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1400&q=75&auto=format"
               alt="Mutlu Aile"
               className="w-full h-full object-cover object-center"
+              width={1400}
+              height={420}
             />
             {/* Dark overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-[#0D1235]/90 via-[#0D1235]/50 to-transparent" />

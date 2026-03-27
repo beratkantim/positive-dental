@@ -167,6 +167,8 @@ export function About() {
                   src="https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=800&q=75&auto=format"
                   alt="Positive Dental Studio kliniği"
                   className="w-full h-[420px] object-cover"
+                  width={800}
+                  height={420}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
 
@@ -306,6 +308,8 @@ export function About() {
                     src={member.image}
                     alt={member.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    width={400}
+                    height={288}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
                   <div className="absolute bottom-5 left-5">
@@ -364,6 +368,8 @@ export function About() {
                   src="https://images.unsplash.com/photo-1770134223774-13b735e29201?w=800&q=75&auto=format"
                   alt="Uzman hekim"
                   className="w-full h-[440px] object-cover"
+                  width={800}
+                  height={440}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent" />
                 <motion.div

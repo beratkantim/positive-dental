@@ -69,6 +69,8 @@ export function KidsTeaser() {
                 src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=700&q=75&auto=format"
                 alt="Mutlu çocuk dişçide"
                 className="w-full h-full object-cover"
+                width={700}
+                height={420}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-pink-50/60 via-transparent to-transparent lg:block hidden" />
 

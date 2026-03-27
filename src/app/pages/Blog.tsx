@@ -75,6 +75,8 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
           src={post.image}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          width={640}
+          height={360}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
         <span className={`absolute top-4 left-4 text-xs font-bold px-3 py-1.5 rounded-full ${post.categoryColor}`}>
@@ -138,6 +140,8 @@ function FeaturedCard({ post }: { post: BlogPost }) {
           src={post.image}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          width={800}
+          height={480}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/90 via-[#0D1235]/30 to-transparent" />
 

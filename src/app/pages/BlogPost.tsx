@@ -93,6 +93,8 @@ function RelatedCard({ post }: { post: BlogPost }) {
           src={post.image}
           alt={post.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          width={80}
+          height={80}
         />
       </div>
       <div className="flex-1 min-w-0">
@@ -240,6 +242,8 @@ export function BlogPost() {
                 src={post.image}
                 alt={post.title}
                 className="w-full h-full object-cover"
+                width={1200}
+                height={514}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/40 to-transparent" />
             </div>
@@ -431,6 +435,8 @@ export function BlogPost() {
                         src={p.image}
                         alt={p.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        width={640}
+                        height={360}
                       />
                       <span className={`absolute top-3 left-3 text-xs font-bold px-2.5 py-1 rounded-full ${p.categoryColor}`}>
                         {p.category}

@@ -207,6 +207,8 @@ export function SmilePositive() {
                     src={slide.image}
                     alt={slide.label}
                     className="w-full h-full object-cover"
+                    width={600}
+                    height={420}
                   />
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/75 via-[#0D1235]/15 to-transparent" />
