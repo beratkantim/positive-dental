@@ -103,7 +103,7 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-2 flex-wrap">
               {allSocials.map(({ Icon, href, label, bg }) => (
-                <a key={label} href={href} aria-label={label}
+                <a key={label} href={href} aria-label={label} title={label}
                   target={href.startsWith("http") ? "_blank" : undefined}
                   rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className={`w-9 h-9 rounded-full bg-white flex items-center justify-center text-blue-900 transition-all duration-200 ${bg} hover:text-white hover:scale-110 shadow-sm`}>
@@ -121,7 +121,7 @@ export function Footer() {
                 {col.items.map((item, j) => (
                   <li key={j}>
                     {item.url && item.url !== "#" ? (
-                      <Link to={item.url} className="text-sm text-blue-300 hover:text-white transition-colors hover:translate-x-1 inline-block">
+                      <Link to={item.url} title={item.label} className="text-sm text-blue-300 hover:text-white transition-colors hover:translate-x-1 inline-block">
                         {item.label}
                       </Link>
                     ) : (
@@ -162,7 +162,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 mt-10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-slate-500">{vals.footer_copyright}</p>
-          <a href="https://randevu.positivedental.com" target="_blank" rel="noopener noreferrer"
+          <a href="https://randevu.positivedental.com" target="_blank" rel="noopener noreferrer" title="Online randevu al"
             className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition-colors">
             Randevu Al →
           </a>

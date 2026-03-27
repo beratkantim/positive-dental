@@ -35,7 +35,7 @@ export function FloatingActionBar() {
             <div className="bg-white border-t border-slate-100 shadow-2xl">
               <div className="flex items-stretch">
                 {/* Phone CTA */}
-                <a href="tel:+908501234567"
+                <a href="tel:+908501234567" title="Hemen ara: 0850 123 45 67"
                   className="flex flex-col items-center justify-center gap-1 px-5 py-3 bg-gradient-to-b from-indigo-500 to-violet-600 text-white flex-shrink-0">
                   <Phone className="w-5 h-5" />
                   <span className="text-[10px] font-bold">Ara</span>
@@ -51,8 +51,8 @@ export function FloatingActionBar() {
                       </div>
                     );
                     return action.isLink
-                      ? <Link key={action.label} to={action.href} className="flex-1">{inner}</Link>
-                      : <a key={action.label} href={action.href} target="_blank" rel="noopener noreferrer" className="flex-1">{inner}</a>;
+                      ? <Link key={action.label} to={action.href} title={action.label} className="flex-1">{inner}</Link>
+                      : <a key={action.label} href={action.href} title={action.label} target="_blank" rel="noopener noreferrer" className="flex-1">{inner}</a>;
                   })}
                 </div>
 
@@ -69,7 +69,7 @@ export function FloatingActionBar() {
             <div className="flex items-stretch bg-white rounded-2xl shadow-2xl shadow-slate-900/15 border border-slate-100 overflow-hidden">
 
               {/* Phone */}
-              <a href="tel:+908501234567"
+              <a href="tel:+908501234567" title="Hemen ara: 0850 123 45 67"
                 className="flex items-center gap-3 px-6 py-3.5 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white transition-all group">
                 <div className="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Phone className="w-4 h-4" />
@@ -91,8 +91,8 @@ export function FloatingActionBar() {
                   </div>
                 );
                 return action.isLink
-                  ? <Link key={action.label} to={action.href}>{inner}</Link>
-                  : <a key={action.label} href={action.href} target="_blank" rel="noopener noreferrer">{inner}</a>;
+                  ? <Link key={action.label} to={action.href} title={action.label}>{inner}</Link>
+                  : <a key={action.label} href={action.href} title={action.label} target="_blank" rel="noopener noreferrer">{inner}</a>;
               })}
 
               <div className="w-px bg-slate-100" />

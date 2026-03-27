@@ -150,13 +150,13 @@ export function Header() {
             {/* Sosyal medya */}
             <div className="flex items-center gap-3.5">
               {socials.map(({ Icon, href, label }) => (
-                <a key={label} href={href} aria-label={label}
+                <a key={label} href={href} aria-label={label} title={label}
                   className="text-slate-500 hover:text-white transition-colors">
                   <Icon />
                 </a>
               ))}
               <span className="w-px h-3.5 bg-slate-700 mx-1" />
-              <a href="mailto:info@positivedental.com"
+              <a href="mailto:info@positivedental.com" title="E-posta gönder"
                 className="text-slate-500 hover:text-white text-xs transition-colors">
                 info@positivedental.com
               </a>
@@ -175,7 +175,7 @@ export function Header() {
                 ))}
               </div>
               <span className="w-px h-3.5 bg-slate-700" />
-              <a href="tel:+908501234567"
+              <a href="tel:+908501234567" title="Hemen ara: 0850 123 45 67"
                 className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors text-xs font-medium whitespace-nowrap">
                 <Phone className="w-3 h-3" /> 0850 123 45 67
               </a>
@@ -190,7 +190,7 @@ export function Header() {
           <div className="flex items-center h-[60px] gap-2">
 
             {/* Logo */}
-            <Link to="/" className="flex-shrink-0 mr-4">
+            <Link to="/" title="Positive Dental Studio Ana Sayfa" className="flex-shrink-0 mr-4">
               <img src={logo} alt="Positive Dental Studio"
                 className="h-9 w-auto hover:opacity-90 transition-opacity" loading="eager" decoding="async" width="273" height="36" />
             </Link>
@@ -201,7 +201,7 @@ export function Header() {
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-0.5">
               {/* Ana Sayfa */}
-              <Link to="/"
+              <Link to="/" title="Ana Sayfa"
                 className={`relative px-3 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap transition-all ${
                   isActive("/") ? "text-indigo-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
@@ -242,7 +242,7 @@ export function Header() {
                         const Icon = item.icon;
                         const active = isActive(item.path);
                         return (
-                          <Link key={item.path} to={item.path}
+                          <Link key={item.path} to={item.path} title={item.label}
                             onClick={() => setDropdownOpen(false)}
                             className={`flex items-center gap-3 p-3 rounded-xl transition-colors group ${
                               active ? "bg-indigo-50" : "hover:bg-slate-50"
@@ -278,7 +278,7 @@ export function Header() {
                         const Icon = item.icon;
                         const active = isActive(item.path);
                         return (
-                          <Link key={item.path} to={item.path}
+                          <Link key={item.path} to={item.path} title={item.label}
                             onClick={() => setDropdownOpen(false)}
                             className={`flex items-center gap-3 p-3 rounded-xl transition-colors group ${
                               active ? "bg-indigo-50" : "hover:bg-slate-50"
@@ -311,7 +311,7 @@ export function Header() {
 
                     <div className="mx-3 mb-3 p-3 bg-slate-50 rounded-xl border border-slate-100">
                       <p className="text-xs text-slate-400 mb-1">Kurumsal anlaşma için</p>
-                      <a href="mailto:kurum@positivedental.com"
+                      <a href="mailto:kurum@positivedental.com" title="Kurumsal anlaşma için e-posta gönder"
                         className="text-indigo-600 text-xs font-bold hover:text-indigo-700 transition-colors">
                         kurum@positivedental.com →
                       </a>
@@ -321,7 +321,7 @@ export function Header() {
               </div>
 
               {/* Fiyat Listesi */}
-              <Link to="/fiyat-listesi"
+              <Link to="/fiyat-listesi" title="Fiyat Listesi"
                 className={`relative px-3 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap transition-all ${
                   isActive("/fiyat-listesi") ? "text-indigo-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
@@ -333,7 +333,7 @@ export function Header() {
               </Link>
 
               {/* Kids */}
-              <Link to="/cocuk-dis-hekimligi"
+              <Link to="/cocuk-dis-hekimligi" title="Çocuk Diş Hekimliği"
                 className={`relative px-4 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap transition-all ${
                   isActive("/cocuk-dis-hekimligi")
                     ? "bg-gradient-to-r from-pink-500 to-violet-600 text-white shadow-md"
@@ -369,7 +369,7 @@ export function Header() {
           <div className="lg:hidden bg-white border-t border-slate-100 px-4 pb-5">
             {/* Üst bar */}
             <div className="flex items-center justify-between py-3 border-b border-slate-100 mb-2">
-              <a href="tel:+908501234567" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+              <a href="tel:+908501234567" title="Hemen ara: 0850 123 45 67" className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                 <Phone className="w-4 h-4 text-indigo-500" /> 0850 123 45 67
               </a>
               <div className="flex items-center gap-1">
@@ -386,7 +386,7 @@ export function Header() {
 
             <nav className="flex flex-col gap-0.5">
               {navLinks.map((link) => (
-                <Link key={link.path} to={link.path}
+                <Link key={link.path} to={link.path} title={link.label}
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center px-3 py-3 rounded-xl text-sm font-semibold transition-all ${
                     link.highlight
@@ -409,7 +409,7 @@ export function Header() {
                     const Icon = item.icon;
                     const active = isActive(item.path);
                     return (
-                      <Link key={item.path} to={item.path}
+                      <Link key={item.path} to={item.path} title={item.label}
                         onClick={() => setMobileOpen(false)}
                         className={`flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-semibold transition-all ${
                           active

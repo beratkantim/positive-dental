@@ -50,7 +50,7 @@ export function Breadcrumbs() {
                     {crumb.label}
                   </span>
                 ) : (
-                  <Link to={crumb.to}
+                  <Link to={crumb.to} title={crumb.label}
                     className="text-slate-500 hover:text-indigo-600 transition-colors flex items-center gap-1"
                     itemProp="item">
                     {i === 0 && <Home className="w-3.5 h-3.5" />}
