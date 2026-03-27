@@ -22,12 +22,14 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
           loading="lazy"
           decoding="async"
         />
-        {/* Şube etiketi */}
-        <div className="absolute top-3 left-3">
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-sm text-indigo-700 shadow-sm border border-indigo-100">
+        {/* Şube etiketleri */}
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1">
+          {(doctor.branches_labels?.length ? doctor.branches_labels : [doctor.branch_label]).map(label => (
+          <span key={label} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-white/90 backdrop-blur-sm text-indigo-700 shadow-sm border border-indigo-100">
             <MapPin className="w-3 h-3" />
-            {doctor.branch_label}
+            {label}
           </span>
+          ))}
         </div>
       </div>
 
@@ -109,10 +111,10 @@ export function Doctors() {
 
   const filtered = activeBranch === "all"
     ? DOCTORS
-    : DOCTORS.filter((d) => d.branch === activeBranch);
+    : DOCTORS.filter((d) => d.branches?.includes(activeBranch) || d.branch === activeBranch);
 
-  const adanaDoctors = filtered.filter((d) => d.branch === "adana");
-  const istanbulDoctors = filtered.filter((d) => d.branch === "istanbul");
+  const adanaDoctors = filtered.filter((d) => d.branches?.includes("adana") || d.branch === "adana");
+  const istanbulDoctors = filtered.filter((d) => d.branches?.includes("istanbul") || d.branch === "istanbul");
 
   if (loading) {
     return (
@@ -159,7 +161,7 @@ export function Doctors() {
               <span className="ml-2 text-xs opacity-70">({DOCTORS.length} Doktor)</span>
             </button>
             {BRANCHES.map((branch) => {
-              const count = DOCTORS.filter((d) => d.branch === branch.id).length;
+              const count = DOCTORS.filter((d) => d.branches?.includes(branch.id) || d.branch === branch.id).length;
               return (
                 <button
                   key={branch.id}

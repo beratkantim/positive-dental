@@ -16,6 +16,8 @@ export interface Doctor {
   specialty: string;
   branch: Branch;
   branch_label: string;
+  branches: string[];
+  branches_labels: string[];
   photo: string;
   bio: string;
   education: string[];

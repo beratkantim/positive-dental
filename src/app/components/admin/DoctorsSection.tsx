@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor } from "./shared";
 
+const BRANCH_OPTIONS = [
+  { id: "adana", label: "Adana Türkmenbaşı" },
+  { id: "istanbul", label: "İstanbul Nişantaşı" },
+];
+
 export function DoctorsSection() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,6 +30,18 @@ export function DoctorsSection() {
     if (!confirm("Bu doktoru silmek istediğinize emin misiniz?")) return;
     await supabase.from("doctors").delete().eq("id", id);
     load();
+  };
+
+  const getBranches = (doc: Doctor): string[] => {
+    if (doc.branches && doc.branches.length > 0) return doc.branches;
+    if (doc.branch) return [doc.branch];
+    return [];
+  };
+
+  const getBranchLabels = (doc: Doctor): string[] => {
+    if (doc.branches_labels && doc.branches_labels.length > 0) return doc.branches_labels;
+    if (doc.branch_label) return [doc.branch_label];
+    return getBranches(doc).map(b => BRANCH_OPTIONS.find(o => o.id === b)?.label || b);
   };
 
   return (
@@ -60,9 +77,9 @@ export function DoctorsSection() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-bold text-gray-900">{doc.name}</p>
-                    <Badge color={doc.branch === "adana" ? "indigo" : "amber"}>
-                      {doc.branch_label}
-                    </Badge>
+                    {getBranchLabels(doc).map(label => (
+                      <Badge key={label} color="indigo">{label}</Badge>
+                    ))}
                     <Badge color={doc.is_active ? "green" : "gray"}>
                       {doc.is_active ? "Aktif" : "Pasif"}
                     </Badge>
@@ -97,12 +114,14 @@ function DoctorForm({ doctor, onSave, onCancel }: {
   onSave: () => void;
   onCancel: () => void;
 }) {
+  // Mevcut branches veya eski branch'ten oku
+  const initBranches = doctor?.branches?.length ? doctor.branches : (doctor?.branch ? [doctor.branch] : []);
+
   const [form, setForm] = useState({
     name: doctor?.name || "",
     title: doctor?.title || "",
     specialty: doctor?.specialty || "",
-    branch: doctor?.branch || "adana",
-    branch_label: doctor?.branch_label || "",
+    selectedBranches: initBranches as string[],
     photo: doctor?.photo || "",
     bio: doctor?.bio || "",
     education: doctor?.education?.join("\n") || "",
@@ -113,12 +132,33 @@ function DoctorForm({ doctor, onSave, onCancel }: {
   });
   const [saving, setSaving] = useState(false);
 
+  const toggleBranch = (branchId: string) => {
+    setForm(f => ({
+      ...f,
+      selectedBranches: f.selectedBranches.includes(branchId)
+        ? f.selectedBranches.filter(b => b !== branchId)
+        : [...f.selectedBranches, branchId],
+    }));
+  };
+
   const save = async () => {
     setSaving(true);
+    const branchLabels = form.selectedBranches.map(b => BRANCH_OPTIONS.find(o => o.id === b)?.label || b);
     const payload = {
-      ...form,
+      name: form.name,
+      title: form.title,
+      specialty: form.specialty,
+      branch: form.selectedBranches[0] || "adana", // geriye uyumlu
+      branch_label: branchLabels[0] || "",          // geriye uyumlu
+      branches: form.selectedBranches,
+      branches_labels: branchLabels,
+      photo: form.photo,
+      bio: form.bio,
       education: form.education.split("\n").filter(Boolean),
       expertise: form.expertise.split(",").map(s => s.trim()).filter(Boolean),
+      booking_url: form.booking_url,
+      is_active: form.is_active,
+      sort_order: form.sort_order,
     };
     if (doctor?.id) {
       await supabase.from("doctors").update(payload).eq("id", doctor.id);
@@ -136,15 +176,39 @@ function DoctorForm({ doctor, onSave, onCancel }: {
         <FormField label="Ad Soyad" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
         <FormField label="Unvan" value={form.title} onChange={v => setForm(f => ({ ...f, title: v }))} />
         <FormField label="Uzmanlık" value={form.specialty} onChange={v => setForm(f => ({ ...f, specialty: v }))} />
+
+        {/* Çoklu şube seçimi */}
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Şube</label>
-          <select value={form.branch} onChange={e => setForm(f => ({ ...f, branch: e.target.value as any }))}
-            className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none">
-            <option value="adana">Adana Türkmenbaşı</option>
-            <option value="istanbul">İstanbul Nişantaşı</option>
-          </select>
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Şubeler</label>
+          <div className="space-y-2">
+            {BRANCH_OPTIONS.map(b => {
+              const selected = form.selectedBranches.includes(b.id);
+              return (
+                <button
+                  key={b.id}
+                  type="button"
+                  onClick={() => toggleBranch(b.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-sm font-semibold transition-all text-left ${
+                    selected
+                      ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                      : "border-gray-200 bg-white text-gray-600 hover:border-gray-300"
+                  }`}
+                >
+                  <span className={`w-5 h-5 rounded flex items-center justify-center text-xs ${
+                    selected ? "bg-indigo-500 text-white" : "bg-gray-100 text-gray-400"
+                  }`}>
+                    {selected ? "✓" : ""}
+                  </span>
+                  {b.label}
+                </button>
+              );
+            })}
+          </div>
+          {form.selectedBranches.length === 0 && (
+            <p className="text-xs text-red-500 mt-1">En az bir şube seçin</p>
+          )}
         </div>
-        <FormField label="Şube Etiketi" value={form.branch_label} onChange={v => setForm(f => ({ ...f, branch_label: v }))} />
+
         <ImageUpload
           currentUrl={form.photo}
           bucket="doctors"
@@ -166,7 +230,7 @@ function DoctorForm({ doctor, onSave, onCancel }: {
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />
       </div>
       <div className="flex items-center gap-3 mt-6">
-        <button onClick={save} disabled={saving}
+        <button onClick={save} disabled={saving || form.selectedBranches.length === 0}
           className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold rounded-xl text-sm hover:from-indigo-400 hover:to-violet-500 transition disabled:opacity-60">
           {saving ? "Kaydediliyor..." : "Kaydet"}
         </button>
