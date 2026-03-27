@@ -57,23 +57,36 @@ export function convertToWebp(dataUrl: string, maxWidth = 800): Promise<Blob> {
 }
 
 export async function uploadImage(file: File, bucket: string, fileName: string): Promise<string> {
-  // 1. Dosyayı base64 olarak oku
   const dataUrl = await readFileAsDataURL(file);
-
-  // 2. Canvas ile WebP'ye dönüştür
   const webpBlob = await convertToWebp(dataUrl);
   const path = `${fileName}.webp`;
 
-  // 3. Supabase Storage'a yükle
+  // Önce eski dosyayı silmeyi dene (üzerine yazma sorunu için)
+  await supabase.storage.from(bucket).remove([path]);
+
+  // Yeni dosyayı yükle
   const { error } = await supabase.storage
     .from(bucket)
     .upload(path, webpBlob, { contentType: "image/webp", upsert: true });
 
   if (error) throw new Error(`Yükleme hatası: ${error.message}`);
 
-  // 4. Public URL al
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
-  return data.publicUrl;
+  // Cache buster ekle — tarayıcı eski görseli cache'den göstermesin
+  return `${data.publicUrl}?v=${Date.now()}`;
+}
+
+export async function deleteImage(bucket: string, url: string): Promise<void> {
+  if (!url) return;
+  try {
+    // URL'den dosya yolunu çıkar
+    const parts = url.split(`/storage/v1/object/public/${bucket}/`);
+    if (parts.length < 2) return;
+    const path = parts[1].split("?")[0]; // cache buster'ı kaldır
+    await supabase.storage.from(bucket).remove([path]);
+  } catch {
+    // Silme başarısız olursa sessizce devam et
+  }
 }
 
 export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = "Fotoğraf", hint }: {
@@ -86,10 +99,21 @@ export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = 
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [preview, setPreview] = useState(currentUrl);
 
   useEffect(() => { setPreview(currentUrl); }, [currentUrl]);
+
+  const handleDelete = async () => {
+    if (!preview) return;
+    if (!confirm("Fotoğrafı silmek istediğinize emin misiniz?")) return;
+    setDeleting(true);
+    await deleteImage(bucket, preview);
+    setPreview("");
+    onUploaded("");
+    setDeleting(false);
+  };
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -143,14 +167,26 @@ export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = 
 
         <div className="flex-1 space-y-2">
           <input ref={inputRef} type="file" accept="image/*" onChange={handleFile} className="hidden" />
-          <button
-            type="button"
-            onClick={() => inputRef.current?.click()}
-            disabled={uploading || !fileName}
-            className="px-4 py-2 bg-indigo-50 text-indigo-600 font-semibold text-sm rounded-xl hover:bg-indigo-100 transition disabled:opacity-50"
-          >
-            {uploading ? "Yükleniyor..." : preview ? "Değiştir" : "Fotoğraf Yükle"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              disabled={uploading || deleting || !fileName}
+              className="px-4 py-2 bg-indigo-50 text-indigo-600 font-semibold text-sm rounded-xl hover:bg-indigo-100 transition disabled:opacity-50"
+            >
+              {uploading ? "Yükleniyor..." : preview ? "Değiştir" : "Fotoğraf Yükle"}
+            </button>
+            {preview && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="px-3 py-2 bg-red-50 text-red-600 font-semibold text-sm rounded-xl hover:bg-red-100 transition disabled:opacity-50"
+              >
+                {deleting ? "Siliniyor..." : "Sil"}
+              </button>
+            )}
+          </div>
 
           {!fileName && (
             <p className="text-xs text-amber-600">Önce isim alanını doldurun</p>
