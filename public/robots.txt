@@ -1,0 +1,12 @@
+# Positive Dental Studio
+# https://positivedental.com
+
+User-agent: *
+Allow: /
+
+# Admin paneli taranmasın
+Disallow: /admin
+Disallow: /admin/
+
+# Sitemap
+Sitemap: https://positivedental.com/sitemap.xml
