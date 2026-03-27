@@ -198,7 +198,7 @@ export function Services() {
                 >
                   {s.image && (
                     <div className="relative h-44 overflow-hidden">
-                      <ImageWithFallback src={s.image} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" width={400} height={176} />
+                      <ImageWithFallback src={s.image} alt={s.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" width={400} height={176} fetchPriority={i < 4 ? "high" : undefined} loading={i < 4 ? "eager" : "lazy"} />
                       <div className="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent" />
                     </div>
                   )}

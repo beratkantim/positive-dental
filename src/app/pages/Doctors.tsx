@@ -8,7 +8,7 @@ type Branch = "adana" | "istanbul";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
-function DoctorCard({ doctor }: { doctor: Doctor }) {
+function DoctorCard({ doctor, index }: { doctor: Doctor; index?: number }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -19,8 +19,9 @@ function DoctorCard({ doctor }: { doctor: Doctor }) {
           src={doctor.photo}
           alt={doctor.name}
           className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
+          loading={index !== undefined && index < 4 ? "eager" : "lazy"}
           decoding="async"
+          fetchPriority={index !== undefined && index < 4 ? "high" : undefined}
         />
         {/* Şube etiketleri */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">
@@ -198,8 +199,8 @@ export function Doctors() {
                 <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {adanaDoctors.map((doctor) => (
-                  <DoctorCard key={doctor.id} doctor={doctor} />
+                {adanaDoctors.map((doctor, i) => (
+                  <DoctorCard key={doctor.id} doctor={doctor} index={i} />
                 ))}
               </div>
             </div>
@@ -217,8 +218,8 @@ export function Doctors() {
                 <div className="flex-1 h-px bg-gradient-to-r from-white/10 to-transparent" />
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {istanbulDoctors.map((doctor) => (
-                  <DoctorCard key={doctor.id} doctor={doctor} />
+                {istanbulDoctors.map((doctor, i) => (
+                  <DoctorCard key={doctor.id} doctor={doctor} index={i} />
                 ))}
               </div>
             </div>

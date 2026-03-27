@@ -244,6 +244,8 @@ export function BlogPost() {
                 className="w-full h-full object-cover"
                 width={1200}
                 height={514}
+                fetchPriority="high"
+                loading="eager"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/40 to-transparent" />
             </div>

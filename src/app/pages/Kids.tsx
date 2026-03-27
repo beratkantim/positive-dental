@@ -176,6 +176,8 @@ export function Kids() {
                     className="w-full h-full object-cover"
                     width={600}
                     height={400}
+                    fetchPriority="high"
+                    loading="eager"
                   />
                 </div>
 

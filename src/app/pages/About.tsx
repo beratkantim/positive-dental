@@ -204,6 +204,8 @@ export function About() {
                   className="w-full h-[420px] object-cover"
                   width={800}
                   height={420}
+                  fetchPriority="high"
+                  loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
 
