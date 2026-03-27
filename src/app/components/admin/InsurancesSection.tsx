@@ -6,6 +6,7 @@ interface Insurance {
   name: string;
   logo: string;
   description: string;
+  discount_rate: number;
   is_active: boolean;
   sort_order: number;
 }
@@ -69,6 +70,9 @@ export function InsurancesSection() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-bold text-gray-900">{ins.name}</p>
+                    {ins.discount_rate > 0 && (
+                      <Badge color="amber">%{ins.discount_rate} İndirim</Badge>
+                    )}
                     <Badge color={ins.is_active ? "green" : "gray"}>
                       {ins.is_active ? "Aktif" : "Pasif"}
                     </Badge>
@@ -107,6 +111,7 @@ function InsuranceForm({ insurance, onSave, onCancel }: {
     name: insurance?.name || "",
     logo: insurance?.logo || "",
     description: insurance?.description || "",
+    discount_rate: insurance?.discount_rate || 0,
     is_active: insurance?.is_active ?? true,
     sort_order: insurance?.sort_order || 0,
   });
@@ -129,6 +134,7 @@ function InsuranceForm({ insurance, onSave, onCancel }: {
       <h3 className="font-bold text-gray-900 mb-5">{insurance ? "Sigorta Düzenle" : "Yeni Sigorta"}</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField label="Sigorta Adı" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
+        <FormField label="İndirim Oranı (%)" value={String(form.discount_rate)} onChange={v => setForm(f => ({ ...f, discount_rate: Number(v) }))} type="number" />
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />
 
         <div className="md:col-span-2">
