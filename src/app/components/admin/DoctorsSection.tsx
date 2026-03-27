@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor } from "./shared";
+import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor, type Service } from "./shared";
 
 const BRANCH_OPTIONS = [
   { id: "adana", label: "Adana Türkmenbaşı" },
@@ -114,14 +114,17 @@ function DoctorForm({ doctor, onSave, onCancel }: {
   onSave: () => void;
   onCancel: () => void;
 }) {
-  // Mevcut branches veya eski branch'ten oku
   const initBranches = doctor?.branches?.length ? doctor.branches : (doctor?.branch ? [doctor.branch] : []);
+  const initServices = doctor?.service_ids || [];
 
+  const [services, setServices] = useState<Service[]>([]);
   const [form, setForm] = useState({
     name: doctor?.name || "",
     title: doctor?.title || "",
     specialty: doctor?.specialty || "",
     selectedBranches: initBranches as string[],
+    selectedServices: initServices as string[],
+    allServices: initServices.length === 0, // boş = tümü
     photo: doctor?.photo || "",
     bio: doctor?.bio || "",
     education: doctor?.education?.join("\n") || "",
@@ -132,12 +135,27 @@ function DoctorForm({ doctor, onSave, onCancel }: {
   });
   const [saving, setSaving] = useState(false);
 
+  useEffect(() => {
+    supabase.from("services").select("*").eq("is_active", true).order("sort_order").then(({ data }) => {
+      setServices(data || []);
+    });
+  }, []);
+
   const toggleBranch = (branchId: string) => {
     setForm(f => ({
       ...f,
       selectedBranches: f.selectedBranches.includes(branchId)
         ? f.selectedBranches.filter(b => b !== branchId)
         : [...f.selectedBranches, branchId],
+    }));
+  };
+
+  const toggleService = (id: string) => {
+    setForm(f => ({
+      ...f,
+      selectedServices: f.selectedServices.includes(id)
+        ? f.selectedServices.filter(s => s !== id)
+        : [...f.selectedServices, id],
     }));
   };
 
@@ -148,10 +166,11 @@ function DoctorForm({ doctor, onSave, onCancel }: {
       name: form.name,
       title: form.title,
       specialty: form.specialty,
-      branch: form.selectedBranches[0] || "adana", // geriye uyumlu
-      branch_label: branchLabels[0] || "",          // geriye uyumlu
+      branch: form.selectedBranches[0] || "adana",
+      branch_label: branchLabels[0] || "",
       branches: form.selectedBranches,
       branches_labels: branchLabels,
+      service_ids: form.allServices ? [] : form.selectedServices, // boş = tümü
       photo: form.photo,
       bio: form.bio,
       education: form.education.split("\n").filter(Boolean),
@@ -206,6 +225,44 @@ function DoctorForm({ doctor, onSave, onCancel }: {
           </div>
           {form.selectedBranches.length === 0 && (
             <p className="text-xs text-red-500 mt-1">En az bir şube seçin</p>
+          )}
+        </div>
+
+        {/* Tedavi / Hizmet seçimi */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Yaptığı Tedaviler</label>
+
+          <label className="flex items-center gap-2 mb-3 cursor-pointer">
+            <input type="checkbox" checked={form.allServices}
+              onChange={e => setForm(f => ({ ...f, allServices: e.target.checked, selectedServices: [] }))}
+              className="rounded" />
+            <span className="text-sm font-semibold text-gray-700">Tüm tedavileri yapar</span>
+          </label>
+
+          {!form.allServices && (
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {services.map(s => {
+                const selected = form.selectedServices.includes(s.id);
+                return (
+                  <button key={s.id} type="button" onClick={() => toggleService(s.id)}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium text-left transition-all ${
+                      selected
+                        ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                        : "border-gray-200 text-gray-600 hover:border-gray-300"
+                    }`}>
+                    <span className={`w-4 h-4 rounded flex items-center justify-center text-[10px] ${
+                      selected ? "bg-indigo-500 text-white" : "bg-gray-100"
+                    }`}>{selected ? "✓" : ""}</span>
+                    <span className="text-lg">{s.icon}</span>
+                    <span className="truncate">{s.title}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {!form.allServices && form.selectedServices.length === 0 && (
+            <p className="text-xs text-amber-600 mt-1">En az bir tedavi seçin veya "Tüm tedavileri yapar" işaretleyin</p>
           )}
         </div>
 

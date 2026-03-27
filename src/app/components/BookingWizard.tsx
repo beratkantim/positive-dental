@@ -139,28 +139,28 @@ export function BookingWizard() {
   // "istanbul-nisantasi" → "istanbul", "adana-turkmenbasi" → "adana"
   const branchShort = branchSlug.split("-")[0] || "";
 
-  const filteredDoctors = clinicId
+  // Şube filtresi
+  const branchFiltered = clinicId
     ? activeDoctors.filter(d => {
         const db = d.branch?.toLowerCase() || "";
         const dbl = d.branch_label?.toLowerCase() || "";
         const dbs = (d.branches || []).map(b => b.toLowerCase());
         const dbls = (d.branches_labels || []).map(l => l.toLowerCase());
-
-        // Kısa isimle eşleşme: "adana", "istanbul"
-        if (db === branchShort) return true;
-        if (dbs.includes(branchShort)) return true;
-        // Tam slug ile: "istanbul-nisantasi"
-        if (db === branchSlug) return true;
-        if (dbs.includes(branchSlug)) return true;
-        // Şube adı ile: "İstanbul Nişantaşı"
-        if (dbl === branchName) return true;
-        if (dbls.includes(branchName)) return true;
-        // Şehir ile: "istanbul", "adana"
-        if (branchCity && dbl.includes(branchCity)) return true;
-        if (branchCity && dbls.some(l => l.includes(branchCity))) return true;
+        if (db === branchShort || dbs.includes(branchShort)) return true;
+        if (db === branchSlug || dbs.includes(branchSlug)) return true;
+        if (dbl === branchName || dbls.includes(branchName)) return true;
+        if (branchCity && (dbl.includes(branchCity) || dbls.some(l => l.includes(branchCity)))) return true;
         return false;
       })
     : activeDoctors;
+
+  // Tedavi filtresi — service_ids boş = tüm tedavileri yapar
+  const filteredDoctors = serviceId
+    ? branchFiltered.filter(d => {
+        if (!d.service_ids || d.service_ids.length === 0) return true; // boş = tümü
+        return d.service_ids.includes(serviceId);
+      })
+    : branchFiltered;
 
   const canNext = () => {
     if (step === 1) return !!clinicId;
