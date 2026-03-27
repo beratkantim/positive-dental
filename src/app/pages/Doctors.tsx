@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { Calendar, MapPin, GraduationCap, Star, ChevronRight, Phone, ExternalLink } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
+import { SEO } from "../components/SEO";
 import type { Doctor, BranchData } from "@/lib/supabase";
 
 type Branch = "adana" | "istanbul";
@@ -126,6 +127,14 @@ export function Doctors() {
   }
 
   return (
+    <>
+    <SEO
+      title="Doktorlarımız — Uzman Diş Hekimleri"
+      description="Positive Dental Studio uzman diş hekimleri. İstanbul Nişantaşı ve Adana Türkmenbaşı şubelerimizde deneyimli ve sertifikalı hekimler."
+      url="/doktorlarimiz"
+      keywords={["diş hekimi", "uzman diş doktoru", "implant uzmanı", "ortodonti uzmanı", "estetik diş hekimi"]}
+      schemaType="dental"
+    />
     <main className="min-h-screen" style={{ backgroundColor: "#0D1235" }}>
       {/* Hero */}
       <section className="relative pt-20 pb-16 overflow-hidden">
@@ -253,5 +262,6 @@ export function Doctors() {
         </div>
       </section>
     </main>
+    </>
   );
 }

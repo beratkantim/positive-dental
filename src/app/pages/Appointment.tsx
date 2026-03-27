@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router";
 import { Calendar, Phone, Mail, Clock } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
+import { SEO } from "../components/SEO";
 import type { Doctor, Service, Branch } from "@/lib/supabase";
 import { StepBar } from "../components/appointment/StepBar";
 import { Step1 } from "../components/appointment/Step1";
@@ -62,6 +63,15 @@ export function Appointment() {
   }
 
   return (
+    <>
+    <SEO
+      title="Online Randevu Al"
+      description="Positive Dental Studio online randevu sistemi. Doktorunuzu seçin, uygun tarihi belirleyin, anında randevu oluşturun."
+      url="/randevu"
+      keywords={["diş randevu", "online randevu", "diş hekimi randevu", "diş kliniği randevu"]}
+      schemaType="dental"
+      noindex
+    />
     <main className="min-h-screen py-12 px-4" style={{ backgroundColor: "#0D1235" }}>
       {/* Arka plan dekorasyon */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -144,5 +154,6 @@ export function Appointment() {
         )}
       </div>
     </main>
+    </>
   );
 }
