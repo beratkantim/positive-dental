@@ -4,19 +4,14 @@ import {
   FormField, type PriceItem,
 } from "./shared";
 
-const CATEGORIES = [
-  "Muayene Fiyatları", "Koruyucu Diş Hekimliği", "Çocuk Diş Tedavileri",
-  "Dolgu ve Kanal Tedavileri", "Diş Estetiği Tedavileri", "Diş Beyazlatma",
-  "Diş Çekimi Fiyatları", "İmplant Tedavisi", "Ortodontik Tedaviler",
-  "Protez Tedavileri", "Ağız ve Çene Cerrahisi", "Dijital Diş Hekimliği",
-];
-
 export function PricesSection() {
   const [items, setItems] = useState<PriceItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<PriceItem | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [filterCat, setFilterCat] = useState("");
+  const [showCatManager, setShowCatManager] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
@@ -99,6 +94,11 @@ export function PricesSection() {
           <p className="text-gray-500 text-sm mt-0.5">{items.length} kalem · {categories.length} kategori</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
+          {/* Kategori Yönet */}
+          <button onClick={() => setShowCatManager(!showCatManager)}
+            className="flex items-center gap-1.5 px-3 py-2 bg-violet-50 text-violet-600 font-semibold rounded-xl text-sm hover:bg-violet-100 transition">
+            🏷️ Kategoriler
+          </button>
           {/* Import */}
           <input ref={fileRef} type="file" accept=".csv" onChange={importCSV} className="hidden" />
           <button onClick={() => fileRef.current?.click()}
@@ -118,6 +118,82 @@ export function PricesSection() {
         </div>
       </div>
 
+      {/* Kategori yönetimi */}
+      {showCatManager && (
+        <Card className="p-5">
+          <h3 className="font-bold text-gray-900 mb-4">Kategori Yönetimi</h3>
+
+          {/* Yeni kategori ekle */}
+          <div className="flex gap-2 mb-4">
+            <input
+              value={newCatName}
+              onChange={e => setNewCatName(e.target.value)}
+              placeholder="Yeni kategori adı..."
+              className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none"
+              onKeyDown={e => {
+                if (e.key === "Enter" && newCatName.trim()) {
+                  // Boş bir item ekleyerek kategoriyi oluştur
+                  supabase.from("price_items").insert({
+                    category: newCatName.trim(),
+                    name: "(Yeni kalem ekleyin)",
+                    price_min: 0,
+                    price_max: 0,
+                    price_note: "",
+                    is_active: false,
+                    sort_order: 0,
+                  }).then(() => { setNewCatName(""); load(); });
+                }
+              }}
+            />
+            <button
+              onClick={() => {
+                if (!newCatName.trim()) return;
+                supabase.from("price_items").insert({
+                  category: newCatName.trim(),
+                  name: "(Yeni kalem ekleyin)",
+                  price_min: 0,
+                  price_max: 0,
+                  price_note: "",
+                  is_active: false,
+                  sort_order: 0,
+                }).then(() => { setNewCatName(""); load(); });
+              }}
+              className="px-4 py-2 bg-indigo-500 text-white font-bold rounded-xl text-sm hover:bg-indigo-400 transition">
+              Ekle
+            </button>
+          </div>
+
+          {/* Mevcut kategoriler */}
+          <div className="space-y-2">
+            {categories.map(cat => {
+              const count = items.filter(i => i.category === cat).length;
+              return (
+                <div key={cat} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">{cat}</p>
+                    <p className="text-xs text-gray-400">{count} kalem</p>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`"${cat}" kategorisindeki ${count} kalem de silinecek. Emin misiniz?`)) return;
+                      await supabase.from("price_items").delete().eq("category", cat);
+                      if (filterCat === cat) setFilterCat("");
+                      load();
+                    }}
+                    className="px-3 py-1.5 text-xs font-semibold text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition">
+                    Kategoriyi Sil
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {categories.length === 0 && (
+            <p className="text-gray-400 text-sm text-center py-4">Henüz kategori yok</p>
+          )}
+        </Card>
+      )}
+
       {/* Kategori filtresi */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
         <button onClick={() => setFilterCat("")}
@@ -135,6 +211,7 @@ export function PricesSection() {
       {showForm && (
         <PriceForm
           item={editing}
+          categories={categories}
           onSave={() => { setShowForm(false); load(); }}
           onCancel={() => setShowForm(false)}
         />
@@ -193,8 +270,9 @@ export function PricesSection() {
   );
 }
 
-function PriceForm({ item, onSave, onCancel }: {
+function PriceForm({ item, categories, onSave, onCancel }: {
   item: PriceItem | null;
+  categories: string[];
   onSave: () => void;
   onCancel: () => void;
 }) {
@@ -226,11 +304,16 @@ function PriceForm({ item, onSave, onCancel }: {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-1.5">Kategori</label>
-          <select value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-            className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none">
-            <option value="">Seçin veya yazın...</option>
-            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <input
+            list="cat-list"
+            value={form.category}
+            onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+            placeholder="Kategori seçin veya yeni yazın..."
+            className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none"
+          />
+          <datalist id="cat-list">
+            {categories.map(c => <option key={c} value={c} />)}
+          </datalist>
         </div>
         <FormField label="İşlem Adı" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
         <FormField label="Minimum Fiyat (₺)" value={String(form.price_min)} onChange={v => setForm(f => ({ ...f, price_min: parseInt(v) || 0 }))} type="number" />
