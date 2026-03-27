@@ -4,9 +4,10 @@ import { useState } from "react";
 import {
   Phone, Mail, MapPin, Clock, MessageSquare,
   HeadphonesIcon, ChevronDown, ChevronUp, Calendar,
-  ExternalLink, ArrowRight,
+  ExternalLink, ArrowRight, Send, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
+import { supabase } from "@/lib/supabase";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
@@ -60,6 +61,42 @@ const CONTACT_CARDS = [
 
 export function Contact() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "", branch: "istanbul" });
+  const [formStatus, setFormStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [formError, setFormError] = useState("");
+
+  const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError("");
+
+    // Basic validation
+    if (!formData.name.trim() || formData.name.trim().length < 2) { setFormError("Lütfen adınızı girin."); return; }
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) { setFormError("Geçerli bir e-posta adresi girin."); return; }
+    if (!formData.phone.trim() || formData.phone.replace(/\D/g, "").length < 10) { setFormError("Geçerli bir telefon numarası girin."); return; }
+    if (!formData.message.trim() || formData.message.trim().length < 10) { setFormError("Mesajınız en az 10 karakter olmalıdır."); return; }
+
+    setFormStatus("sending");
+    try {
+      const { error } = await supabase.from("contact_messages").insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        subject: formData.subject.trim() || "Genel",
+        message: formData.message.trim(),
+        branch: formData.branch,
+      });
+      if (error) throw error;
+      setFormStatus("success");
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "", branch: "istanbul" });
+    } catch {
+      setFormStatus("error");
+      setFormError("Mesajınız gönderilemedi. Lütfen daha sonra tekrar deneyin.");
+    }
+  };
 
   return (
     <>
@@ -332,6 +369,90 @@ export function Contact() {
                 </div>
               </motion.div>
             </div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════
+            CONTACT FORM
+        ══════════════════════════════════════════════════════════ */}
+        <section className="py-20 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-12">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Mesaj Gönderin</span>
+              <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">
+                Bize{" "}
+                <span className="bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent">yazın.</span>
+              </h2>
+            </div>
+
+            {formStatus === "success" ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                className="bg-green-50 border border-green-200 rounded-3xl p-10 text-center"
+              >
+                <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                <h3 className="font-black text-green-800 text-xl mb-2">Mesajınız gönderildi!</h3>
+                <p className="text-green-600 text-sm mb-6">En kısa sürede size dönüş yapacağız.</p>
+                <button onClick={() => setFormStatus("idle")}
+                  className="text-green-700 font-bold text-sm hover:underline">Yeni mesaj gönder</button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleFormSubmit} className="bg-slate-50 rounded-3xl border border-slate-100 p-8 space-y-5">
+                {formError && (
+                  <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3">
+                    <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
+                    <span className="text-red-700 text-sm">{formError}</span>
+                  </div>
+                )}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Ad Soyad *</label>
+                    <input type="text" name="name" value={formData.name} onChange={handleFormChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white"
+                      placeholder="Adınız Soyadınız" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">E-Posta *</label>
+                    <input type="email" name="email" value={formData.email} onChange={handleFormChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white"
+                      placeholder="ornek@email.com" />
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Telefon *</label>
+                    <input type="tel" name="phone" value={formData.phone} onChange={handleFormChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white"
+                      placeholder="0500 000 00 00" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-1.5">Şube</label>
+                    <select name="branch" value={formData.branch} onChange={handleFormChange}
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white">
+                      <option value="istanbul">İstanbul - Nişantaşı</option>
+                      <option value="adana">Adana - Türkmenbaşı</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Konu</label>
+                  <input type="text" name="subject" value={formData.subject} onChange={handleFormChange}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white"
+                    placeholder="Randevu, bilgi, şikayet..." />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-slate-700 mb-1.5">Mesajınız *</label>
+                  <textarea name="message" value={formData.message} onChange={handleFormChange} rows={5}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white resize-none"
+                    placeholder="Mesajınızı buraya yazın..." />
+                </div>
+                <button type="submit" disabled={formStatus === "sending"}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-lg shadow-indigo-200 hover:scale-105 transition-all disabled:opacity-60 disabled:hover:scale-100">
+                  <Send className="w-4 h-4" />
+                  {formStatus === "sending" ? "Gönderiliyor..." : "Mesaj Gönder"}
+                </button>
+              </form>
+            )}
           </div>
         </section>
 

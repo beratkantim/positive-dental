@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router";
 import {
@@ -8,6 +8,7 @@ import {
   GraduationCap, Briefcase, Stethoscope, Globe2,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
+import { useTable } from "../hooks/useSupabase";
 
 const BOOKING_URL = "https://randevu.positivedental.com";
 
@@ -70,15 +71,46 @@ const STEPS = [
   { n: "04", title: "Aile Kaydı Yapın",      desc: "Dilediğinizde eş ve çocuklarınızı da sisteme ekletebilirsiniz." },
 ];
 
+// Color palette for DB partners that don't have a color field
+const DB_COLORS = [
+  "from-blue-500 to-blue-700", "from-red-500 to-rose-700", "from-orange-500 to-amber-600",
+  "from-sky-500 to-cyan-600", "from-green-600 to-emerald-700", "from-indigo-600 to-violet-700",
+  "from-yellow-500 to-amber-600", "from-teal-500 to-emerald-700", "from-violet-600 to-purple-700",
+  "from-pink-500 to-rose-600", "from-slate-600 to-gray-800", "from-amber-500 to-orange-600",
+];
+
 export function Partners() {
   const [activeCategory, setActiveCategory] = useState("tumu");
   const [search, setSearch] = useState("");
 
-  const filtered = PARTNERS.filter((p) => {
-    const matchCat = activeCategory === "tumu" || p.category === activeCategory;
+  const { data: dbPartners } = useTable<{
+    id: string; name: string; logo: string; description: string;
+    discount_rate: number; is_active: boolean; sort_order: number;
+  }>("partners", "sort_order");
+
+  const useDb = dbPartners && dbPartners.length > 0;
+
+  const partners = useMemo(() => {
+    if (!useDb) return PARTNERS;
+    return dbPartners
+      .filter((p) => p.is_active)
+      .map((p, i) => ({
+        id: i + 1,
+        name: p.name,
+        short: p.name.split(" ").map((w: string) => w[0]).join("").slice(0, 4).toUpperCase(),
+        category: "tumu" as string,
+        color: DB_COLORS[i % DB_COLORS.length],
+        discount: p.discount_rate ? `%${p.discount_rate}` : "",
+        emoji: p.logo || "🏢",
+        desc: p.description || "",
+      }));
+  }, [dbPartners, useDb]);
+
+  const filtered = partners.filter((p) => {
+    const matchCat = !useDb && (activeCategory === "tumu" || p.category === activeCategory);
     const q = search.toLowerCase();
     const matchSearch = !q || p.name.toLowerCase().includes(q) || p.short.toLowerCase().includes(q);
-    return matchCat && matchSearch;
+    return (useDb || matchCat) && matchSearch;
   });
 
   return (
@@ -136,7 +168,7 @@ export function Partners() {
                 className="grid grid-cols-2 gap-3"
               >
                 {[
-                  { value: `${PARTNERS.length}+`, label: "Anlaşmalı Kurum", emoji: "🏢" },
+                  { value: `${partners.length}+`, label: "Anlaşmalı Kurum", emoji: "🏢" },
                   { value: "%30'a",     label: "Kadar İndirim",  emoji: "💰" },
                   { value: "Aile",     label: "Kapsamı Dahil",  emoji: "👨‍👩‍👧" },
                   { value: "2 Şube",   label: "İstanbul & Adana", emoji: "📍" },
@@ -215,24 +247,26 @@ export function Partners() {
                   className="w-full pl-10 pr-4 py-3 rounded-2xl border border-slate-200 text-slate-700 text-sm focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 bg-white"
                 />
               </div>
-              <div className="flex flex-wrap gap-2">
-                {CATEGORIES.map((cat) => {
-                  const Icon = cat.icon;
-                  return (
-                    <button
-                      key={cat.id}
-                      onClick={() => setActiveCategory(cat.id)}
-                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
-                        activeCategory === cat.id
-                          ? "bg-gradient-to-r from-indigo-500 to-violet-600 border-transparent text-white shadow-md"
-                          : "bg-white border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600"
-                      }`}
-                    >
-                      <Icon className="w-3.5 h-3.5" /> {cat.label}
-                    </button>
-                  );
-                })}
-              </div>
+              {!useDb && (
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map((cat) => {
+                    const Icon = cat.icon;
+                    return (
+                      <button
+                        key={cat.id}
+                        onClick={() => setActiveCategory(cat.id)}
+                        className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl border text-sm font-semibold transition-all ${
+                          activeCategory === cat.id
+                            ? "bg-gradient-to-r from-indigo-500 to-violet-600 border-transparent text-white shadow-md"
+                            : "bg-white border-slate-200 text-slate-600 hover:border-indigo-200 hover:text-indigo-600"
+                        }`}
+                      >
+                        <Icon className="w-3.5 h-3.5" /> {cat.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Grid */}

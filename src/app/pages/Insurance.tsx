@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { SEO } from "../components/SEO";
 import { InsuranceHero } from "../components/insurance/InsuranceHero";
 import { InsuranceGrid } from "../components/insurance/InsuranceGrid";
 import { CoverageTable } from "../components/insurance/CoverageTable";
 import { InsuranceFAQ } from "../components/insurance/InsuranceFAQ";
+import { useTable } from "../hooks/useSupabase";
 
 /* -- SIGORTA FIRMALARI -- */
 const INSURANCES = [
@@ -165,25 +166,68 @@ const INSURANCES = [
   },
 ];
 
+// Color/style palettes for DB insurances
+const DB_INS_STYLES = [
+  { color: "from-blue-600 to-blue-800", lightColor: "bg-blue-50 border-blue-200", textColor: "text-blue-700" },
+  { color: "from-red-600 to-red-800", lightColor: "bg-red-50 border-red-200", textColor: "text-red-700" },
+  { color: "from-orange-500 to-red-600", lightColor: "bg-orange-50 border-orange-200", textColor: "text-orange-700" },
+  { color: "from-green-600 to-emerald-700", lightColor: "bg-green-50 border-green-200", textColor: "text-green-700" },
+  { color: "from-violet-600 to-purple-800", lightColor: "bg-violet-50 border-violet-200", textColor: "text-violet-700" },
+  { color: "from-yellow-500 to-amber-700", lightColor: "bg-amber-50 border-amber-200", textColor: "text-amber-700" },
+  { color: "from-teal-500 to-emerald-700", lightColor: "bg-teal-50 border-teal-200", textColor: "text-teal-700" },
+  { color: "from-slate-600 to-slate-800", lightColor: "bg-slate-50 border-slate-200", textColor: "text-slate-700" },
+  { color: "from-indigo-500 to-violet-700", lightColor: "bg-indigo-50 border-indigo-200", textColor: "text-indigo-700" },
+  { color: "from-rose-500 to-rose-700", lightColor: "bg-rose-50 border-rose-200", textColor: "text-rose-700" },
+  { color: "from-pink-500 to-rose-600", lightColor: "bg-pink-50 border-pink-200", textColor: "text-pink-700" },
+  { color: "from-cyan-500 to-blue-700", lightColor: "bg-cyan-50 border-cyan-200", textColor: "text-cyan-700" },
+];
+
 export function Insurance() {
   const [search, setSearch] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [showAll, setShowAll] = useState(false);
 
+  const { data: dbInsurances } = useTable<{
+    id: string; name: string; logo: string; description: string;
+    discount_rate: number; is_active: boolean; sort_order: number;
+  }>("insurances", "sort_order");
+
+  const insurances = useMemo(() => {
+    if (!dbInsurances || dbInsurances.length === 0) return INSURANCES;
+    return dbInsurances
+      .filter((ins) => ins.is_active)
+      .map((ins, i) => {
+        const style = DB_INS_STYLES[i % DB_INS_STYLES.length];
+        return {
+          id: i + 1,
+          name: ins.name,
+          logo: ins.logo || "🏥",
+          color: style.color,
+          lightColor: style.lightColor,
+          textColor: style.textColor,
+          type: ins.description || "Sağlık Sigortası",
+          coverage: [] as string[],
+          limits: ins.discount_rate ? `%${ins.discount_rate} indirim` : "",
+          note: "",
+          popular: i < 3,
+        };
+      });
+  }, [dbInsurances]);
+
   return (
     <>
       <SEO
-        title="Anla\u015fmal\u0131 Sigortalar \u2014 Di\u015f Tedavisi Sigorta Kapsam\u0131"
-        description="Positive Dental Studio'da ge\u00e7erli sigorta poli\u00e7eleri: Allianz, AXA, Mapfre, Anadolu Sigorta ve daha fazlas\u0131. Poli\u00e7enizle \u00fccretsiz muayene al\u0131n."
+        title="Anlaşmalı Sigortalar — Diş Tedavisi Sigorta Kapsamı"
+        description="Positive Dental Studio'da geçerli sigorta poliçeleri: Allianz, AXA, Mapfre, Anadolu Sigorta ve daha fazlası. Poliçenizle ücretsiz muayene alın."
         url="/anlasmali-sigortalar"
-        keywords={["di\u015f sigortas\u0131", "anla\u015fmal\u0131 sigorta", "sa\u011fl\u0131k sigortas\u0131 di\u015f", "tamamlay\u0131c\u0131 sigorta di\u015f", "allianz di\u015f", "axa di\u015f"]}
+        keywords={["diş sigortası", "anlaşmalı sigorta", "sağlık sigortası diş", "tamamlayıcı sigorta diş", "allianz diş", "axa diş"]}
         schemaType="dental"
       />
 
       <div className="bg-white overflow-hidden">
-        <InsuranceHero insuranceCount={INSURANCES.length} />
+        <InsuranceHero insuranceCount={insurances.length} />
         <InsuranceGrid
-          insurances={INSURANCES}
+          insurances={insurances}
           search={search}
           setSearch={setSearch}
           showAll={showAll}
