@@ -12,7 +12,30 @@ export function PricesSection() {
   const [filterCat, setFilterCat] = useState("");
   const [showCatManager, setShowCatManager] = useState(false);
   const [newCatName, setNewCatName] = useState("");
+  const [catError, setCatError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const addCategory = async () => {
+    const name = newCatName.trim();
+    if (!name) return;
+    if (categories.includes(name)) { setCatError("Bu kategori zaten var"); return; }
+    setCatError("");
+    const { error } = await supabase.from("price_items").insert({
+      category: name,
+      name: "(Yeni kalem ekleyin)",
+      price_min: 0,
+      price_max: 0,
+      price_note: "",
+      is_active: false,
+      sort_order: 0,
+    });
+    if (error) {
+      setCatError(`Hata: ${error.message}`);
+      return;
+    }
+    setNewCatName("");
+    load();
+  };
 
   const load = async () => {
     setLoading(true);
@@ -130,38 +153,14 @@ export function PricesSection() {
               onChange={e => setNewCatName(e.target.value)}
               placeholder="Yeni kategori adı..."
               className="flex-1 px-3 py-2 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none"
-              onKeyDown={e => {
-                if (e.key === "Enter" && newCatName.trim()) {
-                  // Boş bir item ekleyerek kategoriyi oluştur
-                  supabase.from("price_items").insert({
-                    category: newCatName.trim(),
-                    name: "(Yeni kalem ekleyin)",
-                    price_min: 0,
-                    price_max: 0,
-                    price_note: "",
-                    is_active: false,
-                    sort_order: 0,
-                  }).then(() => { setNewCatName(""); load(); });
-                }
-              }}
+              onKeyDown={e => { if (e.key === "Enter") addCategory(); }}
             />
-            <button
-              onClick={() => {
-                if (!newCatName.trim()) return;
-                supabase.from("price_items").insert({
-                  category: newCatName.trim(),
-                  name: "(Yeni kalem ekleyin)",
-                  price_min: 0,
-                  price_max: 0,
-                  price_note: "",
-                  is_active: false,
-                  sort_order: 0,
-                }).then(() => { setNewCatName(""); load(); });
-              }}
+            <button onClick={addCategory}
               className="px-4 py-2 bg-indigo-500 text-white font-bold rounded-xl text-sm hover:bg-indigo-400 transition">
               Ekle
             </button>
           </div>
+          {catError && <p className="text-red-500 text-sm mb-3">{catError}</p>}
 
           {/* Mevcut kategoriler */}
           <div className="space-y-2">
