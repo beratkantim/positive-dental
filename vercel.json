@@ -8,21 +8,19 @@
     { "source": "/partners", "destination": "/anlasmali-kurumlar", "permanent": true },
     { "source": "/insurance", "destination": "/anlasmali-sigortalar", "permanent": true },
     { "source": "/prices", "destination": "/fiyat-listesi", "permanent": true },
-    { "source": "/doctors", "destination": "/doktorlarimiz", "permanent": true },
-    { "source": "/sitemap.xml", "destination": "/sitemap_29471.xml", "permanent": false }
+    { "source": "/doctors", "destination": "/doktorlarimiz", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/sitemap_29471.xml", "destination": "/api/sitemap_29471.xml" },
-    { "source": "/sitemap-static.xml", "destination": "/api/sitemap-static.xml" },
-    { "source": "/sitemap-blog.xml", "destination": "/api/sitemap-blog.xml" },
-    { "source": "/sitemap-services.xml", "destination": "/api/sitemap-services.xml" },
-    { "source": "/robots.txt", "destination": "/api/robots.txt" },
-    { "source": "/api/dentsoft", "destination": "/api/dentsoft" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap-index" },
+    { "source": "/sitemap_29471.xml", "destination": "/api/sitemap-index" },
+    { "source": "/sitemap-static.xml", "destination": "/api/sitemap-static" },
+    { "source": "/sitemap-blog.xml", "destination": "/api/sitemap-blog" },
+    { "source": "/sitemap-services.xml", "destination": "/api/sitemap-services" },
+    { "source": "/robots.txt", "destination": "/api/robots" },
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/admin/(.*)", "destination": "/index.html" },
     { "source": "/assets/(.*)", "destination": "/assets/$1" },
     { "source": "/((?!api/).*)", "destination": "/index.html" }
-
   ],
   "headers": [
     {

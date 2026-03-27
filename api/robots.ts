@@ -4,7 +4,7 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://positive-dental.vercel.app/sitemap_29471.xml
+Sitemap: https://positive-dental.vercel.app/sitemap.xml
 `;
 
   return new Response(txt, {
