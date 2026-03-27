@@ -11,9 +11,27 @@ export function LoginPage({ onLogin }: { onLogin: () => void }) {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) setError("Email veya şifre hatalı.");
-    else onLogin();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setError("Email veya şifre hatalı.");
+    } else {
+      // Giriş yapan kullanıcı admin_users'ta yoksa otomatik ekle
+      const userEmail = data.user?.email;
+      if (userEmail) {
+        const { data: existing } = await supabase.from("admin_users").select("id").eq("email", userEmail).maybeSingle();
+        if (!existing) {
+          await supabase.from("admin_users").insert({
+            email: userEmail,
+            full_name: userEmail.split("@")[0],
+            role: "viewer",
+            is_active: true,
+          });
+        }
+        // Son giriş zamanını güncelle
+        await supabase.from("admin_users").update({ last_login: new Date().toISOString() }).eq("email", userEmail);
+      }
+      onLogin();
+    }
     setLoading(false);
   };
 
