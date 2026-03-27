@@ -33,7 +33,14 @@ export default async function handler(req: Request) {
   try {
     const url = new URL(req.url);
     // Path: /api/dentsoft/Clinic/DoctorList → Clinic/DoctorList
-    const apiPath = url.pathname.replace(/^\/api\/dentsoft\/?/, "");
+    let apiPath = url.pathname.replace(/^\/api\/dentsoft\/?/, "");
+    // Vercel bazen path parametrelerini query'ye ekler
+    if (!apiPath && url.searchParams.has("path")) {
+      const pathParam = url.searchParams.getAll("path");
+      apiPath = pathParam.join("/");
+    }
+    // Temizle
+    apiPath = apiPath.replace(/^\/+|\/+$/g, "");
 
     // Güvenlik
     const isAllowed = ALLOWED_PATHS.some(p => apiPath.startsWith(p));
@@ -54,6 +61,7 @@ export default async function handler(req: Request) {
     }
 
     const targetUrl = `${BASE}/${apiPath}${query.toString() ? "?" + query.toString() : ""}`;
+    console.log("[Dentsoft proxy]", req.method, targetUrl);
 
     // Fetch
     const fetchOpts: RequestInit = {
