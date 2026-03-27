@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { BlogPostSEO } from "../components/SEO";
 import { supabase } from "@/lib/supabase";
 import type { BlogPost as BlogPostDB } from "@/lib/supabase";
+import { sanitizeHTML } from "@/lib/sanitize";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 interface BlogPost {
@@ -269,7 +270,7 @@ export function BlogPost() {
                 {/* Content */}
                 <div
                   className="prose-article"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  dangerouslySetInnerHTML={{ __html: sanitizeHTML(post.content) }}
                   style={{
                     lineHeight: "1.85",
                     color: "#334155",

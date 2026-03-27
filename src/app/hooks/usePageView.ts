@@ -27,12 +27,29 @@ function getSessionId(): string {
   return id;
 }
 
+// Aynı path'e 5 saniye içinde tekrar kayıt gönderme (spam/bot koruması)
+const recentPaths = new Map<string, number>();
+
 export function usePageView() {
   const location = useLocation();
 
   useEffect(() => {
-    // Bot'ları ve prerender'ları atla
-    if (navigator.userAgent.includes("bot") || navigator.userAgent.includes("prerender")) return;
+    const ua = navigator.userAgent.toLowerCase();
+    // Bot, crawler, prerender atla
+    if (ua.includes("bot") || ua.includes("crawl") || ua.includes("spider") || ua.includes("prerender")) return;
+    // Headless browser atla
+    if (ua.includes("headless") || !navigator.languages?.length) return;
+
+    // Rate limit: aynı path 5 saniye içinde tekrar gönderilmez
+    const now = Date.now();
+    const lastSent = recentPaths.get(location.pathname) || 0;
+    if (now - lastSent < 5000) return;
+    recentPaths.set(location.pathname, now);
+
+    // Eski kayıtları temizle (memory leak önleme)
+    if (recentPaths.size > 50) {
+      for (const [k, v] of recentPaths) { if (now - v > 30000) recentPaths.delete(k); }
+    }
 
     supabase.from("page_views").insert({
       path: location.pathname,

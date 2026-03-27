@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, type BlogPost } from "./shared";
+import { sanitizeHTML } from "@/lib/sanitize";
 
 export const BLOG_CATEGORY_OPTIONS = [
   { label: "Fiyat Rehberi", color: "bg-emerald-100 text-emerald-700" },
@@ -371,7 +372,7 @@ function BlogForm({ post, onSave, onCancel }: { post: BlogPost | null; onSave: (
             {form.author_title && <span>· {form.author_title}</span>}
           </div>
           {form.content && (
-            <div className="prose-article mt-4 border-t pt-4" dangerouslySetInnerHTML={{ __html: form.content }} />
+            <div className="prose-article mt-4 border-t pt-4" dangerouslySetInnerHTML={{ __html: sanitizeHTML(form.content) }} />
           )}
         </div>
       )}
