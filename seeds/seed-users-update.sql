@@ -3,7 +3,7 @@
 -- role check constraint güncelle (viewer ekle)
 ALTER TABLE admin_users DROP CONSTRAINT IF EXISTS admin_users_role_check;
 ALTER TABLE admin_users ADD CONSTRAINT admin_users_role_check
-  CHECK (role IN ('super_admin', 'editor', 'viewer'));
+  CHECK (role IN ('super_admin', 'admin', 'editor', 'viewer'));
 
 -- user_id sütunu (auth.users ile bağlantı)
 ALTER TABLE admin_users ADD COLUMN IF NOT EXISTS user_id UUID;

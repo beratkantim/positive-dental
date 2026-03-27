@@ -13,18 +13,21 @@ interface AdminUser {
 
 const ROLES = [
   { id: "super_admin", label: "Süper Admin", desc: "Tüm yetkilere sahip, kullanıcı yönetebilir", color: "red", icon: "👑" },
-  { id: "editor", label: "Editör", desc: "İçerik ekleyebilir/düzenleyebilir, kullanıcı yönetemez", color: "indigo", icon: "✏️" },
+  { id: "admin", label: "Yönetici", desc: "Tüm içerik yetkisi, kullanıcı bilgilerini değiştiremez", color: "amber", icon: "🛡️" },
+  { id: "editor", label: "Editör", desc: "İçerik ekleyebilir/düzenleyebilir", color: "indigo", icon: "✏️" },
   { id: "viewer", label: "İzleyici", desc: "Sadece okuyabilir, mesajları ve analitiği görebilir", color: "gray", icon: "👁️" },
 ];
 
 const ROLE_COLORS: Record<string, string> = {
   super_admin: "red",
+  admin: "amber",
   editor: "indigo",
   viewer: "gray",
 };
 
 const ROLE_LABELS: Record<string, string> = {
   super_admin: "Süper Admin",
+  admin: "Yönetici",
   editor: "Editör",
   viewer: "İzleyici",
 };
@@ -155,6 +158,7 @@ export function UsersSection() {
                       className="px-2 py-1.5 text-xs font-semibold rounded-lg border border-gray-200 focus:border-indigo-400 outline-none"
                     >
                       <option value="super_admin">👑 Süper Admin</option>
+                      <option value="admin">🛡️ Yönetici</option>
                       <option value="editor">✏️ Editör</option>
                       <option value="viewer">👁️ İzleyici</option>
                     </select>
@@ -240,6 +244,7 @@ function InviteForm({ onSave, onCancel }: { onSave: () => void; onCancel: () => 
           <select value={form.role} onChange={e => setForm(f => ({ ...f, role: e.target.value }))}
             className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none">
             <option value="super_admin">👑 Süper Admin — Tam yetki</option>
+            <option value="admin">🛡️ Yönetici — Kullanıcı hariç tam yetki</option>
             <option value="editor">✏️ Editör — İçerik yönetimi</option>
             <option value="viewer">👁️ İzleyici — Sadece okuma</option>
           </select>
