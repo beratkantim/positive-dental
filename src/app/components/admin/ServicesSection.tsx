@@ -205,6 +205,7 @@ function ServiceForm({ service, onSave, onCancel }: {
             fileName={form.title ? slugify(form.title) : ""}
             onUploaded={url => setForm(f => ({ ...f, image: url }))}
             label="Hizmet Fotoğrafı"
+            hint="400x176px, yatay, 16:7 oran"
           />
         </div>
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />

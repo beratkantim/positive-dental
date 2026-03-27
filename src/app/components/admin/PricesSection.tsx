@@ -319,6 +319,7 @@ function CategoryForm({ category, onSave, onCancel }: {
           fileName={form.name ? `kategori_${slugify(form.name)}` : ""}
           onUploaded={url => setForm(f => ({ ...f, icon: url }))}
           label="Kategori İkonu"
+          hint="64x64px, kare ikon"
         />
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: parseInt(v) || 0 }))} type="number" />
       </div>

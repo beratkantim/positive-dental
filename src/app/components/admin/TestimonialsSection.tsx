@@ -180,6 +180,7 @@ function TestimonialForm({ testimonial, onSave, onCancel }: {
             fileName={imageFileName}
             onUploaded={url => setForm(f => ({ ...f, image: url }))}
             label="Hasta Fotoğrafı"
+            hint="200x200px, kare, yüz fotoğrafı"
           />
         </div>
 

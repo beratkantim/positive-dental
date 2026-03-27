@@ -151,6 +151,7 @@ function DoctorForm({ doctor, onSave, onCancel }: {
           fileName={form.name ? slugify(form.name) : ""}
           onUploaded={url => setForm(f => ({ ...f, photo: url }))}
           label="Fotoğraf"
+          hint="400x500px portre, 3:4 oran"
         />
         <div className="md:col-span-2">
           <FormField label="Biyografi" value={form.bio} onChange={v => setForm(f => ({ ...f, bio: v }))} multiline />

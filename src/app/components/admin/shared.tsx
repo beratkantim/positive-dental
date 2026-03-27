@@ -76,12 +76,13 @@ export async function uploadImage(file: File, bucket: string, fileName: string):
   return data.publicUrl;
 }
 
-export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = "Fotoğraf" }: {
+export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = "Fotoğraf", hint }: {
   currentUrl: string;
   bucket: string;
   fileName: string;
   onUploaded: (url: string) => void;
   label?: string;
+  hint?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
@@ -126,7 +127,10 @@ export function ImageUpload({ currentUrl, bucket, fileName, onUploaded, label = 
 
   return (
     <div>
-      <label className="block text-sm font-semibold text-gray-700 mb-1.5">{label}</label>
+      <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+        {label}
+        {hint && <span className="ml-2 font-normal text-xs text-gray-400">({hint})</span>}
+      </label>
       <div className="flex items-start gap-4">
         {/* Önizleme */}
         <div className="w-24 h-24 rounded-xl border-2 border-dashed border-gray-200 overflow-hidden flex-shrink-0 bg-gray-50 flex items-center justify-center">

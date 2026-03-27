@@ -157,6 +157,7 @@ function BranchForm({ branch, onSave, onCancel }: {
             fileName={imageFileName}
             onUploaded={url => setForm(f => ({ ...f, image: url }))}
             label="Şube Fotoğrafı"
+            hint="800x500px, yatay klinik fotoğrafı"
           />
         </div>
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />

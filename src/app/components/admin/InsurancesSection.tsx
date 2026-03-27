@@ -144,6 +144,7 @@ function InsuranceForm({ insurance, onSave, onCancel }: {
             fileName={form.name ? slugify(form.name) : ""}
             onUploaded={url => setForm(f => ({ ...f, logo: url }))}
             label="Logo"
+            hint="200x80px, şeffaf arka plan (PNG)"
           />
         </div>
 

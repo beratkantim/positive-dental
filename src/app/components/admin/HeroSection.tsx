@@ -219,6 +219,7 @@ function HeroForm({ slide, onSave, onCancel }: {
             fileName={imageFileName}
             onUploaded={url => setForm(f => ({ ...f, image: url }))}
             label="Slide Görseli"
+            hint="800x600px, 4:3 oran, yatay"
           />
         </div>
 
