@@ -7,6 +7,7 @@ import {
 import { motion } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
+import { supabase } from "@/lib/supabase";
 import type { HeroSlide, Testimonial } from "@/lib/supabase";
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
@@ -48,6 +49,17 @@ export function Home() {
   const TESTIMONIALS = rawTestimonials.length > 0
     ? rawTestimonials.map(t => ({ name: t.name, role: t.role, text: t.text, rating: t.rating, img: t.image }))
     : FALLBACK_TESTIMONIALS;
+
+  // SEO text section
+  const [seoText, setSeoText] = useState<{ heading: string; content: string }>({ heading: "", content: "" });
+  useEffect(() => {
+    supabase.from("site_settings").select("key,value").eq("group_name", "seo_anasayfa").then(({ data }) => {
+      if (!data) return;
+      const map: Record<string, string> = {};
+      data.forEach(d => { map[d.key] = d.value || ""; });
+      setSeoText({ heading: map.seo_homepage_heading || "", content: map.seo_homepage_content || "" });
+    });
+  }, []);
 
   const HERO_SLIDES: SlideData[] = rawSlides.length > 0
     ? rawSlides.map(mapSlide)
@@ -188,6 +200,20 @@ export function Home() {
 
       {/* ── AİLENİZİN DİŞ KLİNİĞİ ── */}
       <FamilyClinic />
+
+      {/* ── SEO TEXT ── */}
+      {seoText.content && (
+        <section className="bg-[#0B0F2E] py-16 border-t border-white/5">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {seoText.heading && (
+              <h2 className="text-xl font-bold text-white/90 mb-4">{seoText.heading}</h2>
+            )}
+            <div className="text-sm text-blue-200/60 leading-relaxed whitespace-pre-line">
+              {seoText.content}
+            </div>
+          </div>
+        </section>
+      )}
 
     </div>
     </>
