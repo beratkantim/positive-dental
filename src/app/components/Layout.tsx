@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import { Outlet } from "react-router";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { Breadcrumbs } from "./Breadcrumbs";
 import { usePageView } from "../hooks/usePageView";
 
 const FloatingActionBar = lazy(() =>
@@ -13,6 +14,7 @@ export function Layout() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
+      <Breadcrumbs />
       <main className="flex-1">
         <Outlet />
       </main>
