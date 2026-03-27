@@ -12,6 +12,9 @@ import { HeroSection } from "../components/admin/HeroSection";
 import { ServicesSection } from "../components/admin/ServicesSection";
 import { AnalyticsSection } from "../components/admin/AnalyticsSection";
 import { PricesSection } from "../components/admin/PricesSection";
+import { PartnersSection } from "../components/admin/PartnersSection";
+import { InsurancesSection } from "../components/admin/InsurancesSection";
+import { PagesSection } from "../components/admin/PagesSection";
 
 // ── SIMPLE LIST SECTIONS ──────────────────────────────────────
 function SimpleSection({ title, table, icon }: { title: string; table: string; icon: string }) {
@@ -68,6 +71,9 @@ export function AdminPanel() {
       case "branches":     return <BranchesSection />;
       case "analytics":    return <AnalyticsSection />;
       case "prices":       return <PricesSection />;
+      case "partners":     return <PartnersSection />;
+      case "insurances":   return <InsurancesSection />;
+      case "pages":        return <PagesSection />;
       case "users":        return <SimpleSection title="Kullanıcılar" table="admin_users" icon="👥" />;
       default:             return <Dashboard onNavigate={setActive} />;
     }

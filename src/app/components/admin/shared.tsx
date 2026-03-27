@@ -180,7 +180,8 @@ export interface PriceItem { id: string; category: string; name: string; price_m
 export type Section =
   | "dashboard" | "hero" | "doctors" | "services"
   | "blog" | "branches" | "testimonials" | "messages"
-  | "prices" | "settings" | "users" | "analytics";
+  | "prices" | "settings" | "users" | "analytics"
+  | "partners" | "insurances" | "pages";
 
 // ── HELPERS ──────────────────────────────────────────────────
 export function Badge({ children, color = "indigo" }: { children: React.ReactNode; color?: string }) {
@@ -256,6 +257,9 @@ export const NAV_ITEMS: { id: Section; label: string; icon: string; badge?: stri
   { id: "testimonials", label: "Yorumlar",          icon: "⭐" },
   { id: "messages",     label: "Mesajlar",          icon: "💬", badge: "!" },
   { id: "prices",       label: "Fiyat Listesi",     icon: "💰" },
+  { id: "partners",     label: "Anlaşmalı Kurumlar", icon: "🏢" },
+  { id: "insurances",   label: "Sigortalar",         icon: "🛡️" },
+  { id: "pages",        label: "Sayfa İçerikleri",   icon: "📄" },
   { id: "analytics",    label: "Analitik",           icon: "📈" },
   { id: "settings",     label: "Site Ayarları",     icon: "⚙️" },
   { id: "users",        label: "Kullanıcılar",      icon: "👥" },
