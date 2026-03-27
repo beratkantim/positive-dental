@@ -2,7 +2,26 @@ import { motion } from "motion/react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Star, Target, Eye, Play } from "lucide-react";
 
-export function AboutStory() {
+const DEFAULT_STORY = [
+  "Positive Dental Studio, 2011 yılında İstanbul'da tek bir klinikte başladığı yolculuğunda, diş sağlığı alanında fark yaratma hedefiyle kuruldu. Kurucularımız, her hastanın benzersiz ihtiyaçlarını anlayarak, onlara en iyi tedaviyi sunma vizyonuyla yola çıktı.",
+  "Bugün İstanbul Nişantaşı ve Adana Türkmenbaşı'nda hizmet veren, 25'ten fazla uzman hekimin yer aldığı bir aile olduk. Modern ekipman ve dijital planlama sistemleriyle sektörde öncü konumdayız.",
+  "Modern teknoloji, uzman kadro ve hasta odaklı yaklaşımımızla binlerce hastamıza ulaştık. Her hastamızın gülümsemesindeki güven, bizim için en büyük başarı göstergesi.",
+];
+
+const DEFAULT_MISSION = "Her hastamıza en yüksek kalitede diş sağlığı hizmeti sunmak, onların yaşam kalitesini artırmak ve sağlıklı gülüşler kazandırmak. Modern teknoloji ve uzman kadromuzla sektörde öncü olmak.";
+const DEFAULT_VISION = "Türkiye'nin en güvenilir ve tercih edilen diş kliniği zinciri olmak. Yenilikçi tedavi yöntemleri ve hasta memnuniyeti odaklı yaklaşımımızla sektöre yön vermek ve uluslararası standartlarda hizmet sunmak.";
+
+interface Props {
+  story?: string;
+  mission?: string;
+  vision?: string;
+}
+
+export function AboutStory({ story, mission, vision }: Props) {
+  const storyParagraphs = story ? story.split("\n").filter(Boolean) : DEFAULT_STORY;
+  const missionText = mission || DEFAULT_MISSION;
+  const visionText = vision || DEFAULT_VISION;
+
   return (
     <>
       {/* STORY */}
@@ -19,15 +38,7 @@ export function AboutStory() {
                 <span className="italic bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent">bu yana.</span>
               </h2>
               <div className="space-y-4 text-slate-500 leading-relaxed">
-                <p>
-                  Positive Dental Studio, 2011 y\u0131l\u0131nda \u0130stanbul'da tek bir klinikte ba\u015flad\u0131\u011f\u0131 yolculu\u011funda, di\u015f sa\u011fl\u0131\u011f\u0131 alan\u0131nda fark yaratma hedefiyle kuruldu. Kurucular\u0131m\u0131z, her hastan\u0131n benzersiz ihtiya\u00e7lar\u0131n\u0131 anlayarak, onlara en iyi tedaviyi sunma vizyonuyla yola \u00e7\u0131kt\u0131.
-                </p>
-                <p>
-                  Bug\u00fcn \u0130stanbul Ni\u015fanta\u015f\u0131 ve Adana T\u00fcrkmenba\u015f\u0131'nda hizmet veren, 25'ten fazla uzman hekimin yer ald\u0131\u011f\u0131 bir aile olduk. Modern ekipman ve dijital planlama sistemleriyle sekt\u00f6rde \u00f6nc\u00fc konumday\u0131z.
-                </p>
-                <p>
-                  Modern teknoloji, uzman kadro ve hasta odakl\u0131 yakla\u015f\u0131m\u0131m\u0131zla binlerce hastam\u0131za ula\u015ft\u0131k. Her hastam\u0131z\u0131n g\u00fcl\u00fcmsemesindeki g\u00fcven, bizim i\u00e7in en b\u00fcy\u00fck ba\u015far\u0131 g\u00f6stergesi.
-                </p>
+                {storyParagraphs.map((p, i) => <p key={i}>{p}</p>)}
               </div>
             </motion.div>
 
@@ -35,25 +46,17 @@ export function AboutStory() {
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-100">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1642844819197-5f5f21b89ff8?w=800&q=75&auto=format"
-                  alt="Positive Dental Studio klini\u011fi"
+                  alt="Positive Dental Studio kliniği"
                   className="w-full h-[420px] object-cover"
-                  width={800}
-                  height={420}
-                  fetchPriority="high"
-                  loading="eager"
+                  width={800} height={420} fetchPriority="high" loading="eager"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent" />
-
-                {/* Play button overlay */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
-                    className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer border border-white/50"
-                  >
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}
+                    className="w-16 h-16 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-2xl cursor-pointer border border-white/50">
                     <Play className="w-6 h-6 text-slate-900 fill-slate-900 ml-0.5" />
                   </motion.div>
                 </div>
-
                 <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm rounded-2xl px-5 py-3 shadow-lg">
                   <p className="font-black text-indigo-600 text-sm">EST. 2011</p>
                   <p className="font-bold text-slate-800">Positive Dental Studio</p>
@@ -71,33 +74,16 @@ export function AboutStory() {
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Nereye gidiyoruz?</span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">Misyon & Vizyon</h2>
           </div>
-
           <div className="grid md:grid-cols-2 gap-5">
             {[
-              {
-                icon: Target,
-                title: "Misyonumuz",
-                gradient: "from-teal-500 to-cyan-600",
-                desc: "Her hastam\u0131za en y\u00fcksek kalitede di\u015f sa\u011fl\u0131\u011f\u0131 hizmeti sunmak, onlar\u0131n ya\u015fam kalitesini art\u0131rmak ve sa\u011fl\u0131kl\u0131 g\u00fcl\u00fc\u015fler kazand\u0131rmak. Modern teknoloji ve uzman kadromuzla sekt\u00f6rde \u00f6nc\u00fc olmak.",
-              },
-              {
-                icon: Eye,
-                title: "Vizyonumuz",
-                gradient: "from-indigo-500 to-violet-600",
-                desc: "T\u00fcrkiye'nin en g\u00fcvenilir ve tercih edilen di\u015f klini\u011fi zinciri olmak. Yenilik\u00e7i tedavi y\u00f6ntemleri ve hasta memnuniyeti odakl\u0131 yakla\u015f\u0131m\u0131m\u0131zla sekt\u00f6re y\u00f6n vermek ve uluslararas\u0131 standartlarda hizmet sunmak.",
-              },
+              { icon: Target, title: "Misyonumuz", gradient: "from-teal-500 to-cyan-600", desc: missionText },
+              { icon: Eye, title: "Vizyonumuz", gradient: "from-indigo-500 to-violet-600", desc: visionText },
             ].map((item, idx) => {
               const Icon = item.icon;
               return (
-                <motion.div
-                  key={idx}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  whileHover={{ y: -4 }}
-                  className="bg-white rounded-3xl p-8 border border-slate-100 hover:shadow-xl hover:border-transparent transition-all"
-                >
+                <motion.div key={idx} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }} transition={{ delay: idx * 0.1 }} whileHover={{ y: -4 }}
+                  className="bg-white rounded-3xl p-8 border border-slate-100 hover:shadow-xl hover:border-transparent transition-all">
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.gradient} flex items-center justify-center mb-5 shadow-lg`}>
                     <Icon className="w-7 h-7 text-white" />
                   </div>
