@@ -5,8 +5,17 @@ import {
   MapPin, Stethoscope, UserRound, CalendarDays, CheckCircle2, X, Loader2,
 } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
-import type { Branch, Service } from "@/lib/supabase";
+import type { Branch } from "@/lib/supabase";
 import { getDoctors, getDoctorSlots, createAppointment, type DentsoftDoctor } from "@/lib/dentsoft";
+
+interface TreatmentCategory {
+  id: string;
+  name: string;
+  slug: string;
+  icon: string;
+  sort_order: number;
+  is_active: boolean;
+}
 
 // ── STEPS ────────────────────────────────────────────────────────────────────
 
@@ -71,12 +80,12 @@ function StepHeader({ step, title, sub }: { step: number; title: string; sub: st
 // ── MAIN ─────────────────────────────────────────────────────────────────────
 
 export function BookingWizard() {
-  // Supabase data (şubeler ve hizmetler hâlâ Supabase'den)
+  // Supabase data (şubeler ve tedavi kategorileri Supabase'den)
   const { data: branches } = useTable<Branch>("branches", "sort_order");
-  const { data: services } = useTable<Service>("services", "sort_order");
+  const { data: categories } = useTable<TreatmentCategory>("treatment_categories", "sort_order");
 
   const activeBranches = branches.filter(b => b.is_active);
-  const activeServices = services.filter(s => s.is_active);
+  const activeCategories = categories.filter(c => c.is_active);
 
   // Wizard state
   const [step, setStep] = useState(1);
@@ -102,7 +111,7 @@ export function BookingWizard() {
 
   // Derived
   const selectedBranch  = activeBranches.find(b => b.id === clinicId);
-  const selectedService = activeServices.find(s => s.id === serviceId);
+  const selectedCategory = activeCategories.find(c => c.id === serviceId);
   const selectedDoctor  = dsDoctors.find(d => d.ID === doctorId);
 
   // ── Dentsoft: Doktor listesini çek ─────────────────────────────────────
@@ -228,7 +237,7 @@ export function BookingWizard() {
   };
 
   const clinicLabel  = selectedBranch?.name || "";
-  const serviceLabel = selectedService?.title || "";
+  const serviceLabel = selectedCategory?.name || "";
   const doctorLabel  = selectedDoctor?.Name || "";
 
   return (
@@ -337,18 +346,18 @@ export function BookingWizard() {
                 {step === 2 && (
                   <div className="space-y-4">
                     <StepHeader step={2} title="Hizmet Seçin" sub={`${clinicLabel} · Mevcut hizmetler`} />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {activeServices.map((s) => (
-                        <button key={s.id} onClick={() => { setServiceId(s.id); setDoctorId(""); }}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto">
+                      {activeCategories.map((c) => (
+                        <button key={c.id} onClick={() => { setServiceId(c.id); setDoctorId(""); }}
                           className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left text-sm font-semibold transition-all ${
-                            serviceId === s.id
+                            serviceId === c.id
                               ? "bg-indigo-50 border-indigo-300 text-indigo-700"
                               : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900"
                           }`}>
-                          {serviceId === s.id
+                          {serviceId === c.id
                             ? <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />
-                            : <div className="w-4 h-4 rounded-full border border-slate-300 flex-shrink-0" />}
-                          {s.title}
+                            : <span className="text-base flex-shrink-0">{c.icon || "🦷"}</span>}
+                          {c.name}
                         </button>
                       ))}
                     </div>
