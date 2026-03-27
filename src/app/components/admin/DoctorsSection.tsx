@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor, type Service } from "./shared";
+import { getDoctors, type DentsoftDoctor } from "@/lib/dentsoft";
 
 const BRANCH_OPTIONS = [
   { id: "adana", label: "Adana Türkmenbaşı" },
@@ -129,17 +130,29 @@ function DoctorForm({ doctor, onSave, onCancel }: {
     bio: doctor?.bio || "",
     education: doctor?.education?.join("\n") || "",
     expertise: doctor?.expertise?.join(", ") || "",
+    dentsoft_id: doctor?.dentsoft_id || "",
     booking_url: doctor?.booking_url || "https://randevu.positivedental.com",
     is_active: doctor?.is_active ?? true,
     sort_order: doctor?.sort_order || 0,
   });
   const [saving, setSaving] = useState(false);
+  const [dsDoctors, setDsDoctors] = useState<DentsoftDoctor[]>([]);
+  const [dsLoading, setDsLoading] = useState(false);
 
   useEffect(() => {
     supabase.from("services").select("*").eq("is_active", true).order("sort_order").then(({ data }) => {
       setServices(data || []);
     });
   }, []);
+
+  const loadDentsoft = async () => {
+    setDsLoading(true);
+    try {
+      const docs = await getDoctors();
+      setDsDoctors(docs || []);
+    } catch { setDsDoctors([]); }
+    setDsLoading(false);
+  };
 
   const toggleBranch = (branchId: string) => {
     setForm(f => ({
@@ -170,7 +183,8 @@ function DoctorForm({ doctor, onSave, onCancel }: {
       branch_label: branchLabels[0] || "",
       branches: form.selectedBranches,
       branches_labels: branchLabels,
-      service_ids: form.allServices ? [] : form.selectedServices, // boş = tümü
+      service_ids: form.allServices ? [] : form.selectedServices,
+      dentsoft_id: form.dentsoft_id,
       photo: form.photo,
       bio: form.bio,
       education: form.education.split("\n").filter(Boolean),
@@ -283,6 +297,47 @@ function DoctorForm({ doctor, onSave, onCancel }: {
         <div>
           <FormField label="Uzmanlık Alanları (virgülle ayır)" value={form.expertise} onChange={v => setForm(f => ({ ...f, expertise: v }))} multiline />
         </div>
+        {/* Dentsoft eşleştirme */}
+        <div className="md:col-span-2">
+          <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+            Dentsoft Doktor ID
+            <span className="ml-2 font-normal text-xs text-gray-400">(online randevu için gerekli)</span>
+          </label>
+          <div className="flex gap-2 mb-2">
+            <input value={form.dentsoft_id} onChange={e => setForm(f => ({ ...f, dentsoft_id: e.target.value }))}
+              placeholder="Dentsoft doktor ID'si"
+              className="flex-1 px-3 py-2.5 rounded-xl border border-gray-200 text-sm font-mono focus:border-indigo-400 outline-none" />
+            <button type="button" onClick={loadDentsoft} disabled={dsLoading}
+              className="px-4 py-2 bg-violet-50 text-violet-600 font-semibold text-sm rounded-xl hover:bg-violet-100 transition disabled:opacity-50">
+              {dsLoading ? "Yükleniyor..." : "Dentsoft'tan Seç"}
+            </button>
+          </div>
+          {dsDoctors.length > 0 && (
+            <div className="max-h-48 overflow-y-auto space-y-1 border border-gray-200 rounded-xl p-2">
+              {dsDoctors.map(d => (
+                <button key={d.ID} type="button"
+                  onClick={() => { setForm(f => ({ ...f, dentsoft_id: d.ID })); setDsDoctors([]); }}
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left text-sm transition ${
+                    form.dentsoft_id === d.ID ? "bg-violet-50 text-violet-700 font-bold" : "hover:bg-gray-50"
+                  }`}>
+                  {d.Avatar ? (
+                    <img src={d.Avatar} alt="" className="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-xs font-bold text-violet-600 flex-shrink-0">
+                      {d.Name?.[0]}
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium">{d.Title ? `${d.Title} ` : ""}{d.Name}</p>
+                    <p className="text-xs text-gray-400 font-mono">ID: {d.ID}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+          {form.dentsoft_id && <p className="text-xs text-green-600 mt-1">✓ Eşleştirildi: {form.dentsoft_id}</p>}
+        </div>
+
         <FormField label="Randevu URL" value={form.booking_url} onChange={v => setForm(f => ({ ...f, booking_url: v }))} />
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />
       </div>

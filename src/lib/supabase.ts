@@ -19,6 +19,7 @@ export interface Doctor {
   branches: string[];
   branches_labels: string[];
   service_ids: string[];
+  dentsoft_id: string;
   photo: string;
   bio: string;
   education: string[];

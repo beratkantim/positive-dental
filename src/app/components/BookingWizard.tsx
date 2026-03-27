@@ -5,7 +5,7 @@ import {
   MapPin, Stethoscope, UserRound, CalendarDays, CheckCircle2, X, Loader2,
 } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
-import type { Branch } from "@/lib/supabase";
+import type { Branch, Doctor as SupabaseDoctor } from "@/lib/supabase";
 import { getDoctors, getDoctorSlots, createAppointment, type DentsoftDoctor } from "@/lib/dentsoft";
 
 interface TreatmentCategory {
@@ -83,6 +83,7 @@ export function BookingWizard() {
   // Supabase data
   const { data: branches } = useTable<Branch>("branches", "sort_order");
   const { data: categories } = useTable<TreatmentCategory>("treatment_categories", "sort_order");
+  const { data: supabaseDoctors } = useTable<SupabaseDoctor>("doctors", "sort_order");
 
   const activeBranches = branches.filter(b => b.is_active);
   const activeCategories = categories.filter(c => c.is_active);
@@ -114,6 +115,45 @@ export function BookingWizard() {
   const selectedBranch  = activeBranches.find(b => b.id === clinicId);
   const selectedCategory = activeCategories.find(c => c.id === serviceId);
   const selectedDoctor = dsDoctors.find(d => d.ID === doctorId);
+
+  // Supabase doktorlarından dentsoft_id eşleşme haritası
+  const sbDoctorMap = new Map(
+    supabaseDoctors.filter(d => d.dentsoft_id).map(d => [d.dentsoft_id, d])
+  );
+
+  // Eşleştirilmiş doktor listesi: Dentsoft verisi + Supabase zengin bilgi
+  const mergedDoctors = dsDoctors.map(ds => {
+    const sb = sbDoctorMap.get(ds.ID);
+    return {
+      ...ds,
+      Avatar: sb?.photo || ds.Avatar || "",
+      Name: sb?.name || ds.Name,
+      Title: sb?.title || ds.Title || "",
+      Salon: sb?.specialty || ds.Salon || "",
+      _branches: sb?.branches || [],
+      _serviceIds: sb?.service_ids || [],
+    };
+  });
+
+  // Şube + tedavi filtresi
+  const branchSlug = selectedBranch?.slug?.toLowerCase() || "";
+  const branchShort = branchSlug.split("-")[0] || "";
+  const branchCity = selectedBranch?.city?.toLowerCase() || "";
+
+  const filteredDoctors = mergedDoctors.filter(d => {
+    // Şube filtresi (eşleşmiş doktor varsa)
+    if (clinicId && d._branches.length > 0) {
+      const dbs = d._branches.map(b => b.toLowerCase());
+      const matchBranch = dbs.includes(branchShort) || dbs.includes(branchSlug) ||
+        dbs.some(b => branchCity && b.includes(branchCity));
+      if (!matchBranch) return false;
+    }
+    // Tedavi filtresi (boş = tümü)
+    if (serviceId && d._serviceIds.length > 0) {
+      if (!d._serviceIds.includes(serviceId)) return false;
+    }
+    return true;
+  });
 
   // ── Dentsoft: Doktor listesini çek ─────────────────────────────────────
   useEffect(() => {
@@ -376,7 +416,7 @@ export function BookingWizard() {
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {dsDoctors.map((d) => (
+                        {filteredDoctors.map((d) => (
                           <button key={d.ID} onClick={() => setDoctorId(d.ID)}
                             className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl border text-left transition-all ${
                               doctorId === d.ID
@@ -399,7 +439,7 @@ export function BookingWizard() {
                             {doctorId === d.ID && <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />}
                           </button>
                         ))}
-                        {dsDoctors.length === 0 && !loadingDoctors && (
+                        {filteredDoctors.length === 0 && !loadingDoctors && (
                           <div className="text-center py-6">
                             <p className="text-slate-400 text-sm">Doktor listesi yüklenemedi</p>
                             {doctorError && <p className="text-red-400 text-xs mt-1">{doctorError}</p>}
