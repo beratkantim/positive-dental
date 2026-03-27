@@ -80,7 +80,7 @@ export function Kids() {
       <SEO
         title="Kids — Çocuk Diş Hekimliği, 0–18 Yaş"
         description="Positive Dental Kids: çocuklara özel eğlenceli ve korkusuz diş hekimliği deneyimi. Fissür örtücü, florür, süt dişi takibi ve çocuk ortodontisi."
-        url="/kids"
+        url="/cocuk-dis-hekimligi"
         keywords={["çocuk diş hekimi", "çocuk dişçi", "fissür örtücü", "bebek diş", "çocuk ortodonti"]}
         schemaType="dental"
       />
@@ -141,7 +141,7 @@ export function Kids() {
                   Çocuk Randevusu Al
                   <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
-                <Link to="/contact"
+                <Link to="/iletisim"
                   className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-white/8 border border-white/12 hover:bg-white/14 text-white font-bold transition-all">
                   Bize Ulaş
                 </Link>

@@ -29,7 +29,7 @@ export function ServicesGrid() {
               <span className="bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent"> bir çözümü var.</span>
             </h2>
           </div>
-          <Link to="/services" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors group">
+          <Link to="/hizmetlerimiz" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 transition-colors group">
             Tüm Hizmetler <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
           </Link>
         </div>

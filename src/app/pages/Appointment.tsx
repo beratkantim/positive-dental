@@ -561,7 +561,7 @@ function Step4({
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link to="/doctors"
+          <Link to="/doktorlarimiz"
             className="flex items-center gap-2 px-6 py-3 rounded-2xl border border-white/15 text-slate-300 hover:text-white font-semibold text-sm transition-all hover:border-white/30">
             ← Doktorlara Dön
           </Link>

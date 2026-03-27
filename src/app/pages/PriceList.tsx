@@ -341,7 +341,7 @@ export function PriceList() {
       <SEO
         title="Fiyat Listesi — Tedavi Ücretleri"
         description="Positive Dental Studio diş tedavisi fiyat listesi: implant, ortodonti, estetik, dolgu, kanal ve daha fazlası. Şeffaf fiyatlandırma, taksit imkânı."
-        url="/prices"
+        url="/fiyat-listesi"
         keywords={["diş tedavisi fiyatları", "implant fiyatı", "ortodonti fiyatı", "lamine diş fiyatı", "zirkonyum fiyatı", "invisalign fiyatı"]}
         schemaType="dental"
       />

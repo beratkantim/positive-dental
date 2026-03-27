@@ -120,17 +120,17 @@ export function AnalyticsSection() {
 
   const PAGE_LABELS: Record<string, string> = {
     "/": "Ana Sayfa",
-    "/services": "Hizmetler",
-    "/about": "Hakkımızda",
-    "/doctors": "Doktorlar",
+    "/hizmetlerimiz": "Hizmetler",
+    "/hakkimizda": "Hakkımızda",
+    "/doktorlarimiz": "Doktorlar",
     "/blog": "Blog",
-    "/contact": "İletişim",
-    "/prices": "Fiyat Listesi",
-    "/kids": "Çocuk",
-    "/locations": "Klinikler",
+    "/iletisim": "İletişim",
+    "/fiyat-listesi": "Fiyat Listesi",
+    "/cocuk-dis-hekimligi": "Çocuk",
+    "/kliniklerimiz": "Klinikler",
     "/randevu": "Randevu",
-    "/partners": "Kurumlar",
-    "/insurance": "Sigortalar",
+    "/anlasmali-kurumlar": "Kurumlar",
+    "/anlasmali-sigortalar": "Sigortalar",
   };
 
   if (loading) return <LoadingSpinner />;

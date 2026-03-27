@@ -35,7 +35,7 @@ const TikTokIcon = () => (
 /* Kurumsal dropdown içeriği */
 const DROPDOWN_ITEMS = [
   {
-    path: "/about",
+    path: "/hakkimizda",
     label: "Hakkımızda",
     icon: Info,
     desc: "Hikayemiz, ekibimiz ve değerlerimiz",
@@ -43,7 +43,7 @@ const DROPDOWN_ITEMS = [
     badgeColor: "",
   },
   {
-    path: "/services",
+    path: "/hizmetlerimiz",
     label: "Hizmetlerimiz",
     icon: Stethoscope,
     desc: "Tüm diş tedavisi hizmetlerimiz",
@@ -51,7 +51,7 @@ const DROPDOWN_ITEMS = [
     badgeColor: "",
   },
   {
-    path: "/locations",
+    path: "/kliniklerimiz",
     label: "Kliniklerimiz",
     icon: MapPin,
     desc: "Adana Türkmenbaşı · İstanbul Nişantaşı",
@@ -59,7 +59,7 @@ const DROPDOWN_ITEMS = [
     badgeColor: "bg-violet-100 text-violet-700",
   },
   {
-    path: "/doctors",
+    path: "/doktorlarimiz",
     label: "Doktorlarımız",
     icon: Users,
     desc: "Uzman hekim kadromuz · Online randevu",
@@ -67,7 +67,7 @@ const DROPDOWN_ITEMS = [
     badgeColor: "bg-sky-100 text-sky-700",
   },
   {
-    path: "/contact",
+    path: "/iletisim",
     label: "İletişim",
     icon: Phone,
     desc: "Bize ulaşın, randevu alın",
@@ -75,7 +75,7 @@ const DROPDOWN_ITEMS = [
     badgeColor: "",
   },
   {
-    path: "/partners",
+    path: "/anlasmali-kurumlar",
     label: "Anlaşmalı Kurumlar",
     icon: Building2,
     desc: "Çalışanlara %15–30 özel indirim",
@@ -83,7 +83,7 @@ const DROPDOWN_ITEMS = [
     badgeColor: "bg-green-100 text-green-700",
   },
   {
-    path: "/insurance",
+    path: "/anlasmali-sigortalar",
     label: "Anlaşmalı Sigortalar",
     icon: Shield,
     desc: "12+ sigorta şirketi ile anlaşmalı",
@@ -105,8 +105,8 @@ export function Header() {
   /* Ana nav */
   const navLinks = [
     { path: "/", label: "Ana Sayfa" },
-    { path: "/prices", label: "Fiyat Listesi" },
-    { path: "/kids", label: "Kids 🌟", highlight: true },
+    { path: "/fiyat-listesi", label: "Fiyat Listesi" },
+    { path: "/cocuk-dis-hekimligi", label: "Kids 🌟", highlight: true },
   ];
 
   const socials = [
@@ -121,13 +121,13 @@ export function Header() {
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
 
   const isCorporateActive =
-    location.pathname === "/about" ||
-    location.pathname === "/services" ||
-    location.pathname === "/locations" ||
-    location.pathname === "/doctors" ||
-    location.pathname === "/contact" ||
-    location.pathname === "/partners" ||
-    location.pathname === "/insurance";
+    location.pathname === "/hakkimizda" ||
+    location.pathname === "/hizmetlerimiz" ||
+    location.pathname === "/kliniklerimiz" ||
+    location.pathname === "/doktorlarimiz" ||
+    location.pathname === "/iletisim" ||
+    location.pathname === "/anlasmali-kurumlar" ||
+    location.pathname === "/anlasmali-sigortalar";
 
   /* Dışarı tıklanınca kapat */
   useEffect(() => {
@@ -321,21 +321,21 @@ export function Header() {
               </div>
 
               {/* Fiyat Listesi */}
-              <Link to="/prices"
+              <Link to="/fiyat-listesi"
                 className={`relative px-3 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap transition-all ${
-                  isActive("/prices") ? "text-indigo-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  isActive("/fiyat-listesi") ? "text-indigo-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 Fiyat Listesi
-                {isActive("/prices") && (
+                {isActive("/fiyat-listesi") && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full" />
                 )}
               </Link>
 
               {/* Kids */}
-              <Link to="/kids"
+              <Link to="/cocuk-dis-hekimligi"
                 className={`relative px-4 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap transition-all ${
-                  isActive("/kids")
+                  isActive("/cocuk-dis-hekimligi")
                     ? "bg-gradient-to-r from-pink-500 to-violet-600 text-white shadow-md"
                     : "bg-gradient-to-r from-pink-50 to-violet-50 text-pink-600 hover:from-pink-100 hover:to-violet-100 border border-pink-100"
                 }`}

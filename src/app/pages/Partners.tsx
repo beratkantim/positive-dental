@@ -86,7 +86,7 @@ export function Partners() {
       <SEO
         title="Anlaşmalı Kurumlar — Kurumsal Diş Sağlığı Paketi"
         description="Positive Dental Studio anlaşmalı kurumları: kamu, özel sektör, sağlık ve eğitim kurumları çalışanlarına %15–%30 özel indirim. Aile kapsamı dahil."
-        url="/partners"
+        url="/anlasmali-kurumlar"
         keywords={["anlaşmalı kurumlar", "kurumsal diş sağlığı", "diş klinik indirim", "çalışan avantaj", "kurumsal diş"]}
         schemaType="dental"
       />

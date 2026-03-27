@@ -78,7 +78,7 @@ export function Services() {
       <SEO
         title="Hizmetlerimiz — İmplant, Estetik, Ortodonti"
         description="Positive Dental Studio hizmetleri: implant tedavisi, estetik diş hekimliği, ortodonti, çocuk diş hekimliği, genel diş hekimliği ve protez. Modern teknoloji, uzman kadro."
-        url="/services"
+        url="/hizmetlerimiz"
         keywords={["diş implantı", "estetik diş", "ortodonti", "çocuk dişçi", "diş protezi", "kanal tedavisi"]}
         schemaType="dental"
       />

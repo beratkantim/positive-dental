@@ -238,7 +238,7 @@ export function Insurance() {
       <SEO
         title="Anlaşmalı Sigortalar — Diş Tedavisi Sigorta Kapsamı"
         description="Positive Dental Studio'da geçerli sigorta poliçeleri: Allianz, AXA, Mapfre, Anadolu Sigorta ve daha fazlası. Poliçenizle ücretsiz muayene alın."
-        url="/insurance"
+        url="/anlasmali-sigortalar"
         keywords={["diş sigortası", "anlaşmalı sigorta", "sağlık sigortası diş", "tamamlayıcı sigorta diş", "allianz diş", "axa diş"]}
         schemaType="dental"
       />

@@ -45,7 +45,7 @@ export function KidsTeaser() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
-                  to="/kids"
+                  to="/cocuk-dis-hekimligi"
                   className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-400 hover:to-violet-500 text-white font-bold shadow-lg shadow-pink-200 hover:scale-105 transition-all"
                 >
                   Çocuk Sayfasını Keşfet

@@ -91,14 +91,14 @@ export function Footer() {
             <ul className="space-y-2.5">
               {[
                 { to: "/", label: "Ana Sayfa" },
-                { to: "/services", label: "Hizmetlerimiz" },
-                { to: "/prices", label: "Fiyat Listesi" },
-                { to: "/about", label: "Hakkımızda" },
-                { to: "/locations", label: "Kliniklerimiz" },
+                { to: "/hizmetlerimiz", label: "Hizmetlerimiz" },
+                { to: "/fiyat-listesi", label: "Fiyat Listesi" },
+                { to: "/hakkimizda", label: "Hakkımızda" },
+                { to: "/kliniklerimiz", label: "Kliniklerimiz" },
                 { to: "/blog", label: "Blog" },
-                { to: "/contact", label: "İletişim" },
-                { to: "/partners", label: "Anlaşmalı Kurumlar" },
-                { to: "/insurance", label: "Anlaşmalı Sigortalar" },
+                { to: "/iletisim", label: "İletişim" },
+                { to: "/anlasmali-kurumlar", label: "Anlaşmalı Kurumlar" },
+                { to: "/anlasmali-sigortalar", label: "Anlaşmalı Sigortalar" },
               ].map((item) => (
                 <li key={item.to}>
                   <Link

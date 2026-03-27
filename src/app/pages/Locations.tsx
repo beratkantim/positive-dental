@@ -84,7 +84,7 @@ export function Locations() {
       <SEO
         title="Kliniklerimiz — İstanbul Nişantaşı & Adana Türkmenbaşı"
         description="Positive Dental Studio şubeleri: İstanbul Nişantaşı ve Adana Türkmenbaşı. Size en yakın kliniği seçin, hemen randevu alın."
-        url="/locations"
+        url="/kliniklerimiz"
         keywords={["diş kliniği nişantaşı", "diş kliniği adana", "positive dental istanbul", "positive dental adana"]}
         schemaType="dental"
       />

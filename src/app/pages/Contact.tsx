@@ -51,7 +51,7 @@ const CONTACT_CARDS = [
     title: "Kliniklerimiz",
     sub: "Size en yakın şubeyi bulun.",
     content: "İstanbul & Adana",
-    href: "/locations",
+    href: "/kliniklerimiz",
     note: "Nişantaşı · Türkmenbaşı",
     gradient: "from-amber-500 to-orange-500",
     isInternal: true,
@@ -66,7 +66,7 @@ export function Contact() {
       <SEO
         title="İletişim — Randevu Al, Bize Ulaşın"
         description="Positive Dental Studio ile iletişime geçin. Online randevu, WhatsApp, telefon veya e-posta ile hızlıca bize ulaşın. İstanbul Nişantaşı ve Adana Türkmenbaşı şubelerimiz."
-        url="/contact"
+        url="/iletisim"
         keywords={["diş kliniği iletişim", "randevu al", "diş hekimi randevu", "positive dental iletişim"]}
         schemaType="dental"
       />
@@ -313,7 +313,7 @@ export function Contact() {
                         <span>• İstanbul – Nişantaşı</span>
                         <span>• Adana – Türkmenbaşı</span>
                       </div>
-                      <Link to="/locations"
+                      <Link to="/kliniklerimiz"
                         className="inline-flex items-center gap-1.5 text-sm font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
                         Tüm Klinikleri Gör <ArrowRight className="w-3.5 h-3.5" />
                       </Link>

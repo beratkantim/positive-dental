@@ -61,7 +61,7 @@ export function About() {
       <SEO
         title="Hakkımızda — 15 Yıllık Güven ve Kalite"
         description="Positive Dental Studio 2011'den bu yana Türkiye'nin önde gelen diş kliniği. 25+ uzman hekim, 4 şehir, 15.000+ mutlu hasta. Misyon, vizyon ve değerlerimizi keşfedin."
-        url="/about"
+        url="/hakkimizda"
         keywords={["positive dental studio hakkında", "diş kliniği istanbul", "uzman diş hekimi", "diş kliniği tarihi"]}
         schemaType="dental"
       />

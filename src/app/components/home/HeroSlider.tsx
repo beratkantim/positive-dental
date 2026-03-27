@@ -213,7 +213,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
                   Online Randevu Al
                   <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
-                <Link to="/services"
+                <Link to="/hizmetlerimiz"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white/6 border border-white/10 hover:bg-white/12 text-white font-bold transition-all">
                   Tüm Hizmetler <ArrowRight className="w-4 h-4" />
                 </Link>
