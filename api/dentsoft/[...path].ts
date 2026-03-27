@@ -1,17 +1,11 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-
 // ── Dentsoft API Proxy ─────────────────────────────────────────
 // Frontend → /api/dentsoft/Clinic/DoctorList?ClinicID=xxx
 // Proxy  → https://api.dentsoft.com.tr/Api/v1/Clinic/DoctorList?ClinicID=xxx
-//
-// Token ve base URL sunucuda kalır, client'a sızmaz.
-// Nişantaşı klinik için: DENTSOFT_CLINIC_ID_NISANTASI env var
 
 const BASE = "https://api.dentsoft.com.tr/Api/v1";
 const TOKEN = process.env.DENTSOFT_BEARER_TOKEN || "";
 const CLINIC_NISANTASI = process.env.DENTSOFT_CLINIC_ID_NISANTASI || "";
 
-// İzin verilen endpoint path'leri (güvenlik)
 const ALLOWED_PATHS = [
   "Clinic/List",
   "Clinic/DoctorList",
@@ -24,45 +18,44 @@ const ALLOWED_PATHS = [
   "Patient/ClinicInfo",
 ];
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-
-  if (req.method === "OPTIONS") return res.status(200).end();
+export default async function handler(req: Request) {
+  // CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    });
+  }
 
   try {
+    const url = new URL(req.url);
     // Path: /api/dentsoft/Clinic/DoctorList → Clinic/DoctorList
-    const pathSegments = req.query.path;
-    const apiPath = Array.isArray(pathSegments) ? pathSegments.join("/") : pathSegments || "";
+    const apiPath = url.pathname.replace(/^\/api\/dentsoft\/?/, "");
 
-    // Güvenlik: sadece izinli endpoint'ler
+    // Güvenlik
     const isAllowed = ALLOWED_PATHS.some(p => apiPath.startsWith(p));
     if (!isAllowed) {
-      return res.status(403).json({ error: "Bu endpoint'e erişim izni yok" });
+      return Response.json({ error: "Bu endpoint'e erişim izni yok" }, { status: 403 });
     }
 
-    // Token kontrolü
     if (!TOKEN) {
-      return res.status(500).json({ error: "Dentsoft Bearer Token yapılandırılmamış" });
+      return Response.json({ error: "Dentsoft Bearer Token yapılandırılmamış" }, { status: 500 });
     }
 
-    // Query string oluştur
-    const query = new URLSearchParams();
-    for (const [key, val] of Object.entries(req.query)) {
-      if (key === "path") continue; // Vercel catch-all param, atla
-      if (typeof val === "string") query.set(key, val);
-    }
+    // Query params
+    const query = new URLSearchParams(url.search);
+    query.delete("path"); // Vercel catch-all
 
-    // ClinicID otomatik ekle (Nişantaşı)
     if (!query.has("ClinicID") && CLINIC_NISANTASI) {
       query.set("ClinicID", CLINIC_NISANTASI);
     }
 
-    const url = `${BASE}/${apiPath}${query.toString() ? "?" + query.toString() : ""}`;
+    const targetUrl = `${BASE}/${apiPath}${query.toString() ? "?" + query.toString() : ""}`;
 
-    // Fetch options
+    // Fetch
     const fetchOpts: RequestInit = {
       method: req.method || "GET",
       headers: {
@@ -71,35 +64,35 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       },
     };
 
-    // POST/PUT body (multipart/form-data)
     if (req.method === "POST" || req.method === "PUT") {
-      if (req.body && typeof req.body === "object") {
-        const formData = new URLSearchParams();
-        for (const [key, val] of Object.entries(req.body)) {
-          if (val !== undefined && val !== null) {
-            formData.set(key, String(val));
+      try {
+        const body = await req.json();
+        if (body && typeof body === "object") {
+          const formData = new URLSearchParams();
+          for (const [key, val] of Object.entries(body)) {
+            if (val !== undefined && val !== null) formData.set(key, String(val));
           }
+          fetchOpts.body = formData.toString();
+          (fetchOpts.headers as Record<string, string>)["Content-Type"] = "application/x-www-form-urlencoded";
         }
-        fetchOpts.body = formData.toString();
-        (fetchOpts.headers as Record<string, string>)["Content-Type"] = "application/x-www-form-urlencoded";
-      }
+      } catch {}
     }
 
-    // Dentsoft API'ye istek
-    const response = await fetch(url, fetchOpts);
+    const response = await fetch(targetUrl, fetchOpts);
     const data = await response.json();
 
-    // Cache: GET istekleri 60 saniye cache
-    if (req.method === "GET") {
-      res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
-    }
-
-    return res.status(response.status).json(data);
+    return Response.json(data, {
+      status: response.status,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": req.method === "GET" ? "s-maxage=60, stale-while-revalidate=300" : "no-store",
+      },
+    });
   } catch (err: any) {
     console.error("Dentsoft proxy error:", err);
-    return res.status(500).json({
-      error: "Dentsoft API bağlantı hatası",
-      detail: err.message,
-    });
+    return Response.json(
+      { error: "Dentsoft API bağlantı hatası", detail: err.message },
+      { status: 500, headers: { "Access-Control-Allow-Origin": "*" } }
+    );
   }
 }

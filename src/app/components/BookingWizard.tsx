@@ -5,7 +5,7 @@ import {
   MapPin, Stethoscope, UserRound, CalendarDays, CheckCircle2, X, Loader2,
 } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
-import type { Branch, Doctor as SupabaseDoctor } from "@/lib/supabase";
+import type { Branch } from "@/lib/supabase";
 import { getDoctors, getDoctorSlots, createAppointment, type DentsoftDoctor } from "@/lib/dentsoft";
 
 interface TreatmentCategory {
@@ -83,7 +83,6 @@ export function BookingWizard() {
   // Supabase data
   const { data: branches } = useTable<Branch>("branches", "sort_order");
   const { data: categories } = useTable<TreatmentCategory>("treatment_categories", "sort_order");
-  const { data: supabaseDoctors } = useTable<SupabaseDoctor>("doctors", "sort_order");
 
   const activeBranches = branches.filter(b => b.is_active);
   const activeCategories = categories.filter(c => c.is_active);
@@ -106,46 +105,24 @@ export function BookingWizard() {
 
   // Dentsoft data
   const [dsDoctors, setDsDoctors] = useState<DentsoftDoctor[]>([]);
-  const [useFallback, setUseFallback] = useState(false);
   const [dsSlots, setDsSlots]     = useState<any>(null);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [loadingSlots, setLoadingSlots]     = useState(false);
+  const [doctorError, setDoctorError] = useState("");
 
   // Derived
   const selectedBranch  = activeBranches.find(b => b.id === clinicId);
   const selectedCategory = activeCategories.find(c => c.id === serviceId);
+  const selectedDoctor = dsDoctors.find(d => d.ID === doctorId);
 
-  // Fallback: Supabase doktorlarını DentsoftDoctor formatına çevir
-  const fallbackDoctors: DentsoftDoctor[] = supabaseDoctors
-    .filter(d => d.is_active)
-    .map(d => ({
-      ID: d.id,
-      Name: d.name,
-      Title: d.title,
-      Avatar: d.photo,
-      OptiC: "",
-      Salon: "",
-    }));
-
-  // Aktif doktor listesi (Dentsoft veya Supabase fallback)
-  const activeDoctorList = dsDoctors.length > 0 ? dsDoctors : (useFallback ? fallbackDoctors : []);
-  const selectedDoctor = activeDoctorList.find(d => d.ID === doctorId);
-
-  // ── Dentsoft: Doktor listesini çek, başarısızsa Supabase fallback ─────
+  // ── Dentsoft: Doktor listesini çek ─────────────────────────────────────
   useEffect(() => {
-    if (step !== 3 || dsDoctors.length > 0 || useFallback) return;
+    if (step !== 3 || dsDoctors.length > 0) return;
     setLoadingDoctors(true);
+    setDoctorError("");
     getDoctors()
-      .then(docs => {
-        if (docs && docs.length > 0) {
-          setDsDoctors(docs);
-        } else {
-          setUseFallback(true);
-        }
-      })
-      .catch(() => {
-        setUseFallback(true);
-      })
+      .then(docs => setDsDoctors(docs || []))
+      .catch(err => setDoctorError(err.message || "Doktor listesi yüklenemedi"))
       .finally(() => setLoadingDoctors(false));
   }, [step]);
 
@@ -399,7 +376,7 @@ export function BookingWizard() {
                       </div>
                     ) : (
                       <div className="space-y-2">
-                        {activeDoctorList.map((d) => (
+                        {dsDoctors.map((d) => (
                           <button key={d.ID} onClick={() => setDoctorId(d.ID)}
                             className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl border text-left transition-all ${
                               doctorId === d.ID
@@ -422,8 +399,13 @@ export function BookingWizard() {
                             {doctorId === d.ID && <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />}
                           </button>
                         ))}
-                        {activeDoctorList.length === 0 && !loadingDoctors && (
-                          <p className="text-slate-400 text-sm text-center py-6">Bu şube ve tedavi için doktor bulunamadı</p>
+                        {dsDoctors.length === 0 && !loadingDoctors && (
+                          <div className="text-center py-6">
+                            <p className="text-slate-400 text-sm">Doktor listesi yüklenemedi</p>
+                            {doctorError && <p className="text-red-400 text-xs mt-1">{doctorError}</p>}
+                            <button onClick={() => { setDsDoctors([]); setDoctorError(""); }}
+                              className="mt-2 text-indigo-500 text-xs font-bold hover:underline">Tekrar dene</button>
+                          </div>
                         )}
                       </div>
                     )}
