@@ -133,33 +133,34 @@ export function BookingWizard() {
   const selectedDay     = AVAILABLE_DAYS.find(d => d.date === day);
 
   // Filtered options — doctors filtered by selected branch
-  const branchSlug = selectedBranch?.slug || "";
-  const branchName = selectedBranch?.name || "";
+  const branchSlug = selectedBranch?.slug?.toLowerCase() || "";
+  const branchName = selectedBranch?.name?.toLowerCase() || "";
   const branchCity = selectedBranch?.city?.toLowerCase() || "";
-
-  // Şube slug'ından kısa tanımlayıcı çıkar: "istanbul-nisantasi" → "istanbul", "adana-turkmenbasi" → "adana"
+  // "istanbul-nisantasi" → "istanbul", "adana-turkmenbasi" → "adana"
   const branchShort = branchSlug.split("-")[0] || "";
 
-  const matchedDoctors = clinicId
+  const filteredDoctors = clinicId
     ? activeDoctors.filter(d => {
-        // branches array'inde kısa isim var mı ("adana", "istanbul")
-        if (d.branches?.includes(branchShort)) return true;
-        // branch alanında kısa isim var mı
-        if (d.branch === branchShort) return true;
-        // branches array'inde tam slug var mı
-        if (d.branches?.includes(branchSlug)) return true;
-        // branch_label veya branches_labels'da şube adı var mı
-        if (d.branch_label === branchName) return true;
-        if (d.branches_labels?.includes(branchName)) return true;
-        // Şehir ismiyle eşleşme
-        if (branchCity && d.branch_label?.toLowerCase().includes(branchCity)) return true;
-        if (branchCity && d.branches_labels?.some(l => l.toLowerCase().includes(branchCity))) return true;
+        const db = d.branch?.toLowerCase() || "";
+        const dbl = d.branch_label?.toLowerCase() || "";
+        const dbs = (d.branches || []).map(b => b.toLowerCase());
+        const dbls = (d.branches_labels || []).map(l => l.toLowerCase());
+
+        // Kısa isimle eşleşme: "adana", "istanbul"
+        if (db === branchShort) return true;
+        if (dbs.includes(branchShort)) return true;
+        // Tam slug ile: "istanbul-nisantasi"
+        if (db === branchSlug) return true;
+        if (dbs.includes(branchSlug)) return true;
+        // Şube adı ile: "İstanbul Nişantaşı"
+        if (dbl === branchName) return true;
+        if (dbls.includes(branchName)) return true;
+        // Şehir ile: "istanbul", "adana"
+        if (branchCity && dbl.includes(branchCity)) return true;
+        if (branchCity && dbls.some(l => l.includes(branchCity))) return true;
         return false;
       })
     : activeDoctors;
-
-  // Fallback: filtre boş dönerse tüm doktorları göster
-  const filteredDoctors = matchedDoctors.length > 0 ? matchedDoctors : activeDoctors;
 
   const canNext = () => {
     if (step === 1) return !!clinicId;
