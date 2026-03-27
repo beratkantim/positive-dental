@@ -1,11 +1,5 @@
 module.exports = function handler(req, res) {
-  res.setHeader("Content-Type", "text/plain; charset=utf-8");
-  res.setHeader("Cache-Control", "public, s-maxage=86400");
-  res.send(`User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /api/
-
-Sitemap: https://positive-dental.vercel.app/sitemap.xml
-`);
+  var txt = "User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /api/\n\nSitemap: https://positive-dental.vercel.app/sitemap.xml\n";
+  res.setHeader("Content-Type", "text/plain");
+  res.status(200).send(txt);
 };
