@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload } from "./shared";
 
 interface Insurance {
   id: string;
@@ -28,12 +28,14 @@ export function InsurancesSection() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("insurances").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "insurances", id, `Sigorta ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deleteInsurance = async (id: string) => {
     if (!confirm("Bu sigortayı silmek istediğinize emin misiniz?")) return;
     await supabase.from("insurances").delete().eq("id", id);
+    await logAction("delete", "insurances", id, "Sigorta silindi");
     load();
   };
 
@@ -122,8 +124,10 @@ function InsuranceForm({ insurance, onSave, onCancel }: {
     const payload = { ...form };
     if (insurance?.id) {
       await supabase.from("insurances").update(payload).eq("id", insurance.id);
+      await logAction("update", "insurances", insurance.id, `Sigorta güncellendi: ${payload.name}`);
     } else {
       await supabase.from("insurances").insert(payload);
+      await logAction("create", "insurances", "", `Sigorta eklendi: ${payload.name}`);
     }
     setSaving(false);
     onSave();

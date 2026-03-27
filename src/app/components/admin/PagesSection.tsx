@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, Card, LoadingSpinner, EmptyState, type SiteSetting } from "./shared";
+import { supabase, logAction, Card, LoadingSpinner, EmptyState, type SiteSetting } from "./shared";
 
 const PAGE_GROUPS: { group: string; label: string; icon: string }[] = [
   { group: "hakkimizda", label: "Hakkımızda Sayfası", icon: "📖" },
@@ -45,6 +45,7 @@ export function PagesSection() {
         await supabase.from("site_settings").update({ value: values[s.key] }).eq("key", s.key);
       }
     }
+    await logAction("update", "site_settings", "", `Sayfa içeriği güncellendi: ${groupName}`);
     await load();
     setSavingGroup(null);
     alert("Kaydedildi!");

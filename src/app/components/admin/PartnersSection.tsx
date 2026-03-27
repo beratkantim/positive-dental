@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload } from "./shared";
 
 interface Partner {
   id: string;
@@ -28,12 +28,14 @@ export function PartnersSection() {
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("partners").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "partners", id, `Kurum ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
   const deletePartner = async (id: string) => {
     if (!confirm("Bu kurumu silmek istediğinize emin misiniz?")) return;
     await supabase.from("partners").delete().eq("id", id);
+    await logAction("delete", "partners", id, "Kurum silindi");
     load();
   };
 
@@ -122,8 +124,10 @@ function PartnerForm({ partner, onSave, onCancel }: {
     const payload = { ...form };
     if (partner?.id) {
       await supabase.from("partners").update(payload).eq("id", partner.id);
+      await logAction("update", "partners", partner.id, `Kurum güncellendi: ${payload.name}`);
     } else {
       await supabase.from("partners").insert(payload);
+      await logAction("create", "partners", "", `Kurum eklendi: ${payload.name}`);
     }
     setSaving(false);
     onSave();

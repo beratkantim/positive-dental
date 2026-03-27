@@ -60,11 +60,13 @@ export function PricesSection() {
   const deleteItem = async (id: string) => {
     if (!confirm("Bu fiyat kalemini silmek istediğinize emin misiniz?")) return;
     await supabase.from("price_items").delete().eq("id", id);
+    await logAction("delete", "price_items", id, "Fiyat kalemi silindi");
     load();
   };
 
   const toggleActive = async (id: string, val: boolean) => {
     await supabase.from("price_items").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "price_items", id, `Fiyat kalemi ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
@@ -73,6 +75,7 @@ export function PricesSection() {
     if (!confirm(`"${cat.name}" kategorisi ve altındaki ${count} kalem silinecek. Emin misiniz?`)) return;
     await supabase.from("price_items").delete().eq("category", cat.name);
     await supabase.from("price_categories").delete().eq("id", cat.id);
+    await logAction("delete", "price_categories", cat.id, `Kategori silindi: ${cat.name} (${count} kalem)`);
     if (filterCat === cat.name) setFilterCat("");
     load();
   };
@@ -112,6 +115,7 @@ export function PricesSection() {
     if (!confirm(`${newItems.length} kalem içe aktarılacak. Mevcut veriler silinecek. Devam?`)) return;
     await supabase.from("price_items").delete().neq("id", "00000000-0000-0000-0000-000000000000");
     await supabase.from("price_items").insert(newItems);
+    await logAction("create", "price_items", "", `CSV ile ${newItems.length} kalem içe aktarıldı`);
     load();
     alert(`${newItems.length} kalem başarıyla içe aktarıldı`);
     if (fileRef.current) fileRef.current.value = "";
@@ -318,8 +322,10 @@ function CategoryForm({ category, onSave, onCancel }: {
         await supabase.from("price_items").update({ category: form.name }).eq("category", category.name);
       }
       await supabase.from("price_categories").update(form).eq("id", category.id);
+      await logAction("update", "price_categories", category.id, `Kategori güncellendi: ${form.name}`);
     } else {
       await supabase.from("price_categories").insert(form);
+      await logAction("create", "price_categories", "", `Kategori eklendi: ${form.name}`);
     }
     setSaving(false);
     onSave();
@@ -380,8 +386,10 @@ function PriceForm({ item, categories, onSave, onCancel, inline }: {
     setSaving(true);
     if (item?.id) {
       await supabase.from("price_items").update(form).eq("id", item.id);
+      await logAction("update", "price_items", item.id, `Fiyat güncellendi: ${form.name}`);
     } else {
       await supabase.from("price_items").insert(form);
+      await logAction("create", "price_items", "", `Fiyat eklendi: ${form.name}`);
     }
     setSaving(false);
     onSave();

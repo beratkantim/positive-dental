@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { supabase, Card, LoadingSpinner, FormField, type SiteSetting } from "./shared";
+import { supabase, logAction, Card, LoadingSpinner, FormField, type SiteSetting } from "./shared";
 
 interface FooterItem { label: string; url: string; }
 interface FooterColumn { title: string; type: "links" | "text" | "contact" | "social"; items: FooterItem[]; }
@@ -123,6 +123,7 @@ export function FooterSection() {
     for (const [key, value] of Object.entries(updates)) {
       await supabase.from("site_settings").update({ value }).eq("key", key);
     }
+    await logAction("update", "site_settings", "", "Footer ayarları güncellendi");
     setSaving(false);
     alert("Footer kaydedildi!");
   };

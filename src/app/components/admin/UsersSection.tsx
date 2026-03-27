@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, Card, Badge, LoadingSpinner, EmptyState, FormField } from "./shared";
+import { supabase, logAction, Card, Badge, LoadingSpinner, EmptyState, FormField } from "./shared";
 
 interface AdminUser {
   id: string;
@@ -60,6 +60,7 @@ export function UsersSection() {
   const toggleActive = async (id: string, val: boolean) => {
     if (!isSuperAdmin) return;
     await supabase.from("admin_users").update({ is_active: !val }).eq("id", id);
+    await logAction("toggle_active", "admin_users", id, `Kullanıcı ${!val ? "aktif" : "pasif"} yapıldı`);
     load();
   };
 
@@ -68,12 +69,14 @@ export function UsersSection() {
     if (user.email === currentUser) { alert("Kendinizi silemezsiniz"); return; }
     if (!confirm(`${user.email} kullanıcısını silmek istediğinize emin misiniz?`)) return;
     await supabase.from("admin_users").delete().eq("id", user.id);
+    await logAction("delete", "admin_users", user.id, `Kullanıcı silindi: ${user.email}`);
     load();
   };
 
   const changeRole = async (id: string, newRole: string) => {
     if (!isSuperAdmin) return;
     await supabase.from("admin_users").update({ role: newRole }).eq("id", id);
+    await logAction("update", "admin_users", id, `Kullanıcı rolü değiştirildi: ${newRole}`);
     load();
   };
 
@@ -225,6 +228,7 @@ function InviteForm({ onSave, onCancel }: { onSave: () => void; onCancel: () => 
       return;
     }
 
+    await logAction("create", "admin_users", "", `Kullanıcı davet edildi: ${form.email} (${form.role})`);
     setSaving(false);
     onSave();
   };
