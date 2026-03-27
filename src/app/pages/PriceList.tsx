@@ -31,7 +31,9 @@ function formatPrice(min: number, max: number): string {
   return `₺${min.toLocaleString("tr-TR")}`;
 }
 
-function buildPriceGroups(items: PriceItem[]) {
+interface PriceCategoryDB { id: string; name: string; icon: string; color: string; sort_order: number; is_active: boolean; }
+
+function buildPriceGroups(items: PriceItem[], dbCats: PriceCategoryDB[]) {
   const map = new Map<string, { name: string; price: string; note: string | null }[]>();
   for (const item of items) {
     if (!map.has(item.category)) map.set(item.category, []);
@@ -41,10 +43,30 @@ function buildPriceGroups(items: PriceItem[]) {
       note: item.price_note || null,
     });
   }
-  return Array.from(map.entries()).map(([cat, catItems]) => {
-    const style = CATEGORY_STYLE[cat] || { emoji: "💰", color: "from-gray-500 to-gray-600", lightBg: "bg-gray-50", borderColor: "border-gray-200", tagColor: "bg-gray-100 text-gray-700" };
+
+  // Kategori sıralamasını price_categories tablosundan al
+  const catOrder = dbCats.length > 0 ? dbCats : [];
+  const orderedCats = catOrder.length > 0
+    ? catOrder.map(c => c.name).filter(name => map.has(name))
+    : Array.from(map.keys());
+
+  return orderedCats.map(cat => {
+    const dbCat = dbCats.find(c => c.name === cat);
+    const fallbackStyle = CATEGORY_STYLE[cat] || { emoji: "💰", color: "from-gray-500 to-gray-600", lightBg: "bg-gray-50", borderColor: "border-gray-200", tagColor: "bg-gray-100 text-gray-700" };
+    const color = dbCat?.color || fallbackStyle.color;
     const id = cat.toLowerCase().replace(/[^a-zğüşıöç0-9]+/g, "-");
-    return { id, label: cat, ...style, items: catItems };
+
+    return {
+      id,
+      label: cat,
+      emoji: fallbackStyle.emoji,
+      iconUrl: dbCat?.icon || "",
+      color,
+      lightBg: fallbackStyle.lightBg,
+      borderColor: fallbackStyle.borderColor,
+      tagColor: fallbackStyle.tagColor,
+      items: map.get(cat) || [],
+    };
   });
 }
 
@@ -276,8 +298,9 @@ export function PriceList() {
   const [search, setSearch] = useState("");
   const [expandAll, setExpandAll] = useState(false);
   const { data: priceItems, loading: pricesLoading } = useTable<PriceItem>("price_items", "sort_order");
+  const { data: priceCats } = useTable<PriceCategoryDB>("price_categories", "sort_order");
 
-  const PRICE_GROUPS = priceItems.length > 0 ? buildPriceGroups(priceItems) : _LEGACY_PRICE_GROUPS;
+  const PRICE_GROUPS = priceItems.length > 0 ? buildPriceGroups(priceItems, priceCats) : _LEGACY_PRICE_GROUPS;
 
   const toggleGroup = (id: string) => {
     setOpenGroups((prev) => {
@@ -423,7 +446,11 @@ export function PriceList() {
                       } ${searchActive ? "cursor-default" : "cursor-pointer"}`}
                     >
                       {/* Sol: emoji + label */}
-                      <span className="text-2xl flex-shrink-0">{group.emoji}</span>
+                      {group.iconUrl ? (
+                        <img src={group.iconUrl} alt={group.label} className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+                      ) : (
+                        <span className="text-2xl flex-shrink-0">{group.emoji}</span>
+                      )}
                       <div className="flex-1 min-w-0">
                         <span className="font-bold text-slate-900 text-[15px]">{group.label}</span>
                         <span className="ml-3 text-xs text-slate-400 font-medium">{group.items.length} hizmet</span>
