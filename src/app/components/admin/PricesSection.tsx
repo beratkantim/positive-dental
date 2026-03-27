@@ -215,8 +215,9 @@ export function PricesSection() {
         ))}
       </div>
 
-      {showForm && (
-        <PriceForm item={editing} categories={catNames} onSave={() => { setShowForm(false); load(); }} onCancel={() => setShowForm(false)} />
+      {/* Yeni kalem formu (sadece yeni eklerken üstte) */}
+      {showForm && !editing && (
+        <PriceForm item={null} categories={catNames} onSave={() => { setShowForm(false); load(); }} onCancel={() => setShowForm(false)} />
       )}
 
       <Card>
@@ -237,31 +238,51 @@ export function PricesSection() {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {filtered.map(item => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-gray-500 text-xs">{item.category}</td>
-                    <td className="px-4 py-3 font-semibold text-gray-900">{item.name}</td>
-                    <td className="px-4 py-3 text-right font-bold text-gray-900 whitespace-nowrap">
-                      {item.price_min === 0 && item.price_max === 0 ? "Ücretsiz" :
-                       item.price_max > item.price_min ? `₺${item.price_min.toLocaleString("tr-TR")} – ₺${item.price_max.toLocaleString("tr-TR")}` :
-                       `₺${item.price_min.toLocaleString("tr-TR")}`}
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs">{item.price_note || "—"}</td>
-                    <td className="px-4 py-3 text-center">
-                      <Badge color={item.is_active ? "green" : "gray"}>{item.is_active ? "Aktif" : "Pasif"}</Badge>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => { setEditing(item); setShowForm(true); }}
-                          className="px-2 py-1 text-xs font-semibold text-indigo-600 hover:bg-indigo-50 rounded transition">Düzenle</button>
-                        <button onClick={() => toggleActive(item.id, item.is_active)}
-                          className="px-2 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-100 rounded transition">
-                          {item.is_active ? "Pasif" : "Aktif"}
-                        </button>
-                        <button onClick={() => deleteItem(item.id)}
-                          className="px-2 py-1 text-xs font-semibold text-red-500 hover:bg-red-50 rounded transition">Sil</button>
-                      </div>
-                    </td>
-                  </tr>
+                  <>
+                    <tr key={item.id} className={`transition-colors ${editing?.id === item.id ? "bg-indigo-50" : "hover:bg-gray-50"}`}>
+                      <td className="px-4 py-3 text-gray-500 text-xs">{item.category}</td>
+                      <td className="px-4 py-3 font-semibold text-gray-900">{item.name}</td>
+                      <td className="px-4 py-3 text-right font-bold text-gray-900 whitespace-nowrap">
+                        {item.price_min === 0 && item.price_max === 0 ? "Ücretsiz" :
+                         item.price_max > item.price_min ? `₺${item.price_min.toLocaleString("tr-TR")} – ₺${item.price_max.toLocaleString("tr-TR")}` :
+                         `₺${item.price_min.toLocaleString("tr-TR")}`}
+                      </td>
+                      <td className="px-4 py-3 text-gray-400 text-xs">{item.price_note || "—"}</td>
+                      <td className="px-4 py-3 text-center">
+                        <Badge color={item.is_active ? "green" : "gray"}>{item.is_active ? "Aktif" : "Pasif"}</Badge>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => { setEditing(editing?.id === item.id ? null : item); setShowForm(false); }}
+                            className={`px-2 py-1 text-xs font-semibold rounded transition ${editing?.id === item.id ? "text-white bg-indigo-500" : "text-indigo-600 hover:bg-indigo-50"}`}>
+                            {editing?.id === item.id ? "Kapat" : "Düzenle"}
+                          </button>
+                          <button onClick={() => toggleActive(item.id, item.is_active)}
+                            className="px-2 py-1 text-xs font-semibold text-gray-500 hover:bg-gray-100 rounded transition">
+                            {item.is_active ? "Pasif" : "Aktif"}
+                          </button>
+                          <button onClick={() => deleteItem(item.id)}
+                            className="px-2 py-1 text-xs font-semibold text-red-500 hover:bg-red-50 rounded transition">Sil</button>
+                        </div>
+                      </td>
+                    </tr>
+                    {/* Akordiyon: inline düzenleme formu */}
+                    {editing?.id === item.id && (
+                      <tr key={`edit-${item.id}`}>
+                        <td colSpan={6} className="p-0">
+                          <div className="border-t-2 border-indigo-200 bg-indigo-50/30 p-4">
+                            <PriceForm
+                              item={editing}
+                              categories={catNames}
+                              onSave={() => { setEditing(null); setShowForm(false); load(); }}
+                              onCancel={() => setEditing(null)}
+                              inline
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))}
               </tbody>
             </table>
@@ -335,11 +356,12 @@ function CategoryForm({ category, onSave, onCancel }: {
 }
 
 // ── FİYAT FORM ──
-function PriceForm({ item, categories, onSave, onCancel }: {
+function PriceForm({ item, categories, onSave, onCancel, inline }: {
   item: PriceItem | null;
   categories: string[];
   onSave: () => void;
   onCancel: () => void;
+  inline?: boolean;
 }) {
   const [form, setForm] = useState({
     category: item?.category || "",
@@ -363,42 +385,49 @@ function PriceForm({ item, categories, onSave, onCancel }: {
     onSave();
   };
 
+  const Wrapper = inline ? "div" : Card;
+  const wrapperClass = inline ? "" : "p-6";
+
   return (
-    <Card className="p-6">
-      <h3 className="font-bold text-gray-900 mb-5">{item ? "Fiyat Düzenle" : "Yeni Fiyat Kalemi"}</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <Wrapper className={wrapperClass}>
+      {!inline && <h3 className="font-bold text-gray-900 mb-5">{item ? "Fiyat Düzenle" : "Yeni Fiyat Kalemi"}</h3>}
+      <div className={`grid gap-3 ${inline ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-6" : "grid-cols-1 md:grid-cols-2 gap-4"}`}>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Kategori</label>
-          <input list="cat-list" value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-            placeholder="Kategori seçin veya yeni yazın..."
-            className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none" />
-          <datalist id="cat-list">{categories.map(c => <option key={c} value={c} />)}</datalist>
+          <label className="block text-xs font-semibold text-gray-700 mb-1">Kategori</label>
+          <input list={`cat-list-${item?.id || 'new'}`} value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
+            placeholder="Kategori..."
+            className="w-full px-2.5 py-2 rounded-lg border border-gray-200 text-sm focus:border-indigo-400 outline-none" />
+          <datalist id={`cat-list-${item?.id || 'new'}`}>{categories.map(c => <option key={c} value={c} />)}</datalist>
         </div>
         <FormField label="İşlem Adı" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
-        <FormField label="Minimum Fiyat (₺)" value={String(form.price_min)} onChange={v => setForm(f => ({ ...f, price_min: parseInt(v) || 0 }))} type="number" />
-        <FormField label="Maksimum Fiyat (₺)" value={String(form.price_max)} onChange={v => setForm(f => ({ ...f, price_max: parseInt(v) || 0 }))} type="number" />
-        <FormField label="Not / Açıklama" value={form.price_note} onChange={v => setForm(f => ({ ...f, price_note: v }))} />
+        <FormField label="Min Fiyat (₺)" value={String(form.price_min)} onChange={v => setForm(f => ({ ...f, price_min: parseInt(v) || 0 }))} type="number" />
+        <FormField label="Max Fiyat (₺)" value={String(form.price_max)} onChange={v => setForm(f => ({ ...f, price_max: parseInt(v) || 0 }))} type="number" />
+        <FormField label="Not" value={form.price_note} onChange={v => setForm(f => ({ ...f, price_note: v }))} />
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: parseInt(v) || 0 }))} type="number" />
       </div>
-      <div className="mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between">
-        <div>
-          <p className="font-semibold text-gray-900 text-sm">{form.name || "İşlem adı"}</p>
-          <p className="text-xs text-gray-400">{form.category} {form.price_note && `· ${form.price_note}`}</p>
+      {!inline && (
+        <div className="mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between">
+          <div>
+            <p className="font-semibold text-gray-900 text-sm">{form.name || "İşlem adı"}</p>
+            <p className="text-xs text-gray-400">{form.category} {form.price_note && `· ${form.price_note}`}</p>
+          </div>
+          <p className="font-bold text-gray-900">
+            {form.price_min === 0 && form.price_max === 0 ? "Ücretsiz" :
+             form.price_max > form.price_min ? `₺${form.price_min.toLocaleString("tr-TR")} – ₺${form.price_max.toLocaleString("tr-TR")}` :
+             `₺${form.price_min.toLocaleString("tr-TR")}`}
+          </p>
         </div>
-        <p className="font-bold text-gray-900">
-          {form.price_min === 0 && form.price_max === 0 ? "Ücretsiz" :
-           form.price_max > form.price_min ? `₺${form.price_min.toLocaleString("tr-TR")} – ₺${form.price_max.toLocaleString("tr-TR")}` :
-           `₺${form.price_min.toLocaleString("tr-TR")}`}
-        </p>
-      </div>
-      <div className="flex items-center gap-3 mt-6">
+      )}
+      <div className={`flex items-center gap-2 ${inline ? "mt-3" : "mt-6"}`}>
         <button onClick={save} disabled={saving}
-          className="px-6 py-2.5 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold rounded-xl text-sm hover:from-indigo-400 hover:to-violet-500 transition disabled:opacity-60">
+          className={`bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold rounded-xl text-sm hover:from-indigo-400 hover:to-violet-500 transition disabled:opacity-60 ${inline ? "px-4 py-2" : "px-6 py-2.5"}`}>
           {saving ? "Kaydediliyor..." : "Kaydet"}
         </button>
         <button onClick={onCancel}
-          className="px-6 py-2.5 border border-gray-200 text-gray-700 font-semibold rounded-xl text-sm hover:bg-gray-50 transition">İptal</button>
+          className={`border border-gray-200 text-gray-700 font-semibold rounded-xl text-sm hover:bg-gray-50 transition ${inline ? "px-4 py-2" : "px-6 py-2.5"}`}>
+          İptal
+        </button>
       </div>
-    </Card>
+    </Wrapper>
   );
 }
