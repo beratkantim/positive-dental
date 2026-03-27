@@ -5,19 +5,37 @@ import { Layout } from "./components/Layout";
 // Sadece Home eager yüklenir (ilk sayfa), diğerleri lazy
 import { Home } from "./pages/Home";
 
-const Services    = lazy(() => import("./pages/Services").then(m => ({ default: m.Services })));
-const About       = lazy(() => import("./pages/About").then(m => ({ default: m.About })));
-const Locations   = lazy(() => import("./pages/Locations").then(m => ({ default: m.Locations })));
-const Contact     = lazy(() => import("./pages/Contact").then(m => ({ default: m.Contact })));
-const Kids        = lazy(() => import("./pages/Kids").then(m => ({ default: m.Kids })));
-const Blog        = lazy(() => import("./pages/Blog").then(m => ({ default: m.Blog })));
-const BlogPost    = lazy(() => import("./pages/BlogPost").then(m => ({ default: m.BlogPost })));
-const Partners    = lazy(() => import("./pages/Partners").then(m => ({ default: m.Partners })));
-const Insurance   = lazy(() => import("./pages/Insurance").then(m => ({ default: m.Insurance })));
-const PriceList   = lazy(() => import("./pages/PriceList").then(m => ({ default: m.PriceList })));
-const Doctors     = lazy(() => import("./pages/Doctors").then(m => ({ default: m.Doctors })));
-const Appointment = lazy(() => import("./pages/Appointment").then(m => ({ default: m.Appointment })));
-const AdminPanel  = lazy(() => import("./pages/Admin").then(m => ({ default: m.AdminPanel })));
+// Retry wrapper: deploy sonrası eski chunk hash'leri cache'te kalırsa otomatik reload
+function lazyRetry<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T }>
+): React.LazyExoticComponent<T> {
+  return lazy(() =>
+    factory().catch(() => {
+      // Chunk bulunamadıysa sayfayı bir kez yenile
+      const key = "chunk-retry";
+      if (!sessionStorage.getItem(key)) {
+        sessionStorage.setItem(key, "1");
+        window.location.reload();
+      }
+      sessionStorage.removeItem(key);
+      return factory();
+    })
+  );
+}
+
+const Services    = lazyRetry(() => import("./pages/Services").then(m => ({ default: m.Services })));
+const About       = lazyRetry(() => import("./pages/About").then(m => ({ default: m.About })));
+const Locations   = lazyRetry(() => import("./pages/Locations").then(m => ({ default: m.Locations })));
+const Contact     = lazyRetry(() => import("./pages/Contact").then(m => ({ default: m.Contact })));
+const Kids        = lazyRetry(() => import("./pages/Kids").then(m => ({ default: m.Kids })));
+const Blog        = lazyRetry(() => import("./pages/Blog").then(m => ({ default: m.Blog })));
+const BlogPost    = lazyRetry(() => import("./pages/BlogPost").then(m => ({ default: m.BlogPost })));
+const Partners    = lazyRetry(() => import("./pages/Partners").then(m => ({ default: m.Partners })));
+const Insurance   = lazyRetry(() => import("./pages/Insurance").then(m => ({ default: m.Insurance })));
+const PriceList   = lazyRetry(() => import("./pages/PriceList").then(m => ({ default: m.PriceList })));
+const Doctors     = lazyRetry(() => import("./pages/Doctors").then(m => ({ default: m.Doctors })));
+const Appointment = lazyRetry(() => import("./pages/Appointment").then(m => ({ default: m.Appointment })));
+const AdminPanel  = lazyRetry(() => import("./pages/Admin").then(m => ({ default: m.AdminPanel })));
 
 function PageLoader() {
   return (
