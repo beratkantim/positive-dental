@@ -3,7 +3,29 @@
 -- Toplam: 12 kategori, 293 tedavi
 -- ============================================================
 
--- Tabloları temizle (varsa)
+-- ── 0. Önce treatments tablosunu oluştur (yoksa) ────────────
+CREATE TABLE IF NOT EXISTS treatments (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  category_id UUID REFERENCES treatment_categories(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  title_en TEXT DEFAULT '',
+  price NUMERIC(12,2) DEFAULT 0,
+  discount_rate NUMERIC(5,2) DEFAULT 0,
+  cost NUMERIC(12,2) DEFAULT 0,
+  currency TEXT DEFAULT 'TL',
+  tooth_type INT,
+  duration_minutes INT DEFAULT 0,
+  exam_type INT,
+  is_active BOOLEAN DEFAULT true,
+  sort_order INT DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE treatments ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "treatments_public_read" ON treatments;
+CREATE POLICY "treatments_public_read" ON treatments FOR SELECT USING (true);
+
+-- Tabloları temizle
 DELETE FROM treatments WHERE true;
 DELETE FROM treatment_categories WHERE true;
 
@@ -22,30 +44,7 @@ INSERT INTO treatment_categories (name, slug, icon, sort_order, is_active) VALUE
   ('Protez Implantüstü', 'protez-implantustu', '⚙️', 11, true),
   ('Tedavi ve Endodonti', 'tedavi-ve-endodonti', '🦷', 12, true);
 
--- ── 2. Tedaviler tablosu oluştur ──────────────────────────
-CREATE TABLE IF NOT EXISTS treatments (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  category_id UUID REFERENCES treatment_categories(id) ON DELETE SET NULL,
-  title TEXT NOT NULL,
-  title_en TEXT DEFAULT '',
-  price NUMERIC(12,2) DEFAULT 0,
-  discount_rate NUMERIC(5,2) DEFAULT 0,
-  cost NUMERIC(12,2) DEFAULT 0,
-  currency TEXT DEFAULT 'TL',
-  tooth_type INT,
-  duration_minutes INT DEFAULT 0,
-  exam_type INT,
-  is_active BOOLEAN DEFAULT true,
-  sort_order INT DEFAULT 0,
-  created_at TIMESTAMPTZ DEFAULT now()
-);
-
--- RLS
-ALTER TABLE treatments ENABLE ROW LEVEL SECURITY;
-DROP POLICY IF EXISTS "treatments_public_read" ON treatments;
-CREATE POLICY "treatments_public_read" ON treatments FOR SELECT USING (true);
-
--- ── 3. Tedavi verileri ──────────────────────────────────────
+-- ── 2. Tedavi verileri ──────────────────────────────────────
 -- Beyazlatma
 INSERT INTO treatments (category_id, title, title_en, price, discount_rate, cost, currency, tooth_type, duration_minutes, exam_type, sort_order, is_active) VALUES
   ((SELECT id FROM treatment_categories WHERE slug = 'beyazlatma'), 'Beyazlatma 1- Ev', 'Whitening 1 - Home', 5500, 30, 500, 'TL', NULL, 0, NULL, 1, true),
