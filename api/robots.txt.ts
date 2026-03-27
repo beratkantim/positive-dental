@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { SITE_URL } from "./_supabase";
+
+const SITE_URL = "https://positivedental.com";
 
 export default function handler(_req: VercelRequest, res: VercelResponse) {
   const txt = `User-agent: *
