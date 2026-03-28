@@ -143,10 +143,10 @@ export async function getDoctors(clinicId?: string) {
   const doctors: DentsoftDoctor[] = [];
   const response = res.Response;
 
-  // Clinic.Users array'inden doktorları çıkar
+  // Users array'i Response altında (Clinic'in kardeşi)
   const clinic = response?.Clinic;
-  if (clinic) {
-    const users = clinic.Users || clinic.users || [];
+  if (response) {
+    const users = response.Users || response.users || clinic?.Users || [];
     for (const u of users) {
       const user = u.User || u.user || u;
       doctors.push({
