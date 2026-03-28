@@ -16,6 +16,7 @@ import { PartnersSection } from "../components/admin/PartnersSection";
 import { InsurancesSection } from "../components/admin/InsurancesSection";
 import { PagesSection } from "../components/admin/PagesSection";
 import { FooterSection } from "../components/admin/FooterSection";
+import { ServicePagesSection } from "../components/admin/ServicePagesSection";
 import { UsersSection } from "../components/admin/UsersSection";
 import { AuditLogSection } from "../components/admin/AuditLogSection";
 
@@ -76,6 +77,7 @@ export function AdminPanel() {
       case "prices":       return <PricesSection />;
       case "partners":     return <PartnersSection />;
       case "insurances":   return <InsurancesSection />;
+      case "service_pages": return <ServicePagesSection />;
       case "pages":        return <PagesSection />;
       case "footer":       return <FooterSection />;
       case "users":        return <UsersSection />;

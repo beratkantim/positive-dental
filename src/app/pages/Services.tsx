@@ -31,6 +31,7 @@ interface ServiceItem {
   lightText: string;
   icon: string;
   image: string;
+  slug: string;
 }
 
 function mapService(s: ServiceDB): ServiceItem {
@@ -44,6 +45,7 @@ function mapService(s: ServiceDB): ServiceItem {
     lightText: light.text,
     icon: s.icon,
     image: s.image || "",
+    slug: s.slug || "",
   };
 }
 
@@ -217,10 +219,18 @@ export function Services() {
                       </li>
                     ))}
                   </ul>
-                  <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-1.5 text-sm font-bold ${s.lightText} group-hover:gap-2 transition-all`}>
-                    Randevu Al <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
+                  <div className="flex items-center gap-4">
+                    {s.slug && (
+                      <Link to={`/hizmetlerimiz/${s.slug}`}
+                        className={`inline-flex items-center gap-1.5 text-sm font-bold ${s.lightText} group-hover:gap-2 transition-all`}>
+                        Detaylı Bilgi <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
+                    <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-400 hover:text-slate-600 transition">
+                      Randevu Al
+                    </a>
+                  </div>
                   </div>
                 </motion.div>
               );

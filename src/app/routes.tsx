@@ -34,6 +34,7 @@ function lazyRetry<T extends React.ComponentType<any>>(
 }
 
 const Services    = lazyRetry(() => import("./pages/Services").then(m => ({ default: m.Services })));
+const ServiceDetail = lazyRetry(() => import("./pages/ServiceDetail").then(m => ({ default: m.ServiceDetail })));
 const About       = lazyRetry(() => import("./pages/About").then(m => ({ default: m.About })));
 const Locations   = lazyRetry(() => import("./pages/Locations").then(m => ({ default: m.Locations })));
 const Contact     = lazyRetry(() => import("./pages/Contact").then(m => ({ default: m.Contact })));
@@ -72,6 +73,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: Home },
       { path: "hizmetlerimiz",       element: <SuspenseWrap><Services /></SuspenseWrap> },
+      { path: "hizmetlerimiz/:slug", element: <SuspenseWrap><ServiceDetail /></SuspenseWrap> },
       { path: "hakkimizda",          element: <SuspenseWrap><About /></SuspenseWrap> },
       { path: "kliniklerimiz",       element: <SuspenseWrap><Locations /></SuspenseWrap> },
       { path: "iletisim",            element: <SuspenseWrap><Contact /></SuspenseWrap> },

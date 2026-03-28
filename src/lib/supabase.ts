@@ -67,6 +67,7 @@ export interface Treatment {
 
 export interface Service {
   id: string;
+  slug: string;
   title: string;
   description: string;
   icon: string;
@@ -75,6 +76,10 @@ export interface Service {
   image: string;
   price_range: string;
   features: string[];
+  content: string;
+  meta_description: string;
+  keywords: string[];
+  faqs: { q: string; a: string }[];
   is_featured: boolean;
   is_active: boolean;
   sort_order: number;
