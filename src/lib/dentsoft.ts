@@ -131,29 +131,41 @@ async function dsPut<T>(path: string, body?: Record<string, any>): Promise<Dents
 
 // ── API Fonksiyonları ──────────────────────────────────────────
 
-/** Klinik listesi (ClinicID otomatik eklenir proxy'de) */
+/** Doktor listesi — Dentsoft'tan çeker */
 export async function getDoctors(clinicId?: string) {
   const params: Record<string, string> = {};
   if (clinicId) params.ClinicID = clinicId;
   const res = await dsGet<any>("Clinic/DoctorList", params);
   if (res.Status.Code !== 100) throw new Error(res.Status.Message);
 
-  // Response yapısı: { Clinic: [...], SubClinic: [...] }
-  // Doktorlar Clinic array'inin içindeki Team objeleri
+  // Response yapısı:
+  // { Clinic: { ID, Name, Users: [{ User: { ID, FirstName, LastName, Avatar, ... } }] } }
   const doctors: DentsoftDoctor[] = [];
-  const clinics = res.Response?.Clinic || [];
+  const response = res.Response;
 
-  for (const clinic of clinics) {
-    if (clinic.Team) {
-      for (const team of clinic.Team) {
-        doctors.push(team);
-      }
+  // Clinic.Users array'inden doktorları çıkar
+  const clinic = response?.Clinic;
+  if (clinic) {
+    const users = clinic.Users || clinic.users || [];
+    for (const u of users) {
+      const user = u.User || u.user || u;
+      doctors.push({
+        ID: user.ID || user.id || "",
+        Title: user.Title || user.title || "",
+        Name: [user.FirstName, user.LastName].filter(Boolean).join(" ") || user.Name || "",
+        OptiC: user.OptiC || "",
+        Avatar: user.Avatar || user.avatar || "",
+        Salon: user.Salon || "",
+        WorkingHoursDaily: user.WorkingHoursDaily || user.Work || undefined,
+        Slience: user.Slience || [],
+        RecordDay: user.RecordDay || user.NearestDay ? [user.NearestDay] : [],
+      });
     }
   }
 
-  // Eğer direkt array gelirse
-  if (Array.isArray(res.Response)) {
-    return res.Response as DentsoftDoctor[];
+  // Eğer direkt array gelirse (farklı response yapısı)
+  if (doctors.length === 0 && Array.isArray(response)) {
+    return response as DentsoftDoctor[];
   }
 
   return doctors;
