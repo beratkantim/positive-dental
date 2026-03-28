@@ -140,20 +140,9 @@ export function BookingWizard() {
   const branchShort = branchSlug.split("-")[0] || "";
   const branchCity = selectedBranch?.city?.toLowerCase() || "";
 
-  const filteredDoctors = mergedDoctors.filter(d => {
-    // Şube filtresi (eşleşmiş doktor varsa)
-    if (clinicId && d._branches.length > 0) {
-      const dbs = d._branches.map(b => b.toLowerCase());
-      const matchBranch = dbs.includes(branchShort) || dbs.includes(branchSlug) ||
-        dbs.some(b => branchCity && b.includes(branchCity));
-      if (!matchBranch) return false;
-    }
-    // Tedavi filtresi (boş = tümü)
-    if (serviceId && d._serviceIds.length > 0) {
-      if (!d._serviceIds.includes(serviceId)) return false;
-    }
-    return true;
-  });
+  // Dentsoft doktorlarını direkt göster — filtre şimdilik devre dışı
+  // İleride Supabase eşleşmesi yapıldığında şube/tedavi filtresi eklenebilir
+  const filteredDoctors = mergedDoctors;
 
   // ── Dentsoft: Doktor listesini çek ─────────────────────────────────────
   useEffect(() => {
