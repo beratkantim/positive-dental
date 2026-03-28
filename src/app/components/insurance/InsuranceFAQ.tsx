@@ -131,7 +131,7 @@ export function InsuranceFAQ({
       </section>
 
       {/* CTA */}
-      <section className="py-24 bg-[#0D1235] relative overflow-hidden">
+      <section className="py-24 bg-[#0B5FBF] relative overflow-hidden">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-700/20 rounded-full blur-[100px]" />
         <motion.div

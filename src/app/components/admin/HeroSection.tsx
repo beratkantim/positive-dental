@@ -160,7 +160,7 @@ function HeroForm({ slide, onSave, onCancel }: {
       <h3 className="font-bold text-gray-900 mb-5">{slide ? "Slide Düzenle" : "Yeni Slide"}</h3>
 
       {/* Önizleme */}
-      <div className="mb-6 rounded-2xl overflow-hidden relative" style={{ height: 180, background: "#0D1235" }}>
+      <div className="mb-6 rounded-2xl overflow-hidden relative" style={{ height: 180, background: "#0B5FBF" }}>
         {form.image && (
           <img src={form.image} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
         )}

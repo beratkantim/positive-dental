@@ -8,7 +8,7 @@ const BOOKING_URL = "https://randevu.positivedental.com";
 
 export function FamilyClinic() {
   return (
-    <section className="relative bg-[#0D1235] overflow-hidden py-24 lg:py-32 content-lazy">
+    <section className="relative bg-[#0B5FBF] overflow-hidden py-24 lg:py-32 content-lazy">
 
       {/* Ambient glows */}
       {/* Ambient glows — hidden on mobile for performance */}
@@ -101,7 +101,7 @@ export function FamilyClinic() {
                   width={400}
                   height={208}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235] via-[#0D1235]/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0B5FBF] via-[#0B5FBF]/40 to-transparent" />
                 {/* Emoji badge */}
                 <div className={`absolute top-4 right-4 w-10 h-10 rounded-2xl bg-gradient-to-br ${card.color} flex items-center justify-center text-lg shadow-lg`}>
                   {card.emoji}
@@ -136,8 +136,8 @@ export function FamilyClinic() {
               height={420}
             />
             {/* Dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#0D1235]/90 via-[#0D1235]/50 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0B5FBF]/90 via-[#0B5FBF]/50 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B5FBF]/60 via-transparent to-transparent" />
 
             {/* Left content */}
             <div className="absolute inset-0 flex flex-col justify-center px-8 sm:px-12 lg:px-16 max-w-lg">

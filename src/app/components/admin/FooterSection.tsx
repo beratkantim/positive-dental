@@ -358,7 +358,7 @@ export function FooterSection() {
       </Card>
 
       {/* ── ÖNİZLEME ── */}
-      <Card className="p-5 bg-[#0D1235]">
+      <Card className="p-5 bg-[#0B5FBF]">
         <h3 className="font-bold text-white mb-4">Önizleme</h3>
         <div className={`grid gap-6 text-sm`} style={{ gridTemplateColumns: `1fr repeat(${columns.length}, 1fr)` }}>
           {/* About sütunu */}

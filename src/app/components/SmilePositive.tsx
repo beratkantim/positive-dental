@@ -62,7 +62,7 @@ export function SmilePositive() {
   const slide = SMILE_TYPES[active];
 
   return (
-    <section className="bg-[#0D1235] relative overflow-hidden py-24">
+    <section className="bg-[#0B5FBF] relative overflow-hidden py-24">
 
       {/* ── Ambient blobs ── */}
       <div className="absolute top-[-10%] left-[-10%] w-[700px] h-[700px] rounded-full bg-indigo-600/20 blur-[140px] pointer-events-none" />
@@ -211,7 +211,7 @@ export function SmilePositive() {
                     height={420}
                   />
                   {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/75 via-[#0D1235]/15 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0B5FBF]/75 via-[#0B5FBF]/15 to-transparent" />
 
                   {/* Bottom badge */}
                   <div className="absolute bottom-6 left-6 right-6">

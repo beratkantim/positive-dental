@@ -131,7 +131,7 @@ export function Doctors() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0D1235" }}>
+      <main className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#0B5FBF" }}>
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </main>
     );
@@ -146,7 +146,7 @@ export function Doctors() {
       keywords={["diş hekimi", "uzman diş doktoru", "implant uzmanı", "ortodonti uzmanı", "estetik diş hekimi"]}
       schemaType="dental"
     />
-    <main className="min-h-screen" style={{ backgroundColor: "#0D1235" }}>
+    <main className="min-h-screen" style={{ backgroundColor: "#0B5FBF" }}>
       {/* Hero */}
       <section className="relative pt-20 pb-16 overflow-hidden">
         {/* Arka plan süsleme */}

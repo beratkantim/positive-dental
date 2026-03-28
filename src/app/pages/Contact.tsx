@@ -112,7 +112,7 @@ export function Contact() {
         {/* ══════════════════════════════════════════════════════════
             HERO
         ══════════════════════════════════════════════════════════ */}
-        <section className="relative bg-[#0D1235] overflow-hidden min-h-[68vh] flex items-center">
+        <section className="relative bg-[#0B5FBF] overflow-hidden min-h-[68vh] flex items-center">
           <div className="absolute top-[-12%] left-[-8%] w-[480px] h-[480px] rounded-full bg-indigo-600/25 blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-8%] right-[-5%] w-[400px] h-[400px] rounded-full bg-violet-700/25 blur-[100px] pointer-events-none" />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04]">
@@ -513,7 +513,7 @@ export function Contact() {
         {/* ══════════════════════════════════════════════════════════
             CTA
         ══════════════════════════════════════════════════════════ */}
-        <section className="py-28 bg-[#0D1235] relative overflow-hidden">
+        <section className="py-28 bg-[#0B5FBF] relative overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-700/20 rounded-full blur-[100px]" />
           <motion.div

@@ -76,7 +76,7 @@ export function Locations() {
 
   if (loading || LOCATIONS.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0B5FBF]">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -96,7 +96,7 @@ export function Locations() {
         {/* ══════════════════════════════════════════════════════════
             HERO
         ══════════════════════════════════════════════════════════ */}
-        <section className="relative bg-[#0D1235] overflow-hidden min-h-[70vh] flex items-center">
+        <section className="relative bg-[#0B5FBF] overflow-hidden min-h-[70vh] flex items-center">
           <div className="absolute top-[-12%] right-[-8%] w-[480px] h-[480px] rounded-full bg-indigo-600/25 blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-8%] left-[-5%] w-[400px] h-[400px] rounded-full bg-violet-700/25 blur-[100px] pointer-events-none" />
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04]">
@@ -326,7 +326,7 @@ export function Locations() {
         {/* ══════════════════════════════════════════════════════════
             CTA
         ══════════════════════════════════════════════════════════ */}
-        <section className="py-28 bg-[#0D1235] relative overflow-hidden">
+        <section className="py-28 bg-[#0B5FBF] relative overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-700/20 rounded-full blur-[100px]" />
           <motion.div

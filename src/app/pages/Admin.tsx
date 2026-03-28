@@ -93,7 +93,7 @@ export function AdminPanel() {
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
-      <aside className={`${sidebarOpen ? "w-60" : "w-16"} bg-[#0D1235] flex-shrink-0 flex flex-col transition-all duration-300`}>
+      <aside className={`${sidebarOpen ? "w-60" : "w-16"} bg-[#0B5FBF] flex-shrink-0 flex flex-col transition-all duration-300`}>
         {/* Logo */}
         <div className="px-4 py-5 border-b border-white/10">
           {sidebarOpen ? (

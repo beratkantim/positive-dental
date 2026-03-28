@@ -72,7 +72,7 @@ export function Appointment() {
       schemaType="dental"
       noindex
     />
-    <main className="min-h-screen py-12 px-4" style={{ backgroundColor: "#0D1235" }}>
+    <main className="min-h-screen py-12 px-4" style={{ backgroundColor: "#0B5FBF" }}>
       {/* Arka plan dekorasyon */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/3 w-96 h-96 bg-indigo-600/15 rounded-full blur-3xl" />

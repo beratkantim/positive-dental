@@ -12,7 +12,7 @@ const STATS = [
 
 export function AboutHero() {
   return (
-    <section className="relative bg-[#0D1235] overflow-hidden min-h-[70vh] flex items-center">
+    <section className="relative bg-[#0B5FBF] overflow-hidden min-h-[70vh] flex items-center">
       <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] rounded-full bg-indigo-600/25 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-10%] left-[-8%] w-[420px] h-[420px] rounded-full bg-violet-700/25 blur-[100px] pointer-events-none" />
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden opacity-[0.04]">
