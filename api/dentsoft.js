@@ -20,7 +20,7 @@ function checkRate(ip) {
   return true;
 }
 
-module.exports = function handler(req, res) {
+export default function handler(req, res) {
   var TOKEN = process.env.DENTSOFT_BEARER_TOKEN || "";
   var CLINIC = process.env.DENTSOFT_CLINIC_ID || "";
   var ORIGIN = req.headers.origin || "";
