@@ -160,7 +160,11 @@ export function BookingWizard() {
     if (!doctorId || step !== 4) return;
     setLoadingSlots(true);
     setDsSlots(null);
-    getDoctorSlots(doctorId)
+    // 2 ay ileri tarih aralığı sor
+    const rangeEnd = new Date();
+    rangeEnd.setMonth(rangeEnd.getMonth() + 2);
+    const rangeStr = `${rangeEnd.getFullYear()}/${String(rangeEnd.getMonth()+1).padStart(2,"0")}/${String(rangeEnd.getDate()).padStart(2,"0")}`;
+    getDoctorSlots(doctorId, { range: rangeStr })
       .then(setDsSlots)
       .catch(err => console.error("Dentsoft slot hatası:", err))
       .finally(() => setLoadingSlots(false));
