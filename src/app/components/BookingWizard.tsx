@@ -160,33 +160,37 @@ export function BookingWizard() {
     if (!doctorId || step !== 4) return;
     setLoadingSlots(true);
     setDsSlots(null);
-    getDoctorSlots(doctorId, { available: "Available" })
+    getDoctorSlots(doctorId)
       .then(setDsSlots)
       .catch(err => console.error("Dentsoft slot hatası:", err))
       .finally(() => setLoadingSlots(false));
   }, [doctorId, step]);
 
-  // Slotlardan günleri parse et
+  // Slotlardan günleri parse et — Available + NotAvailable birlikte
   const availableDays = useCallback(() => {
     if (!dsSlots?.Slot) return [];
     const days: { label: string; date: string; slots: { time: string; type: string }[] }[] = [];
 
     for (const [dateStr, dateSlots] of Object.entries(dsSlots.Slot)) {
       if (!Array.isArray(dateSlots)) continue;
-      const availableSlots = (dateSlots as any[]).filter(s => s.Type === "Available");
-      if (availableSlots.length === 0) continue;
+      // En az 1 Available slot olan günleri göster
+      const hasAvailable = (dateSlots as any[]).some(s => s.Type === "Available");
+      if (!hasAvailable) continue;
 
       const d = new Date(dateStr + "T00:00:00");
       days.push({
         date: dateStr,
         label: d.toLocaleDateString("tr-TR", { weekday: "short", day: "numeric", month: "short" }),
-        slots: availableSlots.map(s => ({ time: s.Begin?.substring(0, 5) || "", type: s.Type })),
+        // Dentsoft'ta saat s.Time.Begin şeklinde geliyor
+        slots: (dateSlots as any[]).map(s => ({
+          time: s.Time?.Begin?.substring(0, 5) || s.Begin?.substring(0, 5) || "",
+          type: s.Type || "NotAvailable",
+        })).filter(s => s.time),
       });
     }
 
-    // Tarihe göre sırala
     days.sort((a, b) => a.date.localeCompare(b.date));
-    return days.slice(0, 14); // Max 14 gün göster
+    return days.slice(0, 14);
   }, [dsSlots]);
 
   const daysList = availableDays();
@@ -468,16 +472,24 @@ export function BookingWizard() {
                           <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
                             <p className="text-slate-400 text-xs mb-2 uppercase tracking-widest">Saat Seçin</p>
                             <div className="grid grid-cols-5 sm:grid-cols-6 gap-2">
-                              {displaySelectedDay?.slots.map((s) => (
-                                <button key={s.time} onClick={() => setSlot(s.time)}
-                                  className={`py-2.5 rounded-xl border text-xs font-bold transition-all ${
-                                    slot === s.time
-                                      ? "bg-gradient-to-br from-indigo-500 to-violet-600 border-transparent text-white shadow-md shadow-indigo-200"
-                                      : "bg-white border-slate-200 text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600"
-                                  }`}>
-                                  {s.time}
-                                </button>
-                              ))}
+                              {displaySelectedDay?.slots.map((s) => {
+                                const isAvailable = s.type === "Available";
+                                const isSelected = slot === s.time && isAvailable;
+                                return (
+                                  <button key={s.time}
+                                    onClick={() => isAvailable && setSlot(s.time)}
+                                    disabled={!isAvailable}
+                                    className={`py-2.5 rounded-xl border text-xs font-bold transition-all ${
+                                      isSelected
+                                        ? "bg-gradient-to-br from-indigo-500 to-violet-600 border-transparent text-white shadow-md shadow-indigo-200"
+                                        : isAvailable
+                                          ? "bg-white border-slate-200 text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600"
+                                          : "bg-slate-100 border-slate-100 text-slate-300 cursor-not-allowed line-through"
+                                    }`}>
+                                    {s.time}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </motion.div>
                         )}
