@@ -13,7 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import type { HeroSlide } from "@/lib/supabase";
-import livePositiveLogo from "../../../assets/live-positive-logo.webp";
+import livePositiveLogo from "../../../assets/live_positive_logo.png";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
