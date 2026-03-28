@@ -241,12 +241,10 @@ export function BookingWizard() {
     setError("");
 
     try {
-      // Tarih formatı: YYYY/MM/DD
-      const dateFormatted = day.replace(/-/g, "/");
-
+      // Tarih formatı: YYYY-MM-DD (Dentsoft bu formatı istiyor)
       await createAppointment(doctorId, {
         BeginTime: slot,
-        Date: dateFormatted,
+        Date: day,
         PatientFirstName: firstName.trim(),
         PatientLastName: lastName.trim(),
         ContactRegion: "90",
