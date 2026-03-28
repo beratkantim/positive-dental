@@ -170,7 +170,8 @@ function DoctorPageEditor({ doctor, onSave, onCancel }: { doctor: Doctor; onSave
       {tab === "content" && (
         <div className="space-y-4">
           <ImageUpload currentUrl={form.photo} bucket="doctors" fileName={form.slug || slugify(doctor.name)}
-            onUploaded={url => setForm(f => ({ ...f, photo: url }))} label="Doktor Fotografi" />
+            onUploaded={url => setForm(f => ({ ...f, photo: url }))} label="Doktor Fotografi"
+            hint="📐 Önerilen: 600×800px (portre), WebP formatı, max 150KB" />
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">
               Detayli Icerik (HTML)

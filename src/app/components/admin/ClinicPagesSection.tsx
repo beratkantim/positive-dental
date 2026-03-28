@@ -177,7 +177,8 @@ function ClinicPageEditor({ branch, onSave, onCancel }: { branch: BranchData; on
       {tab === "content" && (
         <div className="space-y-4">
           <ImageUpload currentUrl={form.image} bucket="branches" fileName={form.slug || slugify(branch.name)}
-            onUploaded={url => setForm(f => ({ ...f, image: url }))} label="Kapak Gorseli" />
+            onUploaded={url => setForm(f => ({ ...f, image: url }))} label="Kapak Gorseli"
+            hint="📐 Önerilen: 1400×600px, WebP formatı, max 300KB" />
 
           {/* Gallery */}
           <div>
@@ -185,6 +186,7 @@ function ClinicPageEditor({ branch, onSave, onCancel }: { branch: BranchData; on
               Galeri Gorselleri
               <span className="text-gray-400 font-normal ml-2">{form.gallery.length} gorsel</span>
             </label>
+            <p className="text-xs text-blue-500 mb-2">📐 Önerilen: 1200×800px, WebP formatı, max 200KB</p>
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-3">
               {form.gallery.map((img, i) => (
                 <div key={i} className="relative group rounded-xl overflow-hidden border border-gray-200">
