@@ -172,10 +172,19 @@ export function BookingWizard() {
 
   // Slotlardan günleri parse et — Available + NotAvailable birlikte
   const availableDays = useCallback(() => {
-    if (!dsSlots?.Slot) return [];
+    if (!dsSlots) return [];
+    // Response array olarak gelir — seçilen doktorun slotlarını bul
+    let slotData: Record<string, any[]> | null = null;
+    if (Array.isArray(dsSlots)) {
+      const doctorEntry = dsSlots.find((d: any) => d.User?.ID === doctorId);
+      slotData = doctorEntry?.Slot || null;
+    } else {
+      slotData = dsSlots.Slot || null;
+    }
+    if (!slotData) return [];
     const days: { label: string; date: string; slots: { time: string; type: string }[] }[] = [];
 
-    for (const [dateStr, dateSlots] of Object.entries(dsSlots.Slot)) {
+    for (const [dateStr, dateSlots] of Object.entries(slotData)) {
       if (!Array.isArray(dateSlots)) continue;
       // En az 1 Available slot olan günleri göster
       const hasAvailable = (dateSlots as any[]).some(s => s.Type === "Available");
