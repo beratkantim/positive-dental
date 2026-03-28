@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
 import type { Branch, Doctor as SupabaseDoctor } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { getDoctors, getDoctorSlots, createAppointment, type DentsoftDoctor } from "@/lib/dentsoft";
 
 interface TreatmentCategory {
@@ -242,7 +243,10 @@ export function BookingWizard() {
 
     try {
       // Tarih formatı: YYYY-MM-DD (Dentsoft bu formatı istiyor)
-      await createAppointment(doctorId, {
+      // Note alanına seçilen tedavi kategorisini yaz
+      const noteText = `Online Randevu — ${serviceLabel || "Genel Muayene"}`;
+
+      const dsResult = await createAppointment(doctorId, {
         BeginTime: slot,
         Date: day,
         PatientFirstName: firstName.trim(),
@@ -251,7 +255,34 @@ export function BookingWizard() {
         ContactMobile: phone.replace(/\D/g, ""),
         PatientNumber: tckn.trim(),
         ContactEmail: email.trim() || undefined,
+        Note: noteText,
       });
+
+      // Supabase'e de kaydet — admin panelde görünsün
+      try {
+        const selectedDoctor = mergedDoctors.find(d => d.ID === doctorId);
+        await supabase.from("appointments").insert({
+          dentsoft_id: dsResult?.Appointment?.ID || null,
+          dentsoft_pnr: dsResult?.Appointment?.PNR || null,
+          branch_id: clinicId || null,
+          branch_name: selectedBranch?.name || "",
+          doctor_name: selectedDoctor?.Name || "",
+          doctor_dentsoft_id: doctorId,
+          treatment_category: serviceLabel || "",
+          appointment_date: day,
+          appointment_time: slot,
+          patient_first_name: firstName.trim(),
+          patient_last_name: lastName.trim(),
+          patient_phone: phone.replace(/\D/g, ""),
+          patient_tckn: tckn.trim(),
+          patient_email: email.trim() || null,
+          status: "confirmed",
+          source: "website",
+        });
+      } catch (sbErr) {
+        // Supabase kaydı başarısız olsa bile randevu Dentsoft'ta oluştu
+        console.warn("Supabase randevu kaydı başarısız:", sbErr);
+      }
 
       setDone(true);
     } catch (err: any) {

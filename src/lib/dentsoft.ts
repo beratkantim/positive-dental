@@ -216,6 +216,7 @@ export async function createAppointment(
     PatientBirthday?: string;
     CompanyCode?: string;
     Language?: string;
+    Note?: string;
   },
   clinicId?: string
 ) {
