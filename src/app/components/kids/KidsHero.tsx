@@ -19,7 +19,7 @@ function Bubble({ size, color, x, y, delay }: { size: number; color: string; x: 
 
 export function KidsHero() {
   return (
-    <section className="relative bg-gradient-to-br from-[#0B5FBF] via-indigo-950 to-violet-950 overflow-hidden min-h-[88vh] flex items-center">
+    <section className="relative bg-gradient-to-br from-[#0D1235] via-indigo-950 to-violet-950 overflow-hidden min-h-[88vh] flex items-center">
 
       {/* Floating bubbles */}
       <Bubble size={80} color="bg-pink-400" x="5%" y="15%" delay={0} />

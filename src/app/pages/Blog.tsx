@@ -147,7 +147,7 @@ function FeaturedCard({ post }: { post: BlogPost }) {
           fetchPriority="high"
           loading="eager"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B5FBF]/90 via-[#0B5FBF]/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/90 via-[#0D1235]/30 to-transparent" />
 
         {/* Badges */}
         <div className="absolute top-6 left-6 flex gap-2">
@@ -212,7 +212,7 @@ export function Blog() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B5FBF]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -231,7 +231,7 @@ export function Blog() {
       <div className="bg-white">
 
         {/* ══ HERO ══════════════════════════════════════════════════ */}
-        <section className="relative bg-[#0B5FBF] overflow-hidden min-h-[56vh] flex items-center">
+        <section className="relative bg-[#0D1235] overflow-hidden min-h-[56vh] flex items-center">
           <div className="absolute top-[-10%] left-[-8%] w-[500px] h-[500px] rounded-full bg-indigo-600/25 blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-10%] right-[-5%] w-[400px] h-[400px] rounded-full bg-violet-700/25 blur-[100px] pointer-events-none" />
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -372,7 +372,7 @@ export function Blog() {
         </section>
 
         {/* ══ NEWSLETTER / CTA ═════════════════════════════════════ */}
-        <section className="py-20 bg-[#0B5FBF] relative overflow-hidden">
+        <section className="py-20 bg-[#0D1235] relative overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-700/20 rounded-full blur-[100px]" />
           <motion.div

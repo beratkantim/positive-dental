@@ -126,7 +126,7 @@ export function Partners() {
       <div className="bg-white overflow-hidden">
 
         {/* ══ HERO ══════════════════════════════════════════════════ */}
-        <section className="relative bg-[#0B5FBF] overflow-hidden min-h-[64vh] flex items-center">
+        <section className="relative bg-[#0D1235] overflow-hidden min-h-[64vh] flex items-center">
           <div className="absolute top-[-12%] right-[-8%] w-[500px] h-[500px] rounded-full bg-indigo-600/25 blur-[120px] pointer-events-none" />
           <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] rounded-full bg-violet-700/25 blur-[100px] pointer-events-none" />
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
@@ -409,7 +409,7 @@ export function Partners() {
         </section>
 
         {/* ══ CTA ═══════════════════════════════════════════════════ */}
-        <section className="py-24 bg-[#0B5FBF] relative overflow-hidden">
+        <section className="py-24 bg-[#0D1235] relative overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-[100px]" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-violet-700/20 rounded-full blur-[100px]" />
           <motion.div

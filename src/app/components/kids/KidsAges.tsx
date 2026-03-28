@@ -48,7 +48,7 @@ export function KidsAges() {
       {/* CHECKLIST */}
       <section className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-[#0B5FBF] to-indigo-950 rounded-3xl overflow-hidden">
+          <div className="bg-gradient-to-br from-[#0D1235] to-indigo-950 rounded-3xl overflow-hidden">
             <div className="grid lg:grid-cols-2">
               <div className="p-10 lg:p-14">
                 <span className="inline-block text-xs font-bold uppercase tracking-widest text-pink-400 mb-4">Ebeveyn Rehberi</span>
@@ -96,7 +96,7 @@ export function KidsAges() {
                   width={600}
                   height={400}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0B5FBF] via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0D1235] via-transparent to-transparent" />
                 <div className="relative z-10 p-10 flex flex-col justify-end h-full">
                   <motion.div
                     animate={{ y: [0, -8, 0] }}

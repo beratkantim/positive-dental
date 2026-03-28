@@ -54,7 +54,7 @@ export function InsuranceGrid({
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="group relative bg-gradient-to-br from-slate-900 to-[#0B5FBF] rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all hover:shadow-2xl"
+                className="group relative bg-gradient-to-br from-slate-900 to-[#0D1235] rounded-2xl p-5 border border-white/10 hover:border-white/20 transition-all hover:shadow-2xl"
               >
                 <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${ins.color} rounded-t-2xl`} />
                 <div className="text-3xl mb-3">{ins.logo}</div>

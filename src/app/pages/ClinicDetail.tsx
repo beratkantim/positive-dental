@@ -63,7 +63,7 @@ export function ClinicDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B5FBF]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -116,7 +116,7 @@ export function ClinicDetail() {
 
       <div className="bg-white">
         {/* ===== BREADCRUMB ===== */}
-        <div className="bg-[#0B5FBF]">
+        <div className="bg-[#0D1235]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-2">
             <Link to="/kliniklerimiz" className="inline-flex items-center gap-2 text-indigo-300 text-sm font-semibold hover:text-white transition">
               <ArrowLeft className="w-4 h-4" /> Tum Klinikler
@@ -126,7 +126,7 @@ export function ClinicDetail() {
 
         {/* ===== PHOTO GALLERY CAROUSEL ===== */}
         {allImages.length > 0 && (
-          <section className="relative bg-[#0B5FBF] pb-6">
+          <section className="relative bg-[#0D1235] pb-6">
             {/* Main image */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div
@@ -171,7 +171,7 @@ export function ClinicDetail() {
                         onClick={() => setActiveGalleryIdx(i)}
                         className={`flex-shrink-0 rounded-xl overflow-hidden snap-start transition-all duration-200 ${
                           activeGalleryIdx === i
-                            ? "ring-2 ring-indigo-400 ring-offset-2 ring-offset-[#0B5FBF] opacity-100"
+                            ? "ring-2 ring-indigo-400 ring-offset-2 ring-offset-[#0D1235] opacity-100"
                             : "opacity-50 hover:opacity-80"
                         }`}
                       >

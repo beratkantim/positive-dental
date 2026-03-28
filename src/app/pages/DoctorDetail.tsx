@@ -45,7 +45,7 @@ export function DoctorDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B5FBF]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -73,7 +73,7 @@ export function DoctorDetail() {
 
       <div className="bg-white">
         {/* HERO */}
-        <section className="relative bg-[#0B5FBF] overflow-hidden">
+        <section className="relative bg-[#0D1235] overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
@@ -126,7 +126,7 @@ export function DoctorDetail() {
                   <div className="relative rounded-3xl overflow-hidden shadow-2xl">
                     <ImageWithFallback src={doctor.photo} alt={doctor.name}
                       className="w-full h-[500px] object-contain bg-gradient-to-br from-indigo-50 to-violet-50" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B5FBF]/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/40 to-transparent" />
                   </div>
                 </motion.div>
               )}

@@ -159,7 +159,7 @@ export function BlogPost() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B5FBF]">
+      <div className="min-h-screen flex items-center justify-center bg-[#0D1235]">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -188,7 +188,7 @@ export function BlogPost() {
       <div className="bg-white">
 
         {/* ══ HERO ══════════════════════════════════════════════════ */}
-        <section className="relative bg-[#0B5FBF] overflow-hidden">
+        <section className="relative bg-[#0D1235] overflow-hidden">
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
           <div className="absolute top-0 left-0 w-[600px] h-[400px] rounded-full bg-indigo-600/20 blur-[120px] pointer-events-none" />
@@ -248,7 +248,7 @@ export function BlogPost() {
                 fetchPriority="high"
                 loading="eager"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B5FBF]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0D1235]/40 to-transparent" />
             </div>
           </motion.div>
         </section>
@@ -338,7 +338,7 @@ export function BlogPost() {
               >
 
                 {/* CTA Card */}
-                <div className="bg-gradient-to-br from-[#0B5FBF] to-indigo-950 rounded-3xl p-6 text-white sticky top-24">
+                <div className="bg-gradient-to-br from-[#0D1235] to-indigo-950 rounded-3xl p-6 text-white sticky top-24">
                   <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center mb-4">
                     <Sparkles className="w-6 h-6 text-violet-300" />
                   </div>
@@ -549,7 +549,7 @@ export function BlogPost() {
           display: flex;
           align-items: center;
           gap: 1.25rem;
-          background: linear-gradient(135deg, #0B5FBF 0%, #1e1b4b 100%);
+          background: linear-gradient(135deg, #0D1235 0%, #1e1b4b 100%);
           border-radius: 1.5rem;
           padding: 1.5rem 1.75rem;
           flex-wrap: wrap;
