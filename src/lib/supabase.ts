@@ -17,6 +17,7 @@ export type AdminRole = "super_admin" | "editor";
 
 export interface Doctor {
   id: string;
+  slug: string;
   name: string;
   title: string;
   specialty: string;
@@ -28,6 +29,10 @@ export interface Doctor {
   dentsoft_id: string;
   photo: string;
   bio: string;
+  content: string;
+  meta_description: string;
+  keywords: string[];
+  faqs: { q: string; a: string }[];
   education: string[];
   expertise: string[];
   booking_url: string;
@@ -119,6 +124,11 @@ export interface BranchData {
   map_url: string;
   working_hours: string;
   image: string;
+  content: string;
+  meta_description: string;
+  keywords: string[];
+  faqs: { q: string; a: string }[];
+  gallery: string[];
   is_active: boolean;
 }
 

@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from "motion/react";
 import { useState } from "react";
+import { Link } from "react-router";
 import {
   MapPin, Phone, Clock, Mail, Navigation, Sparkles,
-  Building2, Wifi, Shield, Cpu, Users, Calendar, ArrowRight, ExternalLink,
+  Building2, Wifi, Shield, Cpu, Users, Calendar, ArrowRight, ExternalLink, FileText,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
 import { useTable } from "../hooks/useSupabase";
@@ -22,6 +23,7 @@ interface LocationGroup {
   color: string;
   clinics: {
     name: string;
+    slug: string;
     address: string;
     phone: string;
     email: string;
@@ -47,6 +49,7 @@ function branchesToLocations(branches: BranchData[]): LocationGroup[] {
     group.count++;
     group.clinics.push({
       name: `${district} Şubesi`,
+      slug: b.slug || "",
       address: b.address || "",
       phone: b.phone || "",
       email: b.email || "",
@@ -304,6 +307,14 @@ export function Locations() {
                       >
                         <Navigation className="w-4 h-4" /> Yol Tarifi Al
                       </a>
+                      {clinic.slug && (
+                        <Link
+                          to={`/kliniklerimiz/${clinic.slug}`}
+                          className="inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-2xl border-2 border-slate-200 text-slate-700 hover:border-indigo-300 hover:text-indigo-600 font-bold text-sm transition-all"
+                        >
+                          <FileText className="w-4 h-4" /> Detay
+                        </Link>
+                      )}
                     </div>
                   </motion.div>
                 ))}

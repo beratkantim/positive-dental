@@ -44,8 +44,10 @@ const BlogPost    = lazyRetry(() => import("./pages/BlogPost").then(m => ({ defa
 const Partners    = lazyRetry(() => import("./pages/Partners").then(m => ({ default: m.Partners })));
 const Insurance   = lazyRetry(() => import("./pages/Insurance").then(m => ({ default: m.Insurance })));
 const PriceList   = lazyRetry(() => import("./pages/PriceList").then(m => ({ default: m.PriceList })));
-const Doctors     = lazyRetry(() => import("./pages/Doctors").then(m => ({ default: m.Doctors })));
-const Appointment = lazyRetry(() => import("./pages/Appointment").then(m => ({ default: m.Appointment })));
+const Doctors       = lazyRetry(() => import("./pages/Doctors").then(m => ({ default: m.Doctors })));
+const DoctorDetail  = lazyRetry(() => import("./pages/DoctorDetail").then(m => ({ default: m.DoctorDetail })));
+const ClinicDetail  = lazyRetry(() => import("./pages/ClinicDetail").then(m => ({ default: m.ClinicDetail })));
+const Appointment   = lazyRetry(() => import("./pages/Appointment").then(m => ({ default: m.Appointment })));
 const AdminPanel  = lazyRetry(() => import("./pages/Admin").then(m => ({ default: m.AdminPanel })));
 
 function PageLoader() {
@@ -84,6 +86,8 @@ export const router = createBrowserRouter([
       { path: "anlasmali-sigortalar",element: <SuspenseWrap><Insurance /></SuspenseWrap> },
       { path: "fiyat-listesi",       element: <SuspenseWrap><PriceList /></SuspenseWrap> },
       { path: "doktorlarimiz",       element: <SuspenseWrap><Doctors /></SuspenseWrap> },
+      { path: "doktorlarimiz/:slug", element: <SuspenseWrap><DoctorDetail /></SuspenseWrap> },
+      { path: "kliniklerimiz/:slug", element: <SuspenseWrap><ClinicDetail /></SuspenseWrap> },
       { path: "randevu",             element: <SuspenseWrap><Appointment /></SuspenseWrap> },
       { path: "*",                   Component: NotFound },
     ],

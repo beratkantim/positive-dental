@@ -225,7 +225,7 @@ export type Section =
   | "dashboard" | "hero" | "doctors" | "services"
   | "blog" | "branches" | "testimonials" | "messages"
   | "prices" | "settings" | "users" | "analytics"
-  | "partners" | "insurances" | "pages" | "footer" | "audit_log" | "service_pages";
+  | "partners" | "insurances" | "pages" | "footer" | "audit_log" | "service_pages" | "doctor_pages" | "clinic_pages";
 
 // ── HELPERS ──────────────────────────────────────────────────
 export function Badge({ children, color = "indigo" }: { children: React.ReactNode; color?: string }) {
@@ -363,6 +363,8 @@ export const NAV_ITEMS: { id: Section; label: string; icon: string; badge?: stri
   { id: "partners",     label: "Anlaşmalı Kurumlar", icon: "🏢" },
   { id: "insurances",   label: "Sigortalar",         icon: "🛡️" },
   { id: "service_pages", label: "Tedavi Sayfaları",   icon: "📋" },
+  { id: "doctor_pages",  label: "Doktor Sayfaları",   icon: "🩺" },
+  { id: "clinic_pages",  label: "Klinik Sayfaları",   icon: "🏥" },
   { id: "pages",        label: "Sayfa İçerikleri",   icon: "📄" },
   { id: "footer",       label: "Footer",             icon: "🔻" },
   { id: "analytics",    label: "Analitik",           icon: "📈" },

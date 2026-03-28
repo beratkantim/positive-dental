@@ -87,14 +87,25 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index?: number }) {
         <div className="flex-1" />
 
         {/* CTA */}
-        <Link
-          to={`/randevu?doktor=${doctor.id}`}
-          className="mt-2 w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-sm font-bold shadow-md shadow-indigo-200/60 hover:shadow-indigo-300/70 hover:from-indigo-400 hover:to-violet-500 transition-all"
-        >
-          <Calendar className="w-4 h-4" />
-          Randevu Al
-          <ExternalLink className="w-3.5 h-3.5 opacity-70" />
-        </Link>
+        <div className="flex gap-2 mt-2">
+          {doctor.slug && (
+            <Link
+              to={`/doktorlarimiz/${doctor.slug}`}
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-indigo-200 text-indigo-600 text-sm font-bold hover:bg-indigo-50 transition-all"
+            >
+              <ChevronRight className="w-4 h-4" />
+              Detay
+            </Link>
+          )}
+          <Link
+            to={`/randevu?doktor=${doctor.id}`}
+            className={`${doctor.slug ? "flex-1" : "w-full"} flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-sm font-bold shadow-md shadow-indigo-200/60 hover:shadow-indigo-300/70 hover:from-indigo-400 hover:to-violet-500 transition-all`}
+          >
+            <Calendar className="w-4 h-4" />
+            Randevu Al
+            <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+          </Link>
+        </div>
       </div>
     </div>
   );
