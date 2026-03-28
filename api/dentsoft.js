@@ -69,9 +69,20 @@ export default function handler(req, res) {
       if (k !== "path") params.set(k, String(req.query[k]));
     });
   }
-  if (!params.has("ClinicID")) params.set("ClinicID", CLINIC);
+  // Appointment/New ve Appointment/ReNew için ClinicID URL path'inde olmalı
+  var finalPath = apiPath;
+  if (apiPath.indexOf("Appointment/New/") === 0 || apiPath === "Appointment/New") {
+    // Appointment/New/TeamID → Appointment/New/ClinicID/TeamID
+    var teamPart = apiPath.replace("Appointment/New", "").replace(/^\//, "");
+    finalPath = "Appointment/New/" + CLINIC + (teamPart ? "/" + teamPart : "");
+  } else if (apiPath.indexOf("Appointment/ReNew/") === 0 || apiPath === "Appointment/ReNew") {
+    var teamPart2 = apiPath.replace("Appointment/ReNew", "").replace(/^\//, "");
+    finalPath = "Appointment/ReNew/" + CLINIC + (teamPart2 ? "/" + teamPart2 : "");
+  } else {
+    if (!params.has("ClinicID")) params.set("ClinicID", CLINIC);
+  }
 
-  var url = BASE + "/" + apiPath + "?" + params.toString();
+  var url = BASE + "/" + finalPath + (params.toString() ? "?" + params.toString() : "");
 
   var fetchOpts = {
     method: req.method || "GET",

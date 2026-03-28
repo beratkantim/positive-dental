@@ -201,12 +201,12 @@ export async function getAppointments(
   return res.Response;
 }
 
-/** Yeni randevu oluştur */
+/** Yeni randevu oluştur — URL: /Appointment/New/ClinicID/TeamID */
 export async function createAppointment(
   teamId: string,
   data: {
     BeginTime: string;   // "09:00"
-    Date: string;        // "YYYY/MM/DD"
+    Date: string;        // "YYYY-MM-DD"
     PatientFirstName: string;
     PatientLastName: string;
     ContactRegion: string; // "90"
@@ -219,10 +219,9 @@ export async function createAppointment(
   },
   clinicId?: string
 ) {
-  const params: Record<string, string> = { TeamID: teamId };
-  if (clinicId) params.ClinicID = clinicId;
-
-  const res = await dsPost<any>(`Appointment/New`, params, data);
+  // ClinicID ve TeamID URL path'inde olmalı (query değil)
+  // Proxy ClinicID'yi otomatik ekler, biz path'e TeamID ekliyoruz
+  const res = await dsPost<any>(`Appointment/New/${teamId}`, {}, data);
   if (res.Status.Code !== 100) throw new Error(res.Status.Message);
   return res.Response;
 }
