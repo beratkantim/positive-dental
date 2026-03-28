@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Phone, Mail, Clock } from "lucide-react";
-import logo from "../../assets/logo.webp";
+import logo from "../../assets/logo.png";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
