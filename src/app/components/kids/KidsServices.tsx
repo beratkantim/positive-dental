@@ -65,8 +65,12 @@ export function KidsServices() {
 
   // Bu kategorilerde çalışan aktif doktorları filtrele
   // service_ids boş = tüm tedavileri yapar (hariç tut — sadece spesifik pedodonti/ortodonti seçenler)
+  if (doctors.length > 0) {
+    console.log("[KidsDoctors] targetIds:", targetIds);
+    doctors.forEach(d => console.log("[KidsDoctors]", d.name, "service_ids:", JSON.stringify(d.service_ids), "length:", d.service_ids?.length));
+  }
   const kidsDoctors = doctors.filter(d =>
-    d.is_active && d.service_ids?.length > 0 && d.service_ids.some((sid: string) => targetIds.includes(sid))
+    d.is_active && Array.isArray(d.service_ids) && d.service_ids.length > 0 && d.service_ids.some((sid: string) => targetIds.includes(sid))
   );
 
   return (
