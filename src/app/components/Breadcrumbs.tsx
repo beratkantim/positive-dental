@@ -37,7 +37,7 @@ export function Breadcrumbs() {
 
   return (
     <nav aria-label="Breadcrumb" className="bg-slate-50 border-b border-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
         <ol className="flex items-center gap-1.5 text-sm flex-wrap" itemScope itemType="https://schema.org/BreadcrumbList">
           {crumbs.map((crumb, i) => {
             const isLast = i === crumbs.length - 1;
