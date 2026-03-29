@@ -1,9 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
-import { Star, Calendar, ExternalLink, Baby } from "lucide-react";
-
-const BOOKING_URL = "https://randevu.positivedental.com";
+import { Star, Calendar, Baby } from "lucide-react";
 
 // Floating bubble background element
 function Bubble({ size, color, x, y, delay }: { size: number; color: string; x: string; y: string; delay: number }) {
@@ -33,8 +31,8 @@ export function KidsHero() {
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "36px 36px" }} />
 
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left */}
           <motion.div initial={{ opacity: 0, x: -32 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
@@ -42,47 +40,44 @@ export function KidsHero() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/15 backdrop-blur-sm mb-8">
               <Baby className="w-4 h-4 text-pink-300" />
-              <span className="text-white/70 text-sm font-medium">\u00c7ocuk Di\u015f Hekimli\u011fi</span>
-              <span className="text-white/30">\u00b7</span>
-              <span className="text-pink-300 text-sm font-bold">0\u201318 Ya\u015f</span>
+              <span className="text-white/70 text-sm font-medium">Çocuk Diş Hekimliği</span>
+              <span className="text-white/30">·</span>
+              <span className="text-pink-300 text-sm font-bold">0–13 Yaş</span>
             </div>
 
-            <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-black text-white leading-[0.9] tracking-tight mb-6">
-              K\u00fc\u00e7\u00fck di\u015fler,
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-7xl font-black text-white leading-[0.9] tracking-tight mb-6">
+              Küçük dişler,
               <br />
               <span className="bg-gradient-to-r from-pink-300 via-amber-300 to-violet-300 bg-clip-text text-transparent">
-                b\u00fcy\u00fck g\u00fcl\u00fc\u015fler
+                büyük gülüşler
               </span>
-              <span className="text-4xl ml-2">\ud83c\udf1f</span>
+              <span className="text-3xl sm:text-4xl ml-2">🌟</span>
             </h1>
 
-            <p className="text-slate-300 text-lg leading-relaxed max-w-md mb-10">
-              \u00c7ocu\u011funuzun di\u015fleri g\u00fcvende, sen de rahat. \u00d6zel e\u011fitimli hekimlerimiz ve e\u011flenceli ortam\u0131m\u0131zla di\u015f\u00e7i korkusunu tamamen bitiriyoruz.
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-md mb-10">
+              Çocuğunuzun dişleri güvende, sen de rahat. Özel eğitimli hekimlerimiz ve eğlenceli ortamımızla diş hekimi korkusunu tamamen bitiriyoruz.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/#randevu"
                 className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-pink-900/40 hover:scale-105 transition-all"
               >
                 <Calendar className="w-5 h-5" />
-                \u00c7ocuk Randevusu Al
-                <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-              </a>
+                Çocuk Randevusu Al
+              </Link>
               <Link to="/iletisim"
                 className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-white/8 border border-white/12 hover:bg-white/14 text-white font-bold transition-all">
-                Bize Ula\u015f
+                Bize Ulaş
               </Link>
             </div>
 
             {/* Mini stats */}
             <div className="flex items-center gap-6 mt-10">
               {[
-                { val: "5.000+", lbl: "Mutlu \u00c7ocuk" },
-                { val: "0 a\u011fr\u0131", lbl: "Garantisi" },
-                { val: "4.9\u2605", lbl: "Ebeveyn Puan\u0131" },
+                { val: "5.000+", lbl: "Mutlu Çocuk" },
+                { val: "0 ağrı", lbl: "Garantisi" },
+                { val: "4.9★", lbl: "Ebeveyn Puanı" },
               ].map((s) => (
                 <div key={s.lbl} className="text-center">
                   <p className="font-display text-xl font-black text-white">{s.val}</p>
@@ -95,14 +90,14 @@ export function KidsHero() {
           {/* Right -- image collage */}
           <motion.div
             initial={{ opacity: 0, x: 32 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }}
-            className="relative"
+            className="relative hidden lg:block"
           >
             <div className="relative h-[440px] lg:h-[520px]">
               {/* Main image */}
               <div className="absolute left-0 top-0 w-[65%] h-[68%] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=600&q=75&auto=format"
-                  alt="Mutlu \u00e7ocuk di\u015f\u00e7ide"
+                  alt="Mutlu çocuk diş hekiminde"
                   className="w-full h-full object-cover"
                   width={600}
                   height={400}
@@ -115,7 +110,7 @@ export function KidsHero() {
               <div className="absolute right-0 top-8 w-[42%] h-[50%] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1622408064430-9728776f96e6?w=400&q=75&auto=format"
-                  alt="Di\u015f f\u0131r\u00e7alayan \u00e7ocuk"
+                  alt="Diş fırçalayan çocuk"
                   className="w-full h-full object-cover"
                   width={400}
                   height={300}
@@ -126,7 +121,7 @@ export function KidsHero() {
               <div className="absolute left-8 bottom-0 w-[48%] h-[40%] rounded-3xl overflow-hidden border-4 border-white/10 shadow-2xl">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1619236233405-bb5d430f0620?w=400&q=75&auto=format"
-                  alt="\u00c7ocuk muayenesi"
+                  alt="Çocuk muayenesi"
                   className="w-full h-full object-cover"
                   width={400}
                   height={240}
@@ -138,10 +133,10 @@ export function KidsHero() {
                 animate={{ y: [0, -8, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute right-2 bottom-6 bg-white rounded-2xl shadow-2xl px-5 py-3.5 flex items-center gap-3"
               >
-                <span className="text-3xl">\ud83c\udfc6</span>
+                <span className="text-3xl">🏆</span>
                 <div>
-                  <p className="font-black text-slate-800 text-sm">En \u0130yi \u00c7ocuk Klini\u011fi</p>
-                  <p className="text-slate-400 text-xs">\u0130stanbul 2024</p>
+                  <p className="font-black text-slate-800 text-sm">En İyi Çocuk Kliniği</p>
+                  <p className="text-slate-400 text-xs">İstanbul 2024</p>
                 </div>
               </motion.div>
 
@@ -154,7 +149,7 @@ export function KidsHero() {
                   {[...Array(5)].map((_, i) => <Star key={i} className="w-3 h-3 fill-white text-white" />)}
                 </div>
                 <p className="font-black text-sm">4.9 / 5</p>
-                <p className="text-pink-200 text-xs">Ebeveyn yorumlar\u0131</p>
+                <p className="text-pink-200 text-xs">Ebeveyn yorumları</p>
               </motion.div>
             </div>
           </motion.div>
