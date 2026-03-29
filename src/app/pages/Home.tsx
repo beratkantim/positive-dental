@@ -94,6 +94,9 @@ export function Home() {
       {/* ── BOOKING WIZARD ── */}
       <Suspense fallback={null}><BookingWizard /></Suspense>
 
+      {/* ── GEÇIŞ ── */}
+      <div className="h-10 sm:h-14 bg-gradient-to-b from-white to-[#0D1235]" />
+
       {/* ── HERO SLIDER ── */}
       <HeroSlider
         slides={HERO_SLIDES}
