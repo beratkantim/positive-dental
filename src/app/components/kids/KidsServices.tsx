@@ -153,7 +153,7 @@ export function KidsServices() {
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-pink-500 mb-3">Ebeveyn Yorumları</span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">Anne & babalar anlatıyor.</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex md:grid md:grid-cols-3 gap-4 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-4 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
             {TESTIMONIALS.map((t, i) => (
               <motion.div
                 key={i}
@@ -161,7 +161,7 @@ export function KidsServices() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-3xl p-7 shadow-sm border border-white hover:shadow-xl hover:border-pink-100 transition-all"
+                className="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-white hover:shadow-xl hover:border-pink-100 transition-all min-w-[280px] md:min-w-0 snap-start flex-shrink-0 md:flex-shrink"
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(t.rating)].map((_, j) => (
