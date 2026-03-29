@@ -38,12 +38,12 @@ const FEATURES = [
 ];
 
 const SERVICES = [
-  { emoji: "🦷", title: "Süt Dişi Tedavisi", desc: "Süt dişleri gelecekteki kalıcı dişlerin yol haritasıdır. Doğru koruma kritik." },
-  { emoji: "🛡️", title: "Fissür Örtücü", desc: "Azı dişlerindeki çukurcukları kapatarak çürüme riskini %70 azaltır." },
-  { emoji: "✨", title: "Florür Uygulaması", desc: "Diş minesini güçlendiren 3 dakikalık uygulama, yıllarca koruma sağlar." },
-  { emoji: "📐", title: "Çocuk Ortodontisi", desc: "Erken müdahale ile kalıcı dişlerin düzgün çıkmasını destekliyoruz." },
-  { emoji: "🎯", title: "Diş Travması", desc: "Kırık veya düşen süt dişlerinde hızlı ve etkili acil tedavi." },
-  { emoji: "😴", title: "Sedasyon Seçeneği", desc: "Kaygılı çocuklar için uzman anestezi ekibiyle güvenli sedasyon tedavisi." },
+  { emoji: "🦷", title: "Süt Dişi Tedavisi", desc: "Kalıcı dişlerin temeli\nDoğru koruma kritik\nErken müdahale şart" },
+  { emoji: "🛡️", title: "Fissür Örtücü", desc: "Azı dişi koruması\nÇürüme riski %70 azalır\nAğrısız uygulama" },
+  { emoji: "✨", title: "Florür Uygulaması", desc: "Diş minesi güçlenir\n3 dakika sürer\nYıllarca koruma" },
+  { emoji: "📐", title: "Çocuk Ortodontisi", desc: "Erken müdahale\nDüzgün diş dizilimi\nKalıcı dişlere hazırlık" },
+  { emoji: "🎯", title: "Diş Travması", desc: "Kırık diş tedavisi\nAcil müdahale\nHızlı iyileşme" },
+  { emoji: "😴", title: "Sedasyon Seçeneği", desc: "Kaygılı çocuklar için\nUzman anestezi ekibi\nGüvenli tedavi" },
 ];
 
 const TESTIMONIALS = [
@@ -138,7 +138,7 @@ export function KidsServices() {
                 >
                   <div className="text-2xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform inline-block">{s.emoji}</div>
                   <h4 className="font-bold text-slate-800 text-xs sm:text-sm mb-1 group-hover:text-pink-600 transition-colors">{s.title}</h4>
-                  <p className="text-slate-400 text-[10px] sm:text-xs leading-relaxed">{s.desc}</p>
+                  <p className="text-slate-400 text-[10px] sm:text-xs leading-relaxed whitespace-pre-line">{s.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
