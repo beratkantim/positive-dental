@@ -94,6 +94,13 @@ export function Home() {
       {/* ── BOOKING WIZARD ── */}
       <Suspense fallback={null}><BookingWizard /></Suspense>
 
+      {/* ── WAVE DIVIDER ── */}
+      <div className="bg-white -mb-1">
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto block">
+          <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#0D1235" />
+        </svg>
+      </div>
+
       {/* ── HERO SLIDER ── */}
       <HeroSlider
         slides={HERO_SLIDES}
