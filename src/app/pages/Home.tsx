@@ -112,8 +112,7 @@ export function Home() {
       {/* ── KIDS TEASER ── */}
       <KidsTeaser />
 
-      {/* TODO: doktor ve şube bölümü buraya eklenecek */
-      )}
+      {/* TODO: doktor ve şube bölümü buraya eklenecek */}
 
       {/* ── SERVICES ── */}
       <ServicesGrid />
