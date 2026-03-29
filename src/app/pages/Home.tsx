@@ -46,7 +46,7 @@ export function Home() {
   const { data: rawSlides } = useTable<HeroSlide>("hero_slides", "sort_order");
   const { data: rawTestimonials } = useTable<Testimonial>("testimonials", "created_at", false);
   const { data: allDoctors } = useTable<Doctor>("doctors", "sort_order");
-  const { data: allBranches } = useTable<BranchData>("branches", "sort_order");
+  const { data: allBranches } = useTable<BranchData>("branches", "name");
   const activeDoctors = allDoctors.filter(d => d.is_active);
   const activeBranches = allBranches.filter(b => b.is_active);
 
