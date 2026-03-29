@@ -135,18 +135,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
         style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
       {/* ── Top bar ── */}
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-4 sm:pb-6 flex items-center justify-between">
-        {/* Live badge */}
-        <div
-          className="anim-fade-in in-view inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm"
-        >
-          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <img src={livePositiveLogo} alt="live positive" className="h-4 w-auto"
-            style={{ filter: "brightness(0) invert(1)", opacity: 0.55 }} loading="eager" decoding="async" width="55" height="16" />
-          <span className="text-white/40 text-xs">·</span>
-          <span className="text-white/50 text-xs font-medium">Online Randevu Açık</span>
-        </div>
-
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-4 sm:pb-6 flex items-center justify-end">
         {/* Slide counter */}
         <div className="hidden sm:flex items-center gap-2 text-white/30 text-sm font-mono">
           <span className="text-white/60 font-bold">{String(active + 1).padStart(2, "0")}</span>
