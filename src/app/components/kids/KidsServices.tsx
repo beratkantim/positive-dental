@@ -5,6 +5,8 @@ import {
   Star, Calendar, ArrowRight, CheckCircle2,
   Heart, Shield, Smile, Sparkles,
 } from "lucide-react";
+import { useTable } from "../../hooks/useSupabase";
+import type { Doctor } from "@/lib/supabase";
 
 const FEATURES = [
   {
@@ -53,6 +55,19 @@ const TESTIMONIALS = [
 ];
 
 export function KidsServices() {
+  const { data: doctors } = useTable<Doctor>("doctors", "sort_order");
+  const { data: categories } = useTable<{ id: string; slug: string }>("treatment_categories");
+
+  // Pedodonti + ortodonti kategori ID'lerini bul
+  const pedodontiId = categories.find(c => c.slug === "pedodonti")?.id;
+  const ortodontiId = categories.find(c => c.slug === "ortodonti")?.id;
+  const targetIds = [pedodontiId, ortodontiId].filter(Boolean) as string[];
+
+  // Bu kategorilerde çalışan aktif doktorları filtrele
+  const kidsDoctors = doctors.filter(d =>
+    d.is_active && d.service_ids?.some((sid: string) => targetIds.includes(sid))
+  );
+
   return (
     <>
       {/* FEATURES */}
@@ -145,6 +160,48 @@ export function KidsServices() {
           </div>
         </div>
       </section>
+
+      {/* DOCTORS */}
+      {kidsDoctors.length > 0 && (
+        <section className="pt-8 sm:pt-16 pb-8 sm:pb-16 bg-slate-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-6 sm:mb-12">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-pink-500 mb-3">Uzman Kadromuz</span>
+              <h2 className="font-display text-3xl sm:text-5xl font-black text-slate-900">
+                Çocuğunuz <span className="bg-gradient-to-r from-pink-500 to-violet-600 bg-clip-text text-transparent">emin ellerde.</span>
+              </h2>
+            </div>
+            <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+              {kidsDoctors.map((d, i) => (
+                <motion.div
+                  key={d.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-100 hover:shadow-lg transition-all min-w-[220px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center"
+                >
+                  {d.photo ? (
+                    <img src={d.photo} alt={d.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover mx-auto mb-3 border-4 border-pink-100" />
+                  ) : (
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center mx-auto mb-3 text-white font-black text-2xl border-4 border-pink-100">
+                      {d.name?.split(" ").slice(-1)[0]?.[0] || "?"}
+                    </div>
+                  )}
+                  <h3 className="font-bold text-slate-900 text-sm sm:text-base">{d.title ? `${d.title} ` : ""}{d.name}</h3>
+                  <p className="text-pink-500 text-xs sm:text-sm font-medium mt-1">{d.specialty}</p>
+                  <Link
+                    to={`/doktorlarimiz/${d.slug}`}
+                    className="inline-block mt-3 text-xs font-bold text-violet-600 hover:text-violet-800 transition-colors"
+                  >
+                    Profili Gör →
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* TESTIMONIALS */}
       <section className="pt-8 sm:pt-16 pb-10 sm:pb-24 bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50">
