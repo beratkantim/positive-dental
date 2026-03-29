@@ -125,14 +125,14 @@ export function BookingWizard() {
   const selectedCategory = activeCategories.find(c => c.id === serviceId);
   const selectedDoctor = dsDoctors.find(d => d.ID === doctorId);
 
-  // Supabase doktorlarından dentsoft_id eşleşme haritası
+  // Supabase doktorlarından dentsoft_id eşleşme haritası (string key)
   const sbDoctorMap = new Map(
-    supabaseDoctors.filter(d => d.dentsoft_id).map(d => [d.dentsoft_id, d])
+    supabaseDoctors.filter(d => d.dentsoft_id).map(d => [String(d.dentsoft_id), d])
   );
 
   // Eşleştirilmiş doktor listesi: Dentsoft verisi + Supabase zengin bilgi
   const mergedDoctors = dsDoctors.map(ds => {
-    const sb = sbDoctorMap.get(ds.ID);
+    const sb = sbDoctorMap.get(String(ds.ID));
     return {
       ...ds,
       Avatar: sb?.photo || ds.Avatar || "",
