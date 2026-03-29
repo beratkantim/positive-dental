@@ -147,9 +147,9 @@ export function KidsServices() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="py-24 bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50">
+      <section className="pt-8 sm:pt-16 pb-10 sm:pb-24 bg-gradient-to-br from-violet-50 via-pink-50 to-amber-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div className="text-center mb-6 sm:mb-14">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-pink-500 mb-3">Ebeveyn Yorumları</span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">Anne & babalar anlatıyor.</h2>
           </div>

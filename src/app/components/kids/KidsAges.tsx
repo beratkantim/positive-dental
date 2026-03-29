@@ -14,9 +14,9 @@ export function KidsAges() {
   return (
     <>
       {/* AGE GROUPS */}
-      <section className="py-24 bg-slate-50">
+      <section className="pt-6 sm:pt-16 pb-8 sm:pb-16 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-14">
+          <div className="text-center mb-6 sm:mb-14">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-violet-500 mb-3">Yaşa Göre Bakım</span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">
               Her yaşın bir{" "}
@@ -45,7 +45,7 @@ export function KidsAges() {
       </section>
 
       {/* CHECKLIST */}
-      <section className="py-20 bg-white">
+      <section className="py-8 sm:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-[#0D1235] to-indigo-950 rounded-3xl overflow-hidden">
             <div className="grid lg:grid-cols-2">
