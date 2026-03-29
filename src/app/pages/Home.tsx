@@ -132,7 +132,7 @@ export function Home() {
             <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
               {activeDoctors.map((d: Doctor, i: number) => (
                 <motion.div key={d.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                  <Link to={`/doktorlarimiz/${d.slug}`} className="block bg-slate-50 hover:bg-white rounded-2xl p-4 border border-slate-100 hover:shadow-lg transition-all min-w-[150px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center">
+                  <Link to={`/doktorlarimiz/${d.slug}`} className="block bg-slate-50 hover:bg-white rounded-2xl p-4 border border-slate-100 hover:shadow-lg transition-all min-w-[150px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center h-full">
                     {d.photo ? (
                       <img src={d.photo} alt={d.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover mx-auto mb-2 border-2 border-white shadow-md" />
                     ) : (
@@ -142,7 +142,7 @@ export function Home() {
                     )}
                     <h3 className="font-bold text-slate-900 text-xs sm:text-sm">{d.title ? `${d.title} ` : ""}{d.name}</h3>
                     <p className="text-indigo-500 text-[10px] sm:text-xs font-medium mt-0.5">{d.specialty}</p>
-                    {d.branches_labels?.[0] && <p className="text-slate-400 text-[10px] mt-0.5">{d.branches_labels[0]}</p>}
+                    <p className="text-slate-400 text-[10px] mt-0.5">{d.branches_labels?.[0] || "\u00A0"}</p>
                   </Link>
                 </motion.div>
               ))}
