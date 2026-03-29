@@ -9,7 +9,7 @@ const BOOKING_URL = "https://randevu.positivedental.com";
 
 export function KidsTeaser() {
   return (
-    <section className="py-12 sm:py-20 bg-white overflow-hidden content-lazy">
+    <section className="py-6 sm:py-12 bg-white overflow-hidden content-lazy">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
           className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-50 via-violet-50 to-indigo-50 border border-pink-100"
