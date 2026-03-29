@@ -34,7 +34,7 @@ export function ServicesGrid() {
           </Link>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
           {items.map((s, i) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -42,14 +42,14 @@ export function ServicesGrid() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 * i }}
               key={s.title}
-              className="hover-lift group bg-white rounded-2xl p-6 border border-slate-100 hover:border-transparent hover:shadow-xl hover:shadow-slate-200/60 transition-all cursor-pointer"
+              className="hover-lift group bg-white rounded-2xl p-4 sm:p-6 border border-slate-100 hover:border-transparent hover:shadow-xl hover:shadow-slate-200/60 transition-all cursor-pointer min-w-[160px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center sm:text-left"
             >
-              <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-5 text-2xl shadow-lg group-hover:scale-110 transition-transform`}>
+              <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center mb-2 sm:mb-5 text-xl sm:text-2xl shadow-lg group-hover:scale-110 transition-transform mx-auto sm:mx-0`}>
                 {s.icon}
               </div>
-              <h3 className="font-bold text-slate-900 text-base mb-2">{s.title}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed">{s.desc}</p>
-              <div className="mt-4 flex items-center gap-1 text-xs font-bold text-slate-400 group-hover:text-indigo-500 transition-colors">
+              <h3 className="font-bold text-slate-900 text-xs sm:text-base mb-1 sm:mb-2">{s.title}</h3>
+              <p className="text-slate-400 text-[10px] sm:text-sm leading-relaxed whitespace-pre-line hidden sm:block">{s.desc}</p>
+              <div className="mt-2 sm:mt-4 flex items-center justify-center sm:justify-start gap-1 text-[10px] sm:text-xs font-bold text-slate-400 group-hover:text-indigo-500 transition-colors">
                 Detaylı Bilgi <ArrowRight className="w-3 h-3" />
               </div>
             </motion.div>
