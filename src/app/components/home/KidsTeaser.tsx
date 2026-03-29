@@ -32,7 +32,7 @@ export function KidsTeaser() {
                 <span className="bg-gradient-to-r from-pink-500 to-violet-600 bg-clip-text text-transparent">büyük gülüşler.</span>
               </h2>
               <p className="text-slate-500 leading-relaxed mb-8 max-w-sm">
-                Özel eğitimli hekimlerimiz ve eğlenceli kliniğimizle çocukların dişçi korkusunu sevgiye dönüştürüyoruz. 0–18 yaş arası tüm diş bakımı ihtiyaçları burada.
+                Özel eğitimli hekimlerimiz ve eğlenceli kliniğimizle çocukların diş hekimi korkusunu sevgiye dönüştürüyoruz. 0–13 yaş arası tüm diş bakımı ihtiyaçları burada.
               </p>
 
               <div className="flex flex-wrap gap-2 mb-8">
