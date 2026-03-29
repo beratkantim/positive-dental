@@ -173,7 +173,7 @@ export function Header() {
             {/* Logo */}
             <Link to="/" title="Positive Dental Studio Ana Sayfa" className="flex-shrink-0 mr-4">
               <img src={logo} alt="Positive Dental Studio"
-                className="h-6 w-auto hover:opacity-90 transition-opacity" loading="eager" decoding="async" width="180" height="24" />
+                className="h-5 sm:h-6 w-auto hover:opacity-90 transition-opacity" loading="eager" decoding="async" width="180" height="24" />
             </Link>
 
             {/* Boşluk — nav sağa yaslanır */}
