@@ -125,7 +125,7 @@ export function KidsServices() {
               initial={{ opacity: 0, x: 24 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+              className="flex sm:grid sm:grid-cols-2 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide"
             >
               {SERVICES.map((s, i) => (
                 <motion.div
@@ -134,11 +134,11 @@ export function KidsServices() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.07 }}
-                  className="group bg-slate-50 hover:bg-white hover:shadow-md rounded-2xl p-5 border border-transparent hover:border-pink-100 transition-all cursor-pointer"
+                  className="group bg-slate-50 hover:bg-white hover:shadow-md rounded-2xl p-4 sm:p-5 border border-transparent hover:border-pink-100 transition-all cursor-pointer min-w-[160px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center sm:text-left"
                 >
-                  <div className="text-2xl mb-3 group-hover:scale-110 transition-transform inline-block">{s.emoji}</div>
-                  <h4 className="font-bold text-slate-800 text-sm mb-1 group-hover:text-pink-600 transition-colors">{s.title}</h4>
-                  <p className="text-slate-400 text-xs leading-relaxed">{s.desc}</p>
+                  <div className="text-2xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform inline-block">{s.emoji}</div>
+                  <h4 className="font-bold text-slate-800 text-xs sm:text-sm mb-1 group-hover:text-pink-600 transition-colors">{s.title}</h4>
+                  <p className="text-slate-400 text-[10px] sm:text-xs leading-relaxed">{s.desc}</p>
                 </motion.div>
               ))}
             </motion.div>
