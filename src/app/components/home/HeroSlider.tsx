@@ -117,7 +117,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
   const TagIcon = slide.tagIcon;
 
   return (
-    <section className="relative bg-[#0D1235] overflow-hidden lg:min-h-[92vh] flex flex-col">
+    <section className="relative bg-[#0D1235] overflow-hidden -mt-8 sm:-mt-12 lg:min-h-[92vh] flex flex-col">
 
       {/* Ambient blobs — hidden on mobile for performance */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/25 blur-[130px] pointer-events-none transition-all duration-1000 hidden md:block" />

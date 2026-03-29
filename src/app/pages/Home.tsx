@@ -95,7 +95,7 @@ export function Home() {
       <Suspense fallback={null}><BookingWizard /></Suspense>
 
       {/* ── GRADIENT DIVIDER ── */}
-      <div className="-mb-px h-16 sm:h-24 bg-gradient-to-b from-white via-[#8088B0] to-[#0D1235]" />
+      <div className="h-20 sm:h-28 bg-gradient-to-b from-white via-[#8088B0] to-[#0D1235]" />
 
       {/* ── HERO SLIDER ── */}
       <HeroSlider
