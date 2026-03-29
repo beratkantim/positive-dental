@@ -76,7 +76,7 @@ export function KidsTeaser() {
 
               {/* Floating stat */}
               <div
-                className="anim-float absolute bottom-6 right-6 bg-white rounded-2xl shadow-xl px-5 py-4 flex items-center gap-3"
+                className="anim-float absolute bottom-6 right-6 bg-white rounded-2xl shadow-xl px-5 py-4 hidden lg:flex items-center gap-3"
               >
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-xl">
                   😄
