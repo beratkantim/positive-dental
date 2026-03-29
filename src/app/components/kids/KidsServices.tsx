@@ -1,9 +1,7 @@
 import { motion } from "motion/react";
 import { Link } from "react-router";
-import { ImageWithFallback } from "../figma/ImageWithFallback";
 import {
-  Star, Calendar, ArrowRight, CheckCircle2,
-  Heart, Shield, Smile, Sparkles,
+  Star, Calendar, Heart, Shield, Smile, Sparkles,
 } from "lucide-react";
 import { useTable } from "../../hooks/useSupabase";
 import type { Doctor } from "@/lib/supabase";
