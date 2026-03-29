@@ -13,37 +13,6 @@ const AGES = [
 export function KidsAges() {
   return (
     <>
-      {/* AGE GROUPS */}
-      <section className="pt-6 sm:pt-16 pb-8 sm:pb-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-14">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-violet-500 mb-3">Yaşa Göre Bakım</span>
-            <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">
-              Her yaşın bir{" "}
-              <span className="italic text-violet-600">planı var.</span>
-            </h2>
-          </div>
-
-          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
-            {AGES.map((a, i) => (
-              <motion.div
-                key={a.age}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`${a.color} border-2 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:shadow-lg transition-all min-w-[160px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center sm:text-left`}
-              >
-                <div className="text-2xl sm:text-4xl mb-2 sm:mb-4">{a.icon}</div>
-                <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 mb-1 sm:mb-2">{a.age}</span>
-                <h3 className="font-bold text-slate-800 text-xs sm:text-base mb-1 sm:mb-2">{a.title}</h3>
-                <p className="text-slate-500 text-[10px] sm:text-sm leading-relaxed whitespace-pre-line">{a.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CHECKLIST */}
       <section className="py-8 sm:py-20 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -107,6 +76,37 @@ export function KidsAges() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* AGE GROUPS */}
+      <section className="pt-6 sm:pt-16 pb-8 sm:pb-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-6 sm:mb-14">
+            <span className="inline-block text-xs font-bold uppercase tracking-widest text-violet-500 mb-3">Yaşa Göre Bakım</span>
+            <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">
+              Her yaşın bir{" "}
+              <span className="italic text-violet-600">planı var.</span>
+            </h2>
+          </div>
+
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+            {AGES.map((a, i) => (
+              <motion.div
+                key={a.age}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className={`${a.color} border-2 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:shadow-lg transition-all min-w-[160px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center sm:text-left`}
+              >
+                <div className="text-2xl sm:text-4xl mb-2 sm:mb-4">{a.icon}</div>
+                <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 mb-1 sm:mb-2">{a.age}</span>
+                <h3 className="font-bold text-slate-800 text-xs sm:text-base mb-1 sm:mb-2">{a.title}</h3>
+                <p className="text-slate-500 text-[10px] sm:text-sm leading-relaxed whitespace-pre-line">{a.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
