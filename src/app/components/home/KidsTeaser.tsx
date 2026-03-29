@@ -64,7 +64,7 @@ export function KidsTeaser() {
             </div>
 
             {/* Right – visual */}
-            <div className="relative h-64 lg:h-auto lg:min-h-[420px] overflow-hidden">
+            <div className="relative h-80 sm:h-96 lg:h-auto lg:min-h-[420px] overflow-hidden">
               <ImageWithFallback
                 src="https://images.unsplash.com/photo-1611146033545-5e1e5ad951d8?w=700&q=75&auto=format"
                 alt="Mutlu çocuk dişçide"
