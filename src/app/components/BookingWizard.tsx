@@ -340,15 +340,15 @@ export function BookingWizard() {
 
         {/* Heading */}
         <div className="text-center mb-10">
-          <span className={`inline-block text-xs font-bold uppercase tracking-widest mb-4 transition-colors duration-300 ${
-            mode === "cocuk" ? "text-pink-500" : "text-indigo-500"
+          <span className={`inline-block text-xs font-semibold uppercase tracking-widest mb-4 transition-colors duration-300 ${
+            mode === "cocuk" ? "text-pink-400" : "text-indigo-400"
           }`}>{mode === "cocuk" ? "Çocuk Randevusu" : "Hızlı Randevu"}</span>
-          <h2 className="font-display text-5xl sm:text-6xl font-black text-slate-900 leading-[0.92] tracking-tight">
+          <h2 className="font-display text-4xl sm:text-5xl font-extrabold text-slate-800 leading-[0.95] tracking-tight">
             Online<br />
             <span className={`bg-clip-text text-transparent transition-all duration-300 ${
               mode === "cocuk"
-                ? "bg-gradient-to-r from-pink-500 to-violet-500"
-                : "bg-gradient-to-r from-indigo-500 to-violet-600"
+                ? "bg-gradient-to-r from-pink-400 to-violet-400"
+                : "bg-gradient-to-r from-indigo-400 to-violet-500"
             }`}>Randevu.</span>
           </h2>
           <p className="text-slate-400 mt-4 text-sm">5 adımda hızlıca randevunu oluştur</p>
