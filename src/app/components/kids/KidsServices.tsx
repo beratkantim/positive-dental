@@ -161,7 +161,7 @@ export function KidsServices() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-white hover:shadow-xl hover:border-pink-100 transition-all min-w-[280px] md:min-w-0 snap-start flex-shrink-0 md:flex-shrink"
+                className="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-white hover:shadow-xl hover:border-pink-100 transition-all w-[220px] md:w-auto md:min-w-0 snap-start flex-shrink-0 md:flex-shrink"
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(t.rating)].map((_, j) => (
