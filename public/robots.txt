@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://positive-dental.vercel.app/sitemap.xml

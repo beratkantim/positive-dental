@@ -94,7 +94,7 @@ export function Footer() {
           {/* About */}
           <div>
             <div className="mb-4">
-              <img src={logo} alt="Positive Dental Studio" className="h-10 w-auto" style={{ filter: "brightness(0) invert(1)" }} />
+              <img src={logo} alt="Positive Dental Studio" className="h-10 w-auto" style={{ filter: "brightness(0) invert(1)" }} width="300" height="40" loading="lazy" decoding="async" />
             </div>
             <p className="text-sm text-blue-300 mb-5 leading-relaxed">
               <span className="text-white font-medium">{vals.footer_slogan}</span>

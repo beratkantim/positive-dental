@@ -23,6 +23,8 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index?: number }) {
           loading={index !== undefined && index < 4 ? "eager" : "lazy"}
           decoding="async"
           fetchPriority={index !== undefined && index < 4 ? "high" : undefined}
+          width="400"
+          height="500"
         />
         {/* Şube etiketleri */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">

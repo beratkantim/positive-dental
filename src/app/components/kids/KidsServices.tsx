@@ -176,7 +176,7 @@ export function KidsServices() {
                   className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-100 hover:shadow-lg transition-all min-w-[220px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center"
                 >
                   {d.photo ? (
-                    <img src={d.photo} alt={d.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover mx-auto mb-3 border-4 border-pink-100" />
+                    <img src={d.photo} alt={d.name} className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover mx-auto mb-3 border-4 border-pink-100" width="96" height="96" loading="lazy" decoding="async" />
                   ) : (
                     <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center mx-auto mb-3 text-white font-black text-2xl border-4 border-pink-100">
                       {d.name?.split(" ").slice(-1)[0]?.[0] || "?"}

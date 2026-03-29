@@ -134,7 +134,7 @@ export function Home() {
                 <motion.div key={d.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
                   <Link to={`/doktorlarimiz/${d.slug}`} className="block bg-slate-50 hover:bg-white rounded-2xl p-4 border border-slate-100 hover:shadow-lg transition-all min-w-[150px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center h-full">
                     {d.photo ? (
-                      <img src={d.photo} alt={d.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover mx-auto mb-2 border-2 border-white shadow-md" />
+                      <img src={d.photo} alt={d.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover mx-auto mb-2 border-2 border-white shadow-md" width="80" height="80" loading="lazy" decoding="async" />
                     ) : (
                       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-2 text-white font-black text-xl border-2 border-white shadow-md">
                         {d.name?.split(" ").slice(-1)[0]?.[0] || "?"}
