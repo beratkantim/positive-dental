@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor, type Service } from "./shared";
+import { supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState, FormField, ImageUpload, type Doctor } from "./shared";
 import { getDoctors, type DentsoftDoctor } from "@/lib/dentsoft";
 
 const BRANCH_OPTIONS = [
@@ -120,7 +120,7 @@ function DoctorForm({ doctor, onSave, onCancel }: {
   const initBranches = doctor?.branches?.length ? doctor.branches : (doctor?.branch ? [doctor.branch] : []);
   const initServices = doctor?.service_ids || [];
 
-  const [services, setServices] = useState<Service[]>([]);
+  const [services, setServices] = useState<{ id: string; title: string; icon: string }[]>([]);
   const [form, setForm] = useState({
     name: doctor?.name || "",
     title: doctor?.title || "",
@@ -142,8 +142,8 @@ function DoctorForm({ doctor, onSave, onCancel }: {
   const [dsLoading, setDsLoading] = useState(false);
 
   useEffect(() => {
-    supabase.from("services").select("*").eq("is_active", true).order("sort_order").then(({ data }) => {
-      setServices(data || []);
+    supabase.from("treatment_categories").select("id,name,icon,sort_order").eq("is_active", true).order("sort_order").then(({ data }) => {
+      setServices((data || []).map(d => ({ id: d.id, title: d.name, icon: d.icon })));
     });
   }, []);
 
