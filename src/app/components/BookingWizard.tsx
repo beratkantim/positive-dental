@@ -365,7 +365,7 @@ export function BookingWizard() {
             onClick={() => { if (mode !== "yetiskin") { setMode("yetiskin"); reset(); } }}
             className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
               mode === "yetiskin"
-                ? "bg-white text-indigo-600 shadow-sm"
+                ? "bg-white text-indigo-600 shadow-md border border-slate-200"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
@@ -375,7 +375,7 @@ export function BookingWizard() {
             onClick={() => { if (mode !== "cocuk") { setMode("cocuk"); reset(); } }}
             className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
               mode === "cocuk"
-                ? "bg-white text-pink-600 shadow-sm"
+                ? "bg-white text-pink-600 shadow-md border border-pink-200"
                 : "text-slate-500 hover:text-slate-700"
             }`}
           >
