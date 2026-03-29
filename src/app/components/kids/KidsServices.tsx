@@ -12,28 +12,28 @@ const FEATURES = [
     color: "from-pink-400 to-rose-500",
     bg: "bg-pink-50",
     title: "Korkusuz Ortam",
-    desc: "Çocuklara özel dekore edilmiş odalarımız, oyun alanlarımız ve sevecen yaklaşımımızla diş hekimi korkusunu birlikte yeniyoruz.",
+    desc: "Oyun alanları ve sevecen yaklaşımla diş hekimi korkusunu yeniyoruz.",
   },
   {
     icon: Shield,
     color: "from-violet-500 to-indigo-500",
     bg: "bg-violet-50",
     title: "Güvenli Tedavi",
-    desc: "Çocuk dişhekimliğine özel sertifikalı hekimlerimiz, en güncel ve ağrısız tedavi protokollerini uygular.",
+    desc: "Sertifikalı çocuk hekimleriyle ağrısız tedavi protokolleri.",
   },
   {
     icon: Smile,
     color: "from-amber-400 to-orange-500",
     bg: "bg-amber-50",
     title: "Eğlenceli Deneyim",
-    desc: "Her kontrolü bir maceraya dönüştürüyoruz — diş fırçalama yarışmaları, ödül rozetleri ve renkli uygulamalarla.",
+    desc: "Ödül rozetleri ve renkli uygulamalarla her kontrol bir macera.",
   },
   {
     icon: Sparkles,
     color: "from-teal-400 to-cyan-500",
     bg: "bg-teal-50",
     title: "Erken Koruma",
-    desc: "Fissür örtücü, florür uygulaması ve beslenme rehberliğiyle dişlerin çürümeden önce korunmasını sağlıyoruz.",
+    desc: "Fissür örtücü ve florür ile dişleri çürümeden koruyoruz.",
   },
 ];
 
@@ -80,7 +80,7 @@ export function KidsServices() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ y: -6 }}
-                  className={`${f.bg} rounded-3xl p-6 border border-white hover:shadow-xl transition-all group min-w-[260px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink`}
+                  className={`${f.bg} rounded-3xl p-5 border border-white hover:shadow-xl transition-all group min-w-[200px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink`}
                 >
                   <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                     <Icon className="w-6 h-6 text-white" />
