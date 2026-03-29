@@ -170,7 +170,8 @@ export function Header() {
           <div className="flex items-center h-[60px] gap-2">
 
             {/* Logo */}
-            <Link to="/" title="Positive Dental Studio Ana Sayfa" className="flex-shrink-0 mr-4">
+            <Link to="/" title="Positive Dental Studio Ana Sayfa" className="flex-shrink-0 mr-4"
+              onClick={() => { if (location.pathname === "/") window.location.reload(); }}>
               <img src={logo} alt="Positive Dental Studio"
                 className="h-5 sm:h-6 w-auto hover:opacity-90 transition-opacity" loading="eager" decoding="async" width="180" height="24" />
             </Link>
