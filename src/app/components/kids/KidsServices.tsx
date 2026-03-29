@@ -12,28 +12,28 @@ const FEATURES = [
     color: "from-pink-400 to-rose-500",
     bg: "bg-pink-50",
     title: "Korkusuz Ortam",
-    desc: "Oyun alanları ve sevecen yaklaşımla diş hekimi korkusunu yeniyoruz.",
+    desc: "Oyun alanları\nSevecen yaklaşım\nKorkusuz tedavi",
   },
   {
     icon: Shield,
     color: "from-violet-500 to-indigo-500",
     bg: "bg-violet-50",
     title: "Güvenli Tedavi",
-    desc: "Sertifikalı çocuk hekimleriyle ağrısız tedavi protokolleri.",
+    desc: "Sertifikalı hekimler\nAğrısız protokoller\nGüncel teknikler",
   },
   {
     icon: Smile,
     color: "from-amber-400 to-orange-500",
     bg: "bg-amber-50",
     title: "Eğlenceli Deneyim",
-    desc: "Ödül rozetleri ve renkli uygulamalarla her kontrol bir macera.",
+    desc: "Ödül rozetleri\nRenkli uygulamalar\nHer kontrol bir macera",
   },
   {
     icon: Sparkles,
     color: "from-teal-400 to-cyan-500",
     bg: "bg-teal-50",
     title: "Erken Koruma",
-    desc: "Fissür örtücü ve florür ile dişleri çürümeden koruyoruz.",
+    desc: "Fissür örtücü\nFlorür uygulaması\nÇürük önleme",
   },
 ];
 
@@ -86,7 +86,7 @@ export function KidsServices() {
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
                   <h3 className="font-bold text-slate-900 text-xs sm:text-base mb-1 sm:mb-2">{f.title}</h3>
-                  <p className="text-slate-400 text-[10px] sm:text-sm leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">{f.desc}</p>
+                  <p className="text-slate-400 text-[10px] sm:text-sm leading-relaxed whitespace-pre-line">{f.desc}</p>
                 </motion.div>
               );
             })}
