@@ -52,9 +52,8 @@ export function KidsTeaser() {
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <a
-                  href={BOOKING_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#randevu"
+                  onClick={(e) => { e.preventDefault(); document.getElementById("randevu")?.scrollIntoView({ behavior: "smooth" }); }}
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-pink-100 text-slate-700 font-bold hover:border-pink-300 hover:shadow-md transition-all"
                 >
                   <Calendar className="w-4 h-4 text-pink-500" />
