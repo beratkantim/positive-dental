@@ -89,6 +89,14 @@ export function BookingWizard() {
   const activeBranches = branches.filter(b => b.is_active);
   const activeCategories = categories.filter(c => c.is_active);
 
+  // Mode: yetişkin / çocuk
+  const [mode, setMode] = useState<"yetiskin" | "cocuk">("yetiskin");
+
+  // Kategorileri mode'a göre filtrele
+  const filteredCategories = activeCategories.filter(c =>
+    mode === "cocuk" ? c.slug === "pedodonti" : c.slug !== "pedodonti"
+  );
+
   // Wizard state
   const [step, setStep] = useState(1);
   const [clinicId, setClinicId]   = useState("");
@@ -334,6 +342,30 @@ export function BookingWizard() {
           <p className="text-slate-400 mt-4 text-sm">5 adımda hızlıca randevunu oluştur</p>
         </div>
 
+        {/* Randevu Tipi Seçimi */}
+        <div className="flex items-center justify-center gap-1 mb-8 bg-slate-100 rounded-2xl p-1 max-w-xs mx-auto">
+          <button
+            onClick={() => { if (mode !== "yetiskin") { setMode("yetiskin"); reset(); } }}
+            className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
+              mode === "yetiskin"
+                ? "bg-white text-indigo-600 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            🦷 Yetişkin
+          </button>
+          <button
+            onClick={() => { if (mode !== "cocuk") { setMode("cocuk"); reset(); } }}
+            className={`flex-1 py-2.5 px-4 rounded-xl text-sm font-bold transition-all ${
+              mode === "cocuk"
+                ? "bg-white text-pink-600 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            👶 Çocuk
+          </button>
+        </div>
+
         {/* Step indicator */}
         <div className="flex items-center mb-8 px-2">
           {STEPS.map((s, i) => {
@@ -424,7 +456,7 @@ export function BookingWizard() {
                   <div className="space-y-4">
                     <StepHeader step={2} title="Hizmet Seçin" sub={`${clinicLabel} · Mevcut hizmetler`} />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto">
-                      {activeCategories.map((c) => (
+                      {filteredCategories.map((c) => (
                         <button key={c.id} onClick={() => { setServiceId(c.id); setDoctorId(""); }}
                           className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left text-sm font-semibold transition-all ${
                             serviceId === c.id
