@@ -105,11 +105,11 @@ export function Home() {
         next={next}
       />
 
-      {/* ── SERVICES ── */}
-      <ServicesGrid />
-
       {/* ── KIDS TEASER ── */}
       <KidsTeaser />
+
+      {/* ── SERVICES ── */}
+      <ServicesGrid />
 
       {/* ── NEDEN BİZ ── */}
       <WhyUs />
