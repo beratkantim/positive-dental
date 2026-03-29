@@ -45,10 +45,10 @@ export function Home() {
   const [direction, setDirection] = useState(1);
   const { data: rawSlides } = useTable<HeroSlide>("hero_slides", "sort_order");
   const { data: rawTestimonials } = useTable<Testimonial>("testimonials", "created_at", false);
-  const { data: allDoctors } = useTable<Doctor>("doctors", "sort_order");
-  const { data: allBranches } = useTable<BranchData>("branches", "name");
-  const activeDoctors = allDoctors.filter(d => d.is_active);
-  const activeBranches = allBranches.filter(b => b.is_active);
+  const { data: allDoctors = [] } = useTable<Doctor>("doctors", "sort_order") || { data: [] };
+  const { data: allBranches = [] } = useTable<BranchData>("branches", "name") || { data: [] };
+  const activeDoctors = (allDoctors || []).filter(d => d.is_active);
+  const activeBranches = (allBranches || []).filter(b => b.is_active);
 
   const TESTIMONIALS = rawTestimonials.length > 0
     ? rawTestimonials.map(t => ({ name: t.name, role: t.role, text: t.text, rating: t.rating, img: t.image }))
