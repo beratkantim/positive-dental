@@ -1,15 +1,14 @@
 import { lazy, Suspense } from "react";
 import { SEO } from "../components/SEO";
 import {
-  Star, Phone, ArrowRight, ArrowUpRight,
+  Star, Phone, ArrowRight, ArrowUpRight, MapPin,
   Users, Stethoscope, Building2, ThumbsUp,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
 import { supabase } from "@/lib/supabase";
-import type { HeroSlide, Testimonial, Doctor, Branch } from "@/lib/supabase";
-import { MapPin } from "lucide-react";
+import type { HeroSlide, Testimonial, Doctor, BranchData } from "@/lib/supabase";
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 import { HeroSlider, mapSlide, FALLBACK_SLIDES, responsiveImg } from "../components/home/HeroSlider";
@@ -47,7 +46,7 @@ export function Home() {
   const { data: rawSlides } = useTable<HeroSlide>("hero_slides", "sort_order");
   const { data: rawTestimonials } = useTable<Testimonial>("testimonials", "created_at", false);
   const { data: allDoctors } = useTable<Doctor>("doctors", "sort_order");
-  const { data: allBranches } = useTable<Branch>("branches", "sort_order");
+  const { data: allBranches } = useTable<BranchData>("branches", "sort_order");
   const activeDoctors = allDoctors.filter(d => d.is_active);
   const activeBranches = allBranches.filter(b => b.is_active);
 
