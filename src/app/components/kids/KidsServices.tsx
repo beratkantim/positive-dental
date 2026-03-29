@@ -168,7 +168,7 @@ export function KidsServices() {
                     <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed mb-5">"{t.text}"</p>
+                <p className="text-slate-600 text-sm leading-relaxed mb-5 line-clamp-4">"{t.text}"</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-white font-bold text-sm">
                     {t.name[0]}
