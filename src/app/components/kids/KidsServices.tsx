@@ -169,15 +169,11 @@ export function KidsServices() {
                   ))}
                 </div>
                 <p className="text-slate-600 text-sm leading-relaxed mb-5 line-clamp-4">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
-                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-white font-bold text-sm">
+                <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                     {t.name[0]}
                   </div>
-                  <div>
-                    <p className="font-bold text-slate-800 text-sm">{t.name}</p>
-                    <p className="text-slate-400 text-xs">{t.role}</p>
-                  </div>
-                  <span className="ml-auto text-xs bg-green-100 text-green-700 font-semibold px-2.5 py-1 rounded-full">Doğrulandı</span>
+                  <p className="text-slate-600 text-xs truncate"><span className="font-bold">{t.name}</span> · {t.role}</p>
                 </div>
               </motion.div>
             ))}
