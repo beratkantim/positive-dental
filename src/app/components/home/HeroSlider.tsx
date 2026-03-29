@@ -117,7 +117,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
   const TagIcon = slide.tagIcon;
 
   return (
-    <section className="relative bg-[#0D1235] overflow-hidden min-h-[calc(100vh-60px)] lg:min-h-[92vh] flex flex-col">
+    <section className="relative bg-[#0D1235] overflow-hidden lg:min-h-[92vh] flex flex-col">
 
       {/* Ambient blobs — hidden on mobile for performance */}
       <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-600/25 blur-[130px] pointer-events-none transition-all duration-1000 hidden md:block" />
@@ -134,10 +134,9 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none hidden md:block"
         style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
 
-      {/* ── Top bar ── */}
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 sm:pt-2 pb-0 sm:pb-2 flex items-center justify-end">
-        {/* Slide counter */}
-        <div className="hidden sm:flex items-center gap-2 text-white/30 text-sm font-mono">
+      {/* ── Top bar (desktop only) ── */}
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 hidden sm:flex items-center justify-end pt-2 pb-2">
+        <div className="flex items-center gap-2 text-white/30 text-sm font-mono">
           <span className="text-white/60 font-bold">{String(active + 1).padStart(2, "0")}</span>
           <span>/</span>
           <span>{String(HERO_SLIDES.length).padStart(2, "0")}</span>
@@ -146,7 +145,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
 
       {/* ── Main content ── */}
       <div className="relative flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center">
-        <div className="grid lg:grid-cols-2 gap-6 sm:gap-12 xl:gap-20 w-full py-6 lg:py-0">
+        <div className="grid lg:grid-cols-2 gap-4 sm:gap-12 xl:gap-20 w-full py-2 sm:py-6 lg:py-0">
 
           {/* LEFT — text */}
           <div className="flex flex-col justify-center">
