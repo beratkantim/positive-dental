@@ -8,7 +8,8 @@ import { motion } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
 import { useTable } from "../hooks/useSupabase";
 import { supabase } from "@/lib/supabase";
-import type { HeroSlide, Testimonial } from "@/lib/supabase";
+import type { HeroSlide, Testimonial, Doctor, Branch } from "@/lib/supabase";
+import { MapPin } from "lucide-react";
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 import { HeroSlider, mapSlide, FALLBACK_SLIDES, responsiveImg } from "../components/home/HeroSlider";
@@ -45,6 +46,10 @@ export function Home() {
   const [direction, setDirection] = useState(1);
   const { data: rawSlides } = useTable<HeroSlide>("hero_slides", "sort_order");
   const { data: rawTestimonials } = useTable<Testimonial>("testimonials", "created_at", false);
+  const { data: allDoctors } = useTable<Doctor>("doctors", "sort_order");
+  const { data: allBranches } = useTable<Branch>("branches", "sort_order");
+  const activeDoctors = allDoctors.filter(d => d.is_active);
+  const activeBranches = allBranches.filter(b => b.is_active);
 
   const TESTIMONIALS = rawTestimonials.length > 0
     ? rawTestimonials.map(t => ({ name: t.name, role: t.role, text: t.text, rating: t.rating, img: t.image }))
@@ -110,6 +115,76 @@ export function Home() {
 
       {/* ── KIDS TEASER ── */}
       <KidsTeaser />
+
+      {/* ── DOKTORLARIMIZ ── */}
+      {activeDoctors.length > 0 && (
+        <section className="pt-8 sm:pt-16 pb-4 sm:pb-8 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between mb-6 sm:mb-10">
+              <div>
+                <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Uzman Kadromuz</span>
+                <h2 className="font-display text-2xl sm:text-4xl font-black text-slate-900">Doktorlarımız</h2>
+              </div>
+              <Link to="/doktorlarimiz" className="text-xs sm:text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-1">
+                Tümü <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            <div className="flex sm:grid sm:grid-cols-3 lg:grid-cols-4 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+              {activeDoctors.map((d, i) => (
+                <motion.div key={d.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                  <Link to={`/doktorlarimiz/${d.slug}`} className="block bg-slate-50 hover:bg-white rounded-2xl p-4 border border-slate-100 hover:shadow-lg transition-all min-w-[150px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center">
+                    {d.photo ? (
+                      <img src={d.photo} alt={d.name} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover mx-auto mb-2 border-2 border-white shadow-md" />
+                    ) : (
+                      <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center mx-auto mb-2 text-white font-black text-xl border-2 border-white shadow-md">
+                        {d.name?.split(" ").slice(-1)[0]?.[0] || "?"}
+                      </div>
+                    )}
+                    <h3 className="font-bold text-slate-900 text-xs sm:text-sm">{d.title ? `${d.title} ` : ""}{d.name}</h3>
+                    <p className="text-indigo-500 text-[10px] sm:text-xs font-medium mt-0.5">{d.specialty}</p>
+                    {d.branches_labels?.[0] && <p className="text-slate-400 text-[10px] mt-0.5">{d.branches_labels[0]}</p>}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── KLİNİKLERİMİZ ── */}
+      {activeBranches.length > 0 && (
+        <section className="pt-4 sm:pt-8 pb-8 sm:pb-16 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-end justify-between mb-6 sm:mb-10">
+              <div>
+                <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Kliniklerimiz</span>
+                <h2 className="font-display text-2xl sm:text-4xl font-black text-slate-900">Şubelerimiz</h2>
+              </div>
+              <Link to="/kliniklerimiz" className="text-xs sm:text-sm font-bold text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-1">
+                Tümü <ArrowRight className="w-3 h-3" />
+              </Link>
+            </div>
+            <div className="flex sm:grid sm:grid-cols-2 gap-4 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
+              {activeBranches.map((b, i) => (
+                <motion.div key={b.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                  <Link to={`/kliniklerimiz/${b.slug}`} className="block bg-gradient-to-br from-slate-50 to-indigo-50 rounded-2xl p-5 border border-slate-100 hover:shadow-lg transition-all min-w-[260px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-indigo-500 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-slate-900 text-sm sm:text-base">{b.name}</h3>
+                        <p className="text-slate-400 text-xs sm:text-sm mt-1">{b.address}</p>
+                        {b.phone && <p className="text-indigo-500 text-xs font-bold mt-2">{b.phone}</p>}
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ── SERVICES ── */}
       <ServicesGrid />
