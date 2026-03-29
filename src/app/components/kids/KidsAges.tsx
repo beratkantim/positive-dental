@@ -4,10 +4,10 @@ import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Calendar, CheckCircle2, ArrowRight } from "lucide-react";
 
 const AGES = [
-  { age: "0–3 Yaş", icon: "👶", title: "İlk Ziyaret", desc: "İlk diş çıkar çıkmaz kontrol önerilir. Tanışma ve alışma odaklı.", color: "border-pink-200 bg-pink-50" },
-  { age: "3–6 Yaş", icon: "🌟", title: "Süt Dişi Dönemi", desc: "Çürük kontrolü, fırçalama alışkanlığı kazanımı ve fissür örtücü.", color: "border-amber-200 bg-amber-50" },
-  { age: "6–12 Yaş", icon: "🚀", title: "Karma Diş Dönemi", desc: "Süt–kalıcı diş geçiş dönemi takibi, erken ortodontik değerlendirme.", color: "border-violet-200 bg-violet-50" },
-  { age: "12–13 Yaş", icon: "🎓", title: "Genç Yetişkin", desc: "Ortodonti, estetik koruyucu uygulamalar ve bilgelik dişi kontrolü.", color: "border-teal-200 bg-teal-50" },
+  { age: "0–3 Yaş", icon: "👶", title: "İlk Ziyaret", desc: "İlk diş kontrolü\nTanışma odaklı\nAlışma süreci", color: "border-pink-200 bg-pink-50" },
+  { age: "3–6 Yaş", icon: "🌟", title: "Süt Dişi Dönemi", desc: "Çürük kontrolü\nFırçalama alışkanlığı\nFissür örtücü", color: "border-amber-200 bg-amber-50" },
+  { age: "6–12 Yaş", icon: "🚀", title: "Karma Diş Dönemi", desc: "Geçiş dönemi takibi\nOrtodonti değerlendirme\nKoruyucu tedaviler", color: "border-violet-200 bg-violet-50" },
+  { age: "12–13 Yaş", icon: "🎓", title: "Genç Yetişkin", desc: "Ortodonti tedavisi\nEstetik uygulamalar\nKoruyucu bakım", color: "border-teal-200 bg-teal-50" },
 ];
 
 export function KidsAges() {
@@ -24,7 +24,7 @@ export function KidsAges() {
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
             {AGES.map((a, i) => (
               <motion.div
                 key={a.age}
@@ -32,12 +32,12 @@ export function KidsAges() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`${a.color} border-2 rounded-3xl p-6 hover:shadow-lg transition-all`}
+                className={`${a.color} border-2 rounded-2xl sm:rounded-3xl p-4 sm:p-6 hover:shadow-lg transition-all min-w-[160px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center sm:text-left`}
               >
-                <div className="text-4xl mb-4">{a.icon}</div>
-                <span className="inline-block text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">{a.age}</span>
-                <h3 className="font-bold text-slate-800 text-base mb-2">{a.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{a.desc}</p>
+                <div className="text-2xl sm:text-4xl mb-2 sm:mb-4">{a.icon}</div>
+                <span className="inline-block text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 mb-1 sm:mb-2">{a.age}</span>
+                <h3 className="font-bold text-slate-800 text-xs sm:text-base mb-1 sm:mb-2">{a.title}</h3>
+                <p className="text-slate-500 text-[10px] sm:text-sm leading-relaxed whitespace-pre-line">{a.desc}</p>
               </motion.div>
             ))}
           </div>
