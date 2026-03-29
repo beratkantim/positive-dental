@@ -184,6 +184,9 @@ export function KidsServices() {
                   )}
                   <h3 className="font-bold text-slate-900 text-sm sm:text-base">{d.title ? `${d.title} ` : ""}{d.name}</h3>
                   <p className="text-pink-500 text-xs sm:text-sm font-medium mt-1">{d.specialty}</p>
+                  {d.branches_labels?.length > 0 && (
+                    <p className="text-slate-400 text-[10px] sm:text-xs mt-1">{d.branches_labels.join(" · ")}</p>
+                  )}
                   <Link
                     to={`/doktorlarimiz/${d.slug}`}
                     className="inline-block mt-3 text-xs font-bold text-violet-600 hover:text-violet-800 transition-colors"
