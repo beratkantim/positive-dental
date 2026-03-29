@@ -3,8 +3,6 @@ import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight, Sparkles, Star, CheckCircle2, ChevronRight } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
-
 // ── SMILE TYPES ───────────────────────────────────────────────────────────────
 
 const SMILE_TYPES = [
@@ -169,9 +167,8 @@ export function SmilePositive() {
             {/* CTA */}
             <div className="pt-3 flex flex-col sm:flex-row gap-3">
               <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#randevu"
+                onClick={(e) => { e.preventDefault(); document.getElementById("randevu")?.scrollIntoView({ behavior: "smooth" }); }}
                 className="flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black text-sm transition-all hover:scale-[1.02] shadow-xl shadow-indigo-900/40"
               >
                 <Sparkles className="w-4 h-4" />

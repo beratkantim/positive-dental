@@ -162,7 +162,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="border-t border-white/10 mt-10 pt-8 flex flex-col sm:flex-row justify-between items-center gap-3">
           <p className="text-sm text-slate-500">{vals.footer_copyright}</p>
-          <a href="https://randevu.positivedental.com" target="_blank" rel="noopener noreferrer" title="Online randevu al"
+          <a href="/#randevu" title="Online randevu al"
             className="text-sm bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition-colors">
             Randevu Al →
           </a>

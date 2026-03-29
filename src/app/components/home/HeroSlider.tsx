@@ -2,7 +2,6 @@ import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Link } from "react-router";
 import {
   Calendar,
-  ExternalLink,
   ArrowRight,
   CheckCircle2,
   ChevronLeft,
@@ -16,8 +15,6 @@ import type { HeroSlide } from "@/lib/supabase";
 import livePositiveLogo from "../../../assets/live_positive_logo.png";
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
-
-const BOOKING_URL = "https://randevu.positivedental.com";
 
 // Unsplash görselleri mobilde küçük boyutta iste
 export function responsiveImg(url: string, desktopW = 900, mobileW = 480): string {
@@ -194,12 +191,12 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <a
-                  href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                  href="#randevu"
+                  onClick={(e) => { e.preventDefault(); document.getElementById("randevu")?.scrollIntoView({ behavior: "smooth" }); }}
                   className={`group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-gradient-to-r ${slide.accentFrom} ${slide.accentTo} hover:opacity-90 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all`}
                 >
                   <Calendar className="w-5 h-5" />
                   Online Randevu Al
-                  <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
                 <Link to="/hizmetlerimiz"
                   className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white/6 border border-white/10 hover:bg-white/12 text-white font-bold transition-all">

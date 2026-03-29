@@ -10,8 +10,6 @@ import {
 import { SEO } from "../components/SEO";
 import { useTable } from "../hooks/useSupabase";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
-
 /* ── KATEGORİLER ─────────────────────────────────────────────────── */
 const CATEGORIES = [
   { id: "tumu",    label: "Tümü",             icon: Globe2 },
@@ -151,10 +149,10 @@ export function Partners() {
                   Anlaşmalı kurumların çalışanları ve aileleri, Positive Dental Studio'da <strong className="text-white">%15–%30</strong> özel indirimden yararlanır.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                  <Link to="/#randevu"
                     className="group inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                     <Calendar className="w-5 h-5" /> Randevu Al
-                  </a>
+                  </Link>
                   <a href="tel:+908501234567"
                     className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-white/8 border border-white/12 hover:bg-white/12 text-white font-bold transition-all">
                     <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67
@@ -423,10 +421,10 @@ export function Partners() {
               <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">hemen randevu alın.</span>
             </h2>
             <p className="text-slate-400 mb-8">Kurumsal indiriminiz otomatik uygulanır. Ek belge gerekmez.</p>
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            <Link to="/#randevu"
               className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Randevu Al <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
           </motion.div>
         </section>
       </div>

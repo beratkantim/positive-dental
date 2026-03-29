@@ -2,8 +2,6 @@ import { motion } from "motion/react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Calendar, Play } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
-
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
 export function WhyUs() {
@@ -78,9 +76,8 @@ export function WhyUs() {
               ))}
             </div>
             <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+              href="#randevu"
+              onClick={(e) => { e.preventDefault(); document.getElementById("randevu")?.scrollIntoView({ behavior: "smooth" }); }}
               className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg shadow-indigo-200 hover:shadow-indigo-300 hover:scale-105 transition-all"
             >
               <Calendar className="w-5 h-5" /> Online Randevu Al

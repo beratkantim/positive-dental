@@ -11,8 +11,6 @@ import { SEO } from "../components/SEO";
 import { sanitizeHTML } from "@/lib/sanitize";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
-
 export function ServiceDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [service, setService] = useState<Service | null>(null);
@@ -96,10 +94,10 @@ export function ServiceDetail() {
                 )}
 
                 <div className="flex flex-wrap gap-3">
-                  <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                  <Link to="/#randevu"
                     className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold shadow-lg hover:from-indigo-400 hover:to-violet-500 transition">
                     <Calendar className="w-4 h-4" /> Randevu Al
-                  </a>
+                  </Link>
                   <a href="tel:+908501234567"
                     className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl border-2 border-white/20 text-white font-bold hover:bg-white/10 transition">
                     <Phone className="w-4 h-4" /> 0850 123 45 67
@@ -207,10 +205,10 @@ export function ServiceDetail() {
               {service.title} için Randevu Alın
             </h2>
             <p className="text-indigo-200 mb-8">Ücretsiz ilk muayene ile tedavi planınızı oluşturalım.</p>
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            <Link to="/#randevu"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-indigo-700 font-black shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Ücretsiz Muayene Randevusu
-            </a>
+            </Link>
           </div>
         </section>
       </div>

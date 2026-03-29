@@ -4,12 +4,10 @@ import { useState } from "react";
 import {
   Phone, Mail, MapPin, Clock, MessageSquare,
   HeadphonesIcon, ChevronDown, ChevronUp, Calendar,
-  ExternalLink, ArrowRight, Send, CheckCircle2, AlertCircle,
+  ArrowRight, Send, CheckCircle2, AlertCircle,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
 import { supabase } from "@/lib/supabase";
-
-const BOOKING_URL = "https://randevu.positivedental.com";
 
 const FAQS = [
   { q: "Randevu almak için ne yapmalıyım?",    a: "Online randevu sistemimiz üzerinden hızlıca randevu oluşturabilir, telefonla arayabilir veya WhatsApp üzerinden mesaj gönderebilirsiniz." },
@@ -154,11 +152,10 @@ export function Contact() {
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-3 justify-center"
               >
-                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                <Link to="/#randevu"
                   className="group inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                   <Calendar className="w-5 h-5" /> Online Randevu Al
-                  <ExternalLink className="w-4 h-4 opacity-70" />
-                </a>
+                </Link>
                 <a href="https://wa.me/905001234567" target="_blank" rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-green-600/20 border border-green-500/30 hover:bg-green-600/30 text-white font-bold transition-all">
                   <MessageSquare className="w-5 h-5 text-green-400" /> WhatsApp
@@ -241,14 +238,13 @@ export function Contact() {
                           <span key={t} className="text-xs bg-white border border-indigo-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">{t}</span>
                         ))}
                       </div>
-                      <a
-                        href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                      <Link
+                        to="/#randevu"
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-7 py-3.5 rounded-2xl shadow-lg shadow-indigo-200 hover:scale-105 transition-all"
                       >
                         <Calendar className="w-5 h-5" />
                         Online Randevu Al
-                        <ExternalLink className="w-4 h-4 opacity-80" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -530,10 +526,10 @@ export function Contact() {
               Online randevu al, beklemeden gel. İlk muayene değerlendirmesi ücretsiz.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              <Link to="/#randevu"
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
-              </a>
+              </Link>
               <a href="tel:+908501234567"
                 className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-8 py-4 rounded-2xl transition-all">
                 <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

@@ -2,14 +2,12 @@ import { Link } from "react-router";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import {
   Smile, Sparkles, Activity, Baby, Crown, Zap, CheckCircle2,
-  Cpu, Scan, Brain, Layers, Calendar, Phone, ArrowRight, ExternalLink,
+  Cpu, Scan, Brain, Layers, Calendar, Phone, ArrowRight,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { SEO } from "../components/SEO";
 import { useTable } from "../hooks/useSupabase";
 import type { Service as ServiceDB } from "@/lib/supabase";
-
-const BOOKING_URL = "https://randevu.positivedental.com";
 
 // Gradient → light bg/text mapping
 const LIGHT_MAP: Record<string, { bg: string; text: string }> = {
@@ -126,14 +124,13 @@ export function Services() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3">
-                <a
-                  href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                <Link
+                  to="/#randevu"
                   className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all"
                 >
                   <Calendar className="w-5 h-5" />
                   Online Randevu Al
-                  <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </a>
+                </Link>
                 <a href="tel:+908501234567"
                   className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-white/6 border border-white/10 hover:bg-white/12 text-white font-bold transition-all">
                   <Phone className="w-5 h-5 text-slate-400" />
@@ -226,10 +223,10 @@ export function Services() {
                         Detaylı Bilgi <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     )}
-                    <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                    <Link to="/#randevu"
                       className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-400 hover:text-slate-600 transition">
                       Randevu Al
-                    </a>
+                    </Link>
                   </div>
                   </div>
                 </motion.div>
@@ -366,10 +363,10 @@ export function Services() {
             Hangi hizmete ihtiyaç duyduğunuzu bilmiyorsanız da gelmeniz yeterli. Uzman hekimlerimiz size en uygun tedaviyi belirleyecek.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            <Link to="/#randevu"
               className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
             <a href="tel:+908501234567"
               className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-8 py-4 rounded-2xl transition-all">
               <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

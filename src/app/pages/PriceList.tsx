@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import {
   ChevronDown, Search, Calendar, Phone, Tag, Info,
@@ -7,8 +8,6 @@ import {
 import { SEO } from "../components/SEO";
 import { useTable } from "../hooks/useSupabase";
 import type { PriceItem } from "@/lib/supabase";
-
-const BOOKING_URL = "https://randevu.positivedental.com";
 
 const CATEGORY_STYLE: Record<string, { emoji: string; color: string; lightBg: string; borderColor: string; tagColor: string }> = {
   "Muayene Fiyatları":        { emoji: "🔍", color: "from-indigo-500 to-violet-600", lightBg: "bg-indigo-50", borderColor: "border-indigo-200", tagColor: "bg-indigo-100 text-indigo-700" },
@@ -353,10 +352,10 @@ export function PriceList() {
             </h2>
             <p className="text-slate-400 mb-8 max-w-md mx-auto">İlk muayene ücretsiz. Tedavinize özel net fiyatlandırma ve taksit seçenekleri için randevu alın.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              <Link to="/#randevu"
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Ücretsiz Muayene Al <ArrowRight className="w-5 h-5" />
-              </a>
+              </Link>
               <a href="tel:+908501234567"
                 className="inline-flex items-center justify-center gap-2 bg-white/8 border border-white/12 hover:bg-white/12 text-white font-bold px-8 py-4 rounded-2xl transition-all">
                 <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

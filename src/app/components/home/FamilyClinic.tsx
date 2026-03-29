@@ -2,8 +2,6 @@ import { motion } from "motion/react";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Calendar, ArrowRight, Phone } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
-
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 
 export function FamilyClinic() {
@@ -156,9 +154,8 @@ export function FamilyClinic() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <a
-                  href={BOOKING_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="#randevu"
+                  onClick={(e) => { e.preventDefault(); document.getElementById("randevu")?.scrollIntoView({ behavior: "smooth" }); }}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black text-sm transition-all hover:scale-[1.03] shadow-xl shadow-indigo-900/40"
                 >
                   <Calendar className="w-4 h-4" /> Aile Randevusu Al <ArrowRight className="w-4 h-4" />

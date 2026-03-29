@@ -3,13 +3,11 @@ import { useState } from "react";
 import { Link } from "react-router";
 import {
   MapPin, Phone, Clock, Mail, Navigation, Sparkles,
-  Building2, Wifi, Shield, Cpu, Users, Calendar, ArrowRight, ExternalLink, FileText,
+  Building2, Wifi, Shield, Cpu, Users, Calendar, ArrowRight, FileText,
 } from "lucide-react";
 import { SEO } from "../components/SEO";
 import { useTable } from "../hooks/useSupabase";
 import type { BranchData } from "@/lib/supabase";
-
-const BOOKING_URL = "https://randevu.positivedental.com";
 
 const CITY_COLORS: Record<string, string> = {
   "İstanbul": "from-indigo-500 to-violet-600",
@@ -124,11 +122,10 @@ export function Locations() {
                 <p className="text-slate-400 text-lg leading-relaxed max-w-md mb-10">
                   İstanbul Nişantaşı ve Adana Türkmenbaşı şubelerimizde modern klinik altyapısı ve uzman kadroyla hizmetinizdeyiz.
                 </p>
-                <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                <Link to="/#randevu"
                   className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                   <Calendar className="w-5 h-5" /> Online Randevu Al
-                  <ExternalLink className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </a>
+                </Link>
               </motion.div>
 
               {/* City stat cards */}
@@ -294,12 +291,12 @@ export function Locations() {
                     </div>
 
                     <div className="flex gap-3 pt-5 border-t border-slate-100">
-                      <a
-                        href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+                      <Link
+                        to="/#randevu"
                         className={`flex-1 inline-flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-r ${activeLoc.color} text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all shadow-lg`}
                       >
                         <Calendar className="w-4 h-4" /> Randevu Al
-                      </a>
+                      </Link>
                       <a
                         href={`https://maps.google.com/?q=${clinic.mapsQuery}`}
                         target="_blank" rel="noopener noreferrer"
@@ -344,10 +341,10 @@ export function Locations() {
               İstanbul Nişantaşı veya Adana Türkmenbaşı şubemizde uzman hekimlerimizle tanışın.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              <Link to="/#randevu"
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
-              </a>
+              </Link>
               <a href="tel:+908501234567"
                 className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-8 py-4 rounded-2xl transition-all">
                 <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

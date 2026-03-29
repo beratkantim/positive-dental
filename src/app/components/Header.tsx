@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router";
-import { Menu, Phone, X, Calendar, ChevronDown, Building2, Shield, Info, ExternalLink, Stethoscope, MapPin, Users } from "lucide-react";
+import { Menu, Phone, X, Calendar, ChevronDown, Building2, Shield, Info, Stethoscope, MapPin, Users } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import logo from "../../assets/logo.png";
 
@@ -75,8 +75,6 @@ const DROPDOWN_ITEMS = [
     badgeColor: "bg-indigo-100 text-indigo-700",
   },
 ];
-
-const BOOKING_URL = "https://randevu.positivedental.com";
 
 export function Header() {
   const location = useLocation();
@@ -316,7 +314,7 @@ export function Header() {
             {/* Sağ CTA grubu */}
             <div className="hidden lg:flex items-center gap-2 ml-auto flex-shrink-0">
               <button
-                onClick={() => navigate("/randevu")}
+                onClick={() => navigate("/#randevu")}
                 className="relative inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 shadow-lg shadow-indigo-200/60 hover:shadow-indigo-300/60 hover:shadow-xl transition-all whitespace-nowrap">
                 <Calendar className="w-4 h-4" />
                 Randevu Al
@@ -400,10 +398,9 @@ export function Header() {
               </div>
 
               <button
-                onClick={() => { setMobileOpen(false); navigate("/randevu"); }}
+                onClick={() => { setMobileOpen(false); navigate("/#randevu"); }}
                 className="mt-3 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold text-sm shadow-lg shadow-indigo-200">
                 <Calendar className="w-4 h-4" /> Online Randevu Al
-                <ExternalLink className="w-3.5 h-3.5 opacity-70" />
               </button>
             </nav>
           </div>
