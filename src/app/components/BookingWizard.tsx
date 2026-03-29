@@ -130,28 +130,43 @@ export function BookingWizard() {
     supabaseDoctors.filter(d => d.dentsoft_id).map(d => [d.dentsoft_id, d])
   );
 
-  // Eşleştirilmiş doktor listesi: Dentsoft verisi + Supabase zengin bilgi
-  const mergedDoctors = dsDoctors.map(ds => {
-    const sb = sbDoctorMap.get(ds.ID);
-    return {
-      ...ds,
-      Avatar: sb?.photo || ds.Avatar || "",
-      Name: sb?.name || ds.Name,
-      Title: sb?.title || ds.Title || "",
-      Salon: sb?.specialty || ds.Salon || "",
-      _branches: sb?.branches || [],
-      _serviceIds: sb?.service_ids || [],
-    };
-  });
+  // Eşleştirilmiş doktor listesi: Dentsoft varsa merge, yoksa Supabase fallback
+  const mergedDoctors = dsDoctors.length > 0
+    ? dsDoctors.map(ds => {
+        const sb = sbDoctorMap.get(ds.ID);
+        return {
+          ...ds,
+          Avatar: sb?.photo || ds.Avatar || "",
+          Name: sb?.name || ds.Name,
+          Title: sb?.title || ds.Title || "",
+          Salon: sb?.specialty || ds.Salon || "",
+          _branches: sb?.branches || [],
+          _serviceIds: sb?.service_ids || [],
+        };
+      })
+    : supabaseDoctors.filter(d => d.is_active).map(d => ({
+        ID: d.id,
+        Name: d.name,
+        Title: d.title || "",
+        Avatar: d.photo || "",
+        Salon: d.specialty || "",
+        _branches: d.branches || [],
+        _serviceIds: d.service_ids || [],
+      }));
 
   // Şube + tedavi filtresi
   const branchSlug = selectedBranch?.slug?.toLowerCase() || "";
   const branchShort = branchSlug.split("-")[0] || "";
   const branchCity = selectedBranch?.city?.toLowerCase() || "";
 
-  // Dentsoft doktorlarını direkt göster — filtre şimdilik devre dışı
-  // İleride Supabase eşleşmesi yapıldığında şube/tedavi filtresi eklenebilir
-  const filteredDoctors = mergedDoctors;
+  // Doktorları şube + tedavi filtresine göre filtrele
+  const filteredDoctors = mergedDoctors.filter(d => {
+    // Şube filtresi: doktorun branches'inde seçilen klinik slug'ı var mı
+    const branchMatch = !d._branches?.length || d._branches.includes(branchSlug) || d._branches.includes(branchShort) || d._branches.includes(branchCity);
+    // Tedavi filtresi: doktorun service_ids'inde seçilen kategori var mı (veya allServices=true ise service_ids boş)
+    const serviceMatch = !d._serviceIds?.length || d._serviceIds.includes(serviceId);
+    return branchMatch && serviceMatch;
+  });
 
   // ── Dentsoft: Doktor listesini çek ─────────────────────────────────────
   useEffect(() => {
