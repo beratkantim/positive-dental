@@ -94,7 +94,7 @@ export function BookingWizard() {
 
   // Kategorileri mode'a göre filtrele
   const filteredCategories = activeCategories.filter(c =>
-    mode === "cocuk" ? c.slug === "pedodonti" : c.slug !== "pedodonti"
+    mode === "cocuk" ? (c.slug === "pedodonti" || c.slug === "ortodonti") : (c.slug !== "pedodonti")
   );
 
   // Wizard state
