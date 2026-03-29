@@ -88,7 +88,6 @@ export function Header() {
 
   /* Ana nav */
   const navLinks = [
-    { path: "/", label: "Ana Sayfa" },
     { path: "/fiyat-listesi", label: "Fiyat Listesi" },
     { path: "/cocuk-dis-hekimligi", label: "Kids 🌟", highlight: true },
   ];
@@ -181,18 +180,6 @@ export function Header() {
 
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-0.5">
-              {/* Ana Sayfa */}
-              <Link to="/" title="Ana Sayfa"
-                className={`relative px-3 py-1.5 text-sm font-semibold rounded-lg whitespace-nowrap transition-all ${
-                  isActive("/") ? "text-indigo-700" : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                }`}
-              >
-                Ana Sayfa
-                {isActive("/") && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full" />
-                )}
-              </Link>
-
               {/* ── Kurumsal dropdown ── */}
               <div className="relative" ref={dropdownRef}>
                 <button
