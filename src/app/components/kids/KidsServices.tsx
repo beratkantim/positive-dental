@@ -64,8 +64,9 @@ export function KidsServices() {
   const targetIds = [pedodontiId, ortodontiId].filter(Boolean) as string[];
 
   // Bu kategorilerde çalışan aktif doktorları filtrele
+  // service_ids boş = tüm tedavileri yapar (hariç tut — sadece spesifik pedodonti/ortodonti seçenler)
   const kidsDoctors = doctors.filter(d =>
-    d.is_active && d.service_ids?.some((sid: string) => targetIds.includes(sid))
+    d.is_active && d.service_ids?.length > 0 && d.service_ids.some((sid: string) => targetIds.includes(sid))
   );
 
   return (
