@@ -91,6 +91,9 @@ export function Home() {
     />
     <div className="bg-white overflow-hidden">
 
+      {/* ── BOOKING WIZARD ── */}
+      <Suspense fallback={null}><BookingWizard /></Suspense>
+
       {/* ── HERO SLIDER ── */}
       <HeroSlider
         slides={HERO_SLIDES}
@@ -101,9 +104,6 @@ export function Home() {
         prev={prev}
         next={next}
       />
-
-      {/* ── BOOKING WIZARD ── */}
-      <Suspense fallback={null}><BookingWizard /></Suspense>
 
       {/* ── SERVICES ── */}
       <ServicesGrid />
