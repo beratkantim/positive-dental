@@ -210,8 +210,8 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
             </div>
           </div>
 
-          {/* RIGHT — image (mobilde üstte) */}
-          <div className="relative flex items-center justify-center order-first lg:order-last">
+          {/* RIGHT — image */}
+          <div className="relative flex items-center justify-center">
             <div
               key={active}
               className="slide-enter-image relative w-full max-w-[320px] lg:max-w-[520px]"
