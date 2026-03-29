@@ -80,13 +80,13 @@ export function KidsServices() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ y: -6 }}
-                  className={`${f.bg} rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-white hover:shadow-xl transition-all group min-w-[140px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink`}
+                  className={`${f.bg} rounded-2xl sm:rounded-3xl p-4 sm:p-5 border border-white hover:shadow-xl transition-all group min-w-[140px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink text-center sm:text-left`}
                 >
-                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-2 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-2 sm:mb-4 shadow-lg group-hover:scale-110 transition-transform mx-auto sm:mx-0`}>
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1 sm:mb-2">{f.title}</h3>
-                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed hidden sm:block">{f.desc}</p>
+                  <h3 className="font-bold text-slate-900 text-xs sm:text-base mb-1 sm:mb-2">{f.title}</h3>
+                  <p className="text-slate-400 text-[10px] sm:text-sm leading-snug sm:leading-relaxed line-clamp-2 sm:line-clamp-none">{f.desc}</p>
                 </motion.div>
               );
             })}
