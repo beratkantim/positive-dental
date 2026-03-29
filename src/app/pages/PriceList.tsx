@@ -352,7 +352,7 @@ export function PriceList() {
             </h2>
             <p className="text-slate-400 mb-8 max-w-md mx-auto">İlk muayene ücretsiz. Tedavinize özel net fiyatlandırma ve taksit seçenekleri için randevu alın.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/#randevu"
+              <Link to="/online-randevu"
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Ücretsiz Muayene Al <ArrowRight className="w-5 h-5" />
               </Link>

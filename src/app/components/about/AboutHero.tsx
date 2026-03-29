@@ -1,7 +1,8 @@
 import { motion } from "motion/react";
+import { Link } from "react-router";
 import { Sparkles, Calendar, Phone } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 const STATS = [
   { number: "15.000+", label: "Mutlu Hasta",  desc: "G\u00fcvenen hasta say\u0131s\u0131" },
@@ -41,10 +42,10 @@ export function AboutHero() {
               15 y\u0131ld\u0131r \u0130stanbul ve Adana'da hizmet veren, binlerce hastam\u0131za sa\u011fl\u0131kl\u0131 g\u00fcl\u00fc\u015fler kazand\u0131ran g\u00fcvenilir di\u015f klini\u011finiz.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              <Link to={BOOKING_URL}
                 className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Randevu Al
-              </a>
+              </Link>
               <a href="tel:+908501234567"
                 className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-white/6 border border-white/10 hover:bg-white/12 text-white font-bold transition-all">
                 <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

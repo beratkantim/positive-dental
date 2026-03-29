@@ -1,9 +1,10 @@
 import { motion, AnimatePresence } from "motion/react";
+import { Link } from "react-router";
 import {
   Sparkles, Calendar, Phone, ArrowRight, ChevronDown, ChevronUp,
 } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 const FAQS = [
   {
@@ -146,10 +147,10 @@ export function InsuranceFAQ({
           </h2>
           <p className="text-slate-400 mb-8">Poli\u00e7eniz varsa ekstra \u00f6deme yapmadan tedavinizi ba\u015flat\u0131n.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            <Link to={BOOKING_URL}
               className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-10 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Randevu Al <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
             <a href="tel:+908501234567"
               className="inline-flex items-center justify-center gap-2 bg-white/8 border border-white/12 hover:bg-white/12 text-white font-bold px-8 py-4 rounded-2xl transition-all">
               <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

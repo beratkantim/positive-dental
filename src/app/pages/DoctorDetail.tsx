@@ -108,7 +108,7 @@ export function DoctorDetail() {
                 )}
 
                 <div className="flex flex-wrap gap-3">
-                  <Link to="/#randevu"
+                  <Link to="/online-randevu"
                     className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold shadow-lg hover:from-indigo-400 hover:to-violet-500 transition">
                     <Calendar className="w-4 h-4" /> Randevu Al
                   </Link>
@@ -255,7 +255,7 @@ export function DoctorDetail() {
               {doctor.name} ile Randevu Alin
             </h2>
             <p className="text-indigo-200 mb-8">Uzman hekimimizle tedavi planlamanizi olusturalim.</p>
-            <Link to="/#randevu"
+            <Link to="/online-randevu"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-white text-indigo-700 font-black shadow-xl hover:shadow-2xl hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Ucretsiz Muayene Randevusu
             </Link>

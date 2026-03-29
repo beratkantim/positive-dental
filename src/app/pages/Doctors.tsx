@@ -7,7 +7,7 @@ import type { Doctor, BranchData } from "@/lib/supabase";
 
 type Branch = "adana" | "istanbul";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 function DoctorCard({ doctor, index }: { doctor: Doctor; index?: number }) {
   const [expanded, setExpanded] = useState(false);
@@ -98,7 +98,7 @@ function DoctorCard({ doctor, index }: { doctor: Doctor; index?: number }) {
             </Link>
           )}
           <Link
-            to={`/randevu?doktor=${doctor.id}`}
+            to={`/online-randevu?doktor=${doctor.id}`}
             className={`${doctor.slug ? "flex-1" : "w-full"} flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white text-sm font-bold shadow-md shadow-indigo-200/60 hover:shadow-indigo-300/70 hover:from-indigo-400 hover:to-violet-500 transition-all`}
           >
             <Calendar className="w-4 h-4" />
@@ -264,7 +264,7 @@ export function Doctors() {
               <Phone className="w-4 h-4" /> 0850 123 45 67
             </a>
             <Link
-              to="/randevu"
+              to="/online-randevu"
               className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold shadow-lg shadow-indigo-500/30 hover:from-indigo-400 hover:to-violet-500 transition-all"
             >
               <Calendar className="w-4 h-4" /> Online Randevu Al

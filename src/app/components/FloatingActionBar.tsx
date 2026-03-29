@@ -15,7 +15,7 @@ export function FloatingActionBar() {
   if (dismissed) return null;
 
   const actions = [
-    { label: "Randevu", icon: Calendar, href: "https://randevu.positivedental.com", isLink: false },
+    { label: "Randevu", icon: Calendar, href: "/online-randevu", isLink: true },
     { label: "WhatsApp", icon: MessageCircle, href: "https://wa.me/905001234567", isLink: false },
     { label: "Yol Tarifi", icon: MapPin, href: "https://maps.google.com/?q=Positive+Dental+Studio", isLink: false },
   ];

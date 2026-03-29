@@ -122,7 +122,7 @@ export function Locations() {
                 <p className="text-slate-400 text-lg leading-relaxed max-w-md mb-10">
                   İstanbul Nişantaşı ve Adana Türkmenbaşı şubelerimizde modern klinik altyapısı ve uzman kadroyla hizmetinizdeyiz.
                 </p>
-                <Link to="/#randevu"
+                <Link to="/online-randevu"
                   className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                   <Calendar className="w-5 h-5" /> Online Randevu Al
                 </Link>
@@ -292,7 +292,7 @@ export function Locations() {
 
                     <div className="flex gap-3 pt-5 border-t border-slate-100">
                       <Link
-                        to="/#randevu"
+                        to="/online-randevu"
                         className={`flex-1 inline-flex items-center justify-center gap-2 py-3.5 rounded-2xl bg-gradient-to-r ${activeLoc.color} text-white font-bold hover:opacity-90 hover:scale-[1.02] transition-all shadow-lg`}
                       >
                         <Calendar className="w-4 h-4" /> Randevu Al
@@ -341,7 +341,7 @@ export function Locations() {
               İstanbul Nişantaşı veya Adana Türkmenbaşı şubemizde uzman hekimlerimizle tanışın.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/#randevu"
+              <Link to="/online-randevu"
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
               </Link>

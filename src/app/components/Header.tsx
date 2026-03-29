@@ -314,7 +314,7 @@ export function Header() {
             {/* Sağ CTA grubu */}
             <div className="hidden lg:flex items-center gap-2 ml-auto flex-shrink-0">
               <button
-                onClick={() => navigate("/#randevu")}
+                onClick={() => navigate("/online-randevu")}
                 className="relative inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 shadow-lg shadow-indigo-200/60 hover:shadow-indigo-300/60 hover:shadow-xl transition-all whitespace-nowrap">
                 <Calendar className="w-4 h-4" />
                 Randevu Al
@@ -398,7 +398,7 @@ export function Header() {
               </div>
 
               <button
-                onClick={() => { setMobileOpen(false); navigate("/#randevu"); }}
+                onClick={() => { setMobileOpen(false); navigate("/online-randevu"); }}
                 className="mt-3 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold text-sm shadow-lg shadow-indigo-200">
                 <Calendar className="w-4 h-4" /> Online Randevu Al
               </button>

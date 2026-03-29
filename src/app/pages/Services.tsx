@@ -125,7 +125,7 @@ export function Services() {
 
               <div className="flex flex-col sm:flex-row gap-3">
                 <Link
-                  to="/#randevu"
+                  to="/online-randevu"
                   className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all"
                 >
                   <Calendar className="w-5 h-5" />
@@ -223,7 +223,7 @@ export function Services() {
                         Detaylı Bilgi <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     )}
-                    <Link to="/#randevu"
+                    <Link to="/online-randevu"
                       className="inline-flex items-center gap-1.5 text-sm font-bold text-slate-400 hover:text-slate-600 transition">
                       Randevu Al
                     </Link>
@@ -363,7 +363,7 @@ export function Services() {
             Hangi hizmete ihtiyaç duyduğunuzu bilmiyorsanız da gelmeniz yeterli. Uzman hekimlerimiz size en uygun tedaviyi belirleyecek.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/#randevu"
+            <Link to="/online-randevu"
               className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
             </Link>

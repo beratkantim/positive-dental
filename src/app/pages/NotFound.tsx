@@ -2,7 +2,7 @@ import { Link } from "react-router";
 import { Home, ArrowLeft, Search, Phone, Calendar } from "lucide-react";
 import { SEO } from "../components/SEO";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 const POPULAR_PAGES = [
   { to: "/", label: "Ana Sayfa", icon: "🏠" },
@@ -44,11 +44,11 @@ export function NotFound() {
               <Home className="w-4 h-4" />
               Ana Sayfaya Dön
             </Link>
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            <Link to={BOOKING_URL}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border-2 border-slate-200 text-slate-700 font-bold hover:border-indigo-300 hover:text-indigo-600 transition-all">
               <Calendar className="w-4 h-4" />
               Randevu Al
-            </a>
+            </Link>
           </div>
 
           {/* Popüler sayfalar */}

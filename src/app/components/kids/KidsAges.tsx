@@ -76,7 +76,7 @@ export function KidsAges() {
                   ))}
                 </ul>
                 <Link
-                  to="/#randevu"
+                  to="/online-randevu"
                   className="mt-8 inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold px-6 py-3.5 rounded-2xl hover:scale-105 transition-all shadow-xl shadow-pink-900/30"
                 >
                   <Calendar className="w-5 h-5" />

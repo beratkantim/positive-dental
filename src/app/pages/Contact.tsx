@@ -152,7 +152,7 @@ export function Contact() {
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
                 className="flex flex-col sm:flex-row gap-3 justify-center"
               >
-                <Link to="/#randevu"
+                <Link to="/online-randevu"
                   className="group inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                   <Calendar className="w-5 h-5" /> Online Randevu Al
                 </Link>
@@ -239,7 +239,7 @@ export function Contact() {
                         ))}
                       </div>
                       <Link
-                        to="/#randevu"
+                        to="/online-randevu"
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-7 py-3.5 rounded-2xl shadow-lg shadow-indigo-200 hover:scale-105 transition-all"
                       >
                         <Calendar className="w-5 h-5" />
@@ -526,7 +526,7 @@ export function Contact() {
               Online randevu al, beklemeden gel. İlk muayene değerlendirmesi ücretsiz.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link to="/#randevu"
+              <Link to="/online-randevu"
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
               </Link>

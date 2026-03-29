@@ -57,7 +57,7 @@ function mapBlogPost(p: BlogPostType): BlogPost {
   };
 }
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 function BlogCard({ post, index }: { post: BlogPost; index: number }) {
   return (
@@ -394,14 +394,12 @@ export function Blog() {
               Makaleyi okudunuz, kafanızda sorular oluştu. Kliniğimize gelin veya bizi arayın — ilk değerlendirme ücretsiz.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to={BOOKING_URL}
                 className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all"
               >
                 <Calendar className="w-5 h-5" /> Randevu Al
-              </a>
+              </Link>
               <a
                 href="tel:+908501234567"
                 className="inline-flex items-center justify-center gap-2 bg-white/8 hover:bg-white/12 border border-white/12 text-white font-bold px-8 py-4 rounded-2xl transition-all"

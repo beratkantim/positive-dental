@@ -1,8 +1,9 @@
 import { motion } from "motion/react";
+import { Link } from "react-router";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Heart, Award, Users, Brain, CheckCircle2, Calendar, Star } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 const VALUES = [
   { icon: Heart,  title: "Hasta Odakl\u0131l\u0131k",  description: "Her hastam\u0131z\u0131n ihtiya\u00e7lar\u0131n\u0131 dinliyor, ona \u00f6zel tedavi planlar\u0131 haz\u0131rl\u0131yoruz.", gradient: "from-rose-500 to-pink-500" },
@@ -88,10 +89,10 @@ export function AboutValues() {
                   </motion.div>
                 ))}
               </div>
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              <Link to={BOOKING_URL}
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg shadow-indigo-200 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Randevu Al
-              </a>
+              </Link>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>

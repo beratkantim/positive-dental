@@ -48,7 +48,7 @@ function mapPost(p: BlogPostDB): BlogPost {
   };
 }
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 function ShareButton() {
   const [copied, setCopied] = useState(false);
@@ -359,14 +359,12 @@ export function BlogPost() {
                       </div>
                     ))}
                   </div>
-                  <a
-                    href={BOOKING_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <Link
+                    to={BOOKING_URL}
                     className="mt-6 flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black text-sm shadow-xl shadow-indigo-900/40 hover:scale-[1.02] transition-all"
                   >
                     <Calendar className="w-4 h-4" /> Randevu Al
-                  </a>
+                  </Link>
                   <a
                     href="tel:+908501234567"
                     className="mt-2 flex items-center justify-center gap-2 w-full py-3 rounded-2xl bg-white/8 border border-white/10 hover:bg-white/12 text-white/80 font-bold text-sm transition-all"

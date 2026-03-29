@@ -11,7 +11,7 @@ import { SEO } from "../components/SEO";
 import { sanitizeHTML } from "@/lib/sanitize";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
-const BOOKING_URL = "/randevu";
+const BOOKING_URL = "/online-randevu";
 
 // extend BranchData for fields in the DB but not in the TS type
 interface ExtendedBranch extends BranchData {

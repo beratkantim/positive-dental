@@ -1,9 +1,10 @@
 import { motion } from "motion/react";
+import { Link } from "react-router";
 import {
   Shield, Calendar, Phone,
 } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 export function InsuranceHero({ insuranceCount }: { insuranceCount: number }) {
   return (
@@ -32,10 +33,10 @@ export function InsuranceHero({ insuranceCount }: { insuranceCount: number }) {
               T\u00fcrkiye'nin \u00f6nde gelen <strong className="text-white">{insuranceCount}+ sigorta \u015firketiyle</strong> anla\u015fmal\u0131y\u0131z. Poli\u00e7enizle muayeneden kaplama tedavisine kadar geni\u015f kapsamda faydalan\u0131n.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+              <Link to={BOOKING_URL}
                 className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
                 <Calendar className="w-5 h-5" /> Randevu Al
-              </a>
+              </Link>
               <a href="tel:+908501234567"
                 className="inline-flex items-center gap-2 px-7 py-4 rounded-2xl bg-white/8 border border-white/12 hover:bg-white/12 text-white font-bold transition-all">
                 <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

@@ -3,7 +3,7 @@ import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Link } from "react-router";
 import { Calendar, ArrowRight } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 

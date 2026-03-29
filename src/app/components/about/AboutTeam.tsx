@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "motion/react";
+import { Link } from "react-router";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
 import { Calendar, Phone, ArrowRight, ChevronDown } from "lucide-react";
 
-const BOOKING_URL = "https://randevu.positivedental.com";
+const BOOKING_URL = "/online-randevu";
 
 const TEAM = [
   {
@@ -161,10 +162,10 @@ export function AboutTeam({
             Online randevu al, beklemeden gel. \u0130lk muayene de\u011ferlendirmesi \u00fccretsiz.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer"
+            <Link to={BOOKING_URL}
               className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-400 hover:to-violet-500 text-white font-black px-8 py-4 rounded-2xl shadow-2xl shadow-indigo-900/40 hover:scale-105 transition-all">
               <Calendar className="w-5 h-5" /> Online Randevu Al <ArrowRight className="w-5 h-5" />
-            </a>
+            </Link>
             <a href="tel:+908501234567"
               className="inline-flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold px-8 py-4 rounded-2xl transition-all">
               <Phone className="w-5 h-5 text-slate-400" /> 0850 123 45 67

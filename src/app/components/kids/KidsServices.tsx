@@ -56,9 +56,9 @@ export function KidsServices() {
   return (
     <>
       {/* FEATURES */}
-      <section className="py-24 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-pink-500 mb-3">Farkımız</span>
             <h2 className="font-display text-4xl sm:text-5xl font-black text-slate-900">
               Çocuğunuz burada{" "}
@@ -114,7 +114,7 @@ export function KidsServices() {
                 Süt dişinden kalıcı dişe geçişe kadar her aşamada yanınızdayız. Çocuğunuzun ağız sağlığı hayatı boyu taşıyacağı en değerli hediyedir.
               </p>
               <Link
-                to="/#randevu"
+                to="/online-randevu"
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-violet-600 text-white font-bold px-6 py-3.5 rounded-2xl shadow-lg shadow-pink-200 hover:scale-105 transition-all"
               >
                 <Calendar className="w-5 h-5" /> Ücretsiz İlk Muayene

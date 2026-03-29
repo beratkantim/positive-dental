@@ -31,7 +31,7 @@ export function KidsHero() {
       <div className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "36px 36px" }} />
 
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
           {/* Left */}
@@ -60,7 +60,7 @@ export function KidsHero() {
 
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
-                to="/#randevu"
+                to="/online-randevu"
                 className="group inline-flex items-center gap-2.5 px-7 py-4 rounded-2xl bg-gradient-to-r from-pink-500 to-violet-600 hover:from-pink-400 hover:to-violet-500 text-white font-black shadow-2xl shadow-pink-900/40 hover:scale-105 transition-all"
               >
                 <Calendar className="w-5 h-5" />
@@ -76,7 +76,7 @@ export function KidsHero() {
             <div className="flex items-center gap-6 mt-10">
               {[
                 { val: "5.000+", lbl: "Mutlu Çocuk" },
-                { val: "0 ağrı", lbl: "Garantisi" },
+                { val: "Konforlu", lbl: "Tedavi" },
                 { val: "4.9★", lbl: "Ebeveyn Puanı" },
               ].map((s) => (
                 <div key={s.lbl} className="text-center">

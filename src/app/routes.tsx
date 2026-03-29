@@ -48,6 +48,7 @@ const Doctors       = lazyRetry(() => import("./pages/Doctors").then(m => ({ def
 const DoctorDetail  = lazyRetry(() => import("./pages/DoctorDetail").then(m => ({ default: m.DoctorDetail })));
 const ClinicDetail  = lazyRetry(() => import("./pages/ClinicDetail").then(m => ({ default: m.ClinicDetail })));
 const Appointment   = lazyRetry(() => import("./pages/Appointment").then(m => ({ default: m.Appointment })));
+const OnlineRandevu = lazyRetry(() => import("./pages/OnlineRandevu").then(m => ({ default: m.OnlineRandevu })));
 const AdminPanel  = lazyRetry(() => import("./pages/Admin").then(m => ({ default: m.AdminPanel })));
 
 function PageLoader() {
@@ -88,6 +89,7 @@ export const router = createBrowserRouter([
       { path: "doktorlarimiz",       element: <SuspenseWrap><Doctors /></SuspenseWrap> },
       { path: "doktorlarimiz/:slug", element: <SuspenseWrap><DoctorDetail /></SuspenseWrap> },
       { path: "kliniklerimiz/:slug", element: <SuspenseWrap><ClinicDetail /></SuspenseWrap> },
+      { path: "online-randevu",       element: <SuspenseWrap><OnlineRandevu /></SuspenseWrap> },
       { path: "randevu",             element: <SuspenseWrap><Appointment /></SuspenseWrap> },
       { path: "*",                   Component: NotFound },
     ],
