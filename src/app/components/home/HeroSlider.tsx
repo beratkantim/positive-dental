@@ -244,7 +244,7 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
       </div>
 
       {/* ── Navigation bar ── */}
-      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 sm:pb-16 pt-6 sm:pt-8">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4 sm:pb-8 pt-4 sm:pt-6">
         <div className="flex items-center justify-between">
 
           {/* Slide tabs */}
