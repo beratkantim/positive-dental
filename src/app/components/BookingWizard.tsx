@@ -130,29 +130,19 @@ export function BookingWizard() {
     supabaseDoctors.filter(d => d.dentsoft_id).map(d => [d.dentsoft_id, d])
   );
 
-  // Eşleştirilmiş doktor listesi: Dentsoft varsa merge, yoksa Supabase fallback
-  const mergedDoctors = dsDoctors.length > 0
-    ? dsDoctors.map(ds => {
-        const sb = sbDoctorMap.get(ds.ID);
-        return {
-          ...ds,
-          Avatar: sb?.photo || ds.Avatar || "",
-          Name: sb?.name || ds.Name,
-          Title: sb?.title || ds.Title || "",
-          Salon: sb?.specialty || ds.Salon || "",
-          _branches: sb?.branches || [],
-          _serviceIds: sb?.service_ids || [],
-        };
-      })
-    : supabaseDoctors.filter(d => d.is_active).map(d => ({
-        ID: d.id,
-        Name: d.name,
-        Title: d.title || "",
-        Avatar: d.photo || "",
-        Salon: d.specialty || "",
-        _branches: d.branches || [],
-        _serviceIds: d.service_ids || [],
-      }));
+  // Eşleştirilmiş doktor listesi: Dentsoft verisi + Supabase zengin bilgi
+  const mergedDoctors = dsDoctors.map(ds => {
+    const sb = sbDoctorMap.get(ds.ID);
+    return {
+      ...ds,
+      Avatar: sb?.photo || ds.Avatar || "",
+      Name: sb?.name || ds.Name,
+      Title: sb?.title || ds.Title || "",
+      Salon: sb?.specialty || ds.Salon || "",
+      _branches: sb?.branches || [],
+      _serviceIds: sb?.service_ids || [],
+    };
+  });
 
   // Şube + tedavi filtresi
   const branchSlug = selectedBranch?.slug?.toLowerCase() || "";
