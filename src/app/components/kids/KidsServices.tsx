@@ -161,14 +161,14 @@ export function KidsServices() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white rounded-3xl p-5 md:p-7 shadow-sm border border-white hover:shadow-xl hover:border-pink-100 transition-all w-[220px] md:w-auto md:min-w-0 snap-start flex-shrink-0 md:flex-shrink"
+                className="bg-white rounded-2xl p-4 md:p-7 shadow-sm border border-white hover:shadow-xl hover:border-pink-100 transition-all w-[200px] md:w-auto md:min-w-0 snap-start flex-shrink-0 md:flex-shrink"
               >
-                <div className="flex gap-1 mb-4">
+                <div className="flex gap-0.5 mb-2">
                   {[...Array(t.rating)].map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <Star key={j} className="w-3 h-3 md:w-4 md:h-4 text-amber-400 fill-amber-400" />
                   ))}
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed mb-5 line-clamp-4">"{t.text}"</p>
+                <p className="text-slate-600 text-xs md:text-sm leading-relaxed mb-3 line-clamp-4">"{t.text}"</p>
                 <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
                   <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                     {t.name[0]}
