@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { Link } from "react-router";
 import { SEO } from "../components/SEO";
 import {
   Star, Phone, ArrowRight, ArrowUpRight, MapPin,
