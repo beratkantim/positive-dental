@@ -69,7 +69,7 @@ export function KidsServices() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-hide">
             {FEATURES.map((f, i) => {
               const Icon = f.icon;
               return (
@@ -80,9 +80,9 @@ export function KidsServices() {
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.1 }}
                   whileHover={{ y: -6 }}
-                  className={`${f.bg} rounded-3xl p-7 border border-white hover:shadow-xl transition-all group`}
+                  className={`${f.bg} rounded-3xl p-6 border border-white hover:shadow-xl transition-all group min-w-[260px] sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink`}
                 >
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform`}>
+                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${f.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-bold text-slate-900 mb-2">{f.title}</h3>
