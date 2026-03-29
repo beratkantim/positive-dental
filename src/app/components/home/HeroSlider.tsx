@@ -211,15 +211,15 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
           </div>
 
           {/* RIGHT — image */}
-          <div className="relative hidden lg:flex items-center justify-center">
+          <div className="relative flex items-center justify-center">
             <div
               key={active}
-              className="slide-enter-image relative w-full max-w-[520px]"
+              className="slide-enter-image relative w-full max-w-[320px] lg:max-w-[520px]"
             >
-              {/* Glow behind image */}
-              <div className={`absolute inset-0 scale-90 translate-y-6 rounded-[2rem] bg-gradient-to-br ${slide.accentFrom} ${slide.accentTo} opacity-25 blur-3xl pointer-events-none`} />
+              {/* Glow behind image — hidden on mobile for performance */}
+              <div className={`absolute inset-0 scale-90 translate-y-6 rounded-[2rem] bg-gradient-to-br ${slide.accentFrom} ${slide.accentTo} opacity-25 blur-3xl pointer-events-none hidden md:block`} />
 
-              <div className="relative rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl aspect-[4/3]">
+              <div className="relative rounded-[1.5rem] lg:rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl aspect-[4/3]">
                 <ImageWithFallback
                   src={responsiveImg(slide.image)}
                   alt={slide.title.replace("\n", " ")}
@@ -231,9 +231,9 @@ export function HeroSlider({ slides, active, setActive, direction, goTo, prev, n
                 {/* Dark overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#07091A]/60 via-transparent to-transparent" />
 
-                {/* Floating service badge */}
+                {/* Floating service badge — hidden on mobile */}
                 <div
-                  className="anim-float absolute bottom-5 left-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3"
+                  className="anim-float absolute bottom-5 left-5 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl px-4 py-3 hidden md:block"
                 >
                   <p className="text-white font-black text-sm">{slide.title.replace("\n", " ")}</p>
                   <p className={`text-xs mt-0.5 font-semibold ${slide.tagColor}`}>{slide.badge}</p>
