@@ -56,7 +56,7 @@ export function KidsServices() {
   return (
     <>
       {/* FEATURES */}
-      <section className="pt-6 sm:pt-16 pb-12 sm:pb-16 bg-white">
+      <section className="pt-6 sm:pt-16 pb-4 sm:pb-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <span className="inline-block text-xs font-bold uppercase tracking-widest text-pink-500 mb-3">Farkımız</span>
@@ -95,7 +95,7 @@ export function KidsServices() {
       </section>
 
       {/* SERVICES */}
-      <section className="py-24 bg-white">
+      <section className="pt-4 sm:pt-12 pb-16 sm:pb-24 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
 
