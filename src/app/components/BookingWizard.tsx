@@ -326,18 +326,30 @@ export function BookingWizard() {
   const doctorLabel  = selectedDoctor?.Name || "";
 
   return (
-    <section id="randevu" className="pt-6 pb-8 sm:pt-10 sm:pb-12 bg-white relative overflow-hidden">
-      <div className="absolute top-0 left-1/3 w-[600px] h-[600px] rounded-full bg-indigo-100/50 blur-[140px] pointer-events-none hidden md:block" />
-      <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-100/50 blur-[100px] pointer-events-none hidden md:block" />
+    <section id="randevu" className={`pt-6 pb-8 sm:pt-10 sm:pb-12 relative overflow-hidden transition-colors duration-500 ${
+      mode === "cocuk" ? "bg-pink-50/50" : "bg-white"
+    }`}>
+      <div className={`absolute top-0 left-1/3 w-[600px] h-[600px] rounded-full blur-[140px] pointer-events-none hidden md:block transition-colors duration-500 ${
+        mode === "cocuk" ? "bg-pink-200/50" : "bg-indigo-100/50"
+      }`} />
+      <div className={`absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full blur-[100px] pointer-events-none hidden md:block transition-colors duration-500 ${
+        mode === "cocuk" ? "bg-violet-200/50" : "bg-violet-100/50"
+      }`} />
 
       <div className="relative max-w-2xl mx-auto px-4 sm:px-6">
 
         {/* Heading */}
         <div className="text-center mb-10">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-4">Hızlı Randevu</span>
+          <span className={`inline-block text-xs font-bold uppercase tracking-widest mb-4 transition-colors duration-300 ${
+            mode === "cocuk" ? "text-pink-500" : "text-indigo-500"
+          }`}>{mode === "cocuk" ? "Çocuk Randevusu" : "Hızlı Randevu"}</span>
           <h2 className="font-display text-5xl sm:text-6xl font-black text-slate-900 leading-[0.92] tracking-tight">
             Online<br />
-            <span className="bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent">Randevu.</span>
+            <span className={`bg-clip-text text-transparent transition-all duration-300 ${
+              mode === "cocuk"
+                ? "bg-gradient-to-r from-pink-500 to-violet-500"
+                : "bg-gradient-to-r from-indigo-500 to-violet-600"
+            }`}>Randevu.</span>
           </h2>
           <p className="text-slate-400 mt-4 text-sm">5 adımda hızlıca randevunu oluştur</p>
         </div>
