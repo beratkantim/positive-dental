@@ -318,7 +318,7 @@ export function BookingWizard() {
   const doctorLabel  = selectedDoctor?.Name || "";
 
   return (
-    <section className="pt-6 pb-20 sm:pt-10 sm:pb-28 bg-white relative overflow-hidden">
+    <section className="pt-6 pb-10 sm:pt-10 sm:pb-14 bg-gradient-to-b from-white from-80% to-[#0D1235] relative overflow-hidden">
       <div className="absolute top-0 left-1/3 w-[600px] h-[600px] rounded-full bg-indigo-100/50 blur-[140px] pointer-events-none hidden md:block" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-violet-100/50 blur-[100px] pointer-events-none hidden md:block" />
 
@@ -623,8 +623,6 @@ export function BookingWizard() {
         </p>
       </div>
 
-      {/* Bottom fade into hero */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 sm:h-32 bg-gradient-to-b from-transparent to-[#0D1235] pointer-events-none" />
     </section>
   );
 }
