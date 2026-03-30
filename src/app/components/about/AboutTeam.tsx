@@ -2,30 +2,11 @@ import { useState } from "react";
 import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ImageWithFallback } from "../figma/ImageWithFallback";
-import { Calendar, Phone, ArrowRight, ChevronDown } from "lucide-react";
+import { Calendar, Phone, ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
+import { useTable } from "../../hooks/useSupabase";
+import type { Doctor } from "@/lib/supabase";
 
 const BOOKING_URL = "/online-randevu";
-
-const TEAM = [
-  {
-    name: "Dr. Ay\u015fe Y\u0131lmaz",
-    title: "Ba\u015fhekim \u00b7 Estetik Di\u015f Hekimi",
-    specialty: "Digital Smile Design",
-    image: "https://images.unsplash.com/photo-1565090567208-c8038cfcf6cd?w=600&q=75&auto=format",
-  },
-  {
-    name: "Dr. Mehmet Kaya",
-    title: "\u0130mplant & Cerrahi Uzman\u0131",
-    specialty: "Robotik \u0130mplant Cerrahi",
-    image: "https://images.unsplash.com/photo-1615177393114-bd2917a4f74a?w=600&q=75&auto=format",
-  },
-  {
-    name: "Dr. Zeynep Demir",
-    title: "Ortodonti Uzman\u0131",
-    specialty: "Dijital Ortodonti",
-    image: "https://images.unsplash.com/photo-1675526607070-f5cbd71dde92?w=600&q=75&auto=format",
-  },
-];
 
 export function AboutTeam({
   eeat,
@@ -44,6 +25,9 @@ export function AboutTeam({
   };
 }) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { data: allDoctors, loading } = useTable<Doctor>("doctors", "sort_order");
+
+  const managers = allDoctors.filter(d => d.is_active && d.is_manager);
 
   return (
     <>
@@ -56,42 +40,57 @@ export function AboutTeam({
               Uzman{" "}
               <span className="bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent">kadromuz.</span>
             </h2>
-            <p className="text-slate-500 mt-4">Alan\u0131nda uzman, deneyimli hekimlerimiz</p>
+            <p className="text-slate-500 mt-4">Alanında uzman, deneyimli hekimlerimiz</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {TEAM.map((member, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                whileHover={{ y: -6 }}
-                className="group bg-white rounded-3xl overflow-hidden border border-slate-100 hover:border-transparent hover:shadow-2xl hover:shadow-slate-200/60 transition-all"
-              >
-                <div className="relative overflow-hidden h-72">
-                  <ImageWithFallback
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    width={400}
-                    height={288}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
-                  <div className="absolute bottom-5 left-5">
-                    <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm border border-white/30 text-white text-xs font-bold rounded-full">
-                      {member.specialty}
-                    </span>
+          {loading ? (
+            <div className="flex gap-6 overflow-hidden">
+              {[0, 1, 2].map(i => (
+                <div key={i} className="min-w-[280px] sm:min-w-[320px] flex-shrink-0 bg-white rounded-3xl overflow-hidden border border-slate-100 animate-pulse">
+                  <div className="h-72 bg-slate-200" />
+                  <div className="p-5 space-y-2">
+                    <div className="h-5 bg-slate-200 rounded w-2/3" />
+                    <div className="h-4 bg-slate-100 rounded w-1/2" />
                   </div>
                 </div>
-                <div className="p-5">
-                  <h3 className="font-black text-slate-900">{member.name}</h3>
-                  <p className="text-sm text-slate-500 mt-1">{member.title}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : managers.length > 0 ? (
+            <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0">
+              {managers.map((doctor, i) => (
+                <motion.div
+                  key={doctor.id}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="group min-w-[280px] sm:min-w-[320px] flex-shrink-0 snap-start bg-white rounded-3xl overflow-hidden border border-slate-100 hover:border-transparent hover:shadow-2xl hover:shadow-slate-200/60 transition-all"
+                >
+                  <Link to={`/doktorlarimiz/${doctor.slug}`}>
+                    <div className="relative overflow-hidden h-72">
+                      <ImageWithFallback
+                        src={doctor.photo}
+                        alt={doctor.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        width={400}
+                        height={288}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
+                      <div className="absolute bottom-5 left-5">
+                        <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm border border-white/30 text-white text-xs font-bold rounded-full">
+                          {doctor.specialty}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-5">
+                      <h3 className="font-black text-slate-900">{doctor.name}</h3>
+                      <p className="text-sm text-slate-500 mt-1">{doctor.title}</p>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          ) : null}
         </div>
       </section>
 
@@ -99,7 +98,7 @@ export function AboutTeam({
       <section className="py-20 bg-slate-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">S\u0131k\u00e7a Sorulan Sorular</span>
+            <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-500 mb-3">Sıkça Sorulan Sorular</span>
             <h2 className="text-3xl sm:text-4xl font-black text-slate-900">Merak Edilenler</h2>
           </div>
 
@@ -123,14 +122,14 @@ export function AboutTeam({
           </div>
 
           <div className="bg-white rounded-2xl border border-slate-100 p-8 shadow-sm">
-            <h3 className="text-lg font-bold text-slate-900 mb-6">\u015eirket Bilgileri</h3>
+            <h3 className="text-lg font-bold text-slate-900 mb-6">Şirket Bilgileri</h3>
             <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
               {[
-                ["\u015eirket \u00dcnvan\u0131", eeat.company.unvan],
+                ["Şirket Ünvanı", eeat.company.unvan],
                 ["Vergi Dairesi", eeat.company.vergi_dairesi],
                 ["Vergi No", eeat.company.vergi_no],
                 ["Ticaret Sicil No", eeat.company.ticaret_sicil],
-                ["Kurulu\u015f Y\u0131l\u0131", eeat.company.tescil_tarihi],
+                ["Kuruluş Yılı", eeat.company.tescil_tarihi],
                 ["Mersis No", eeat.company.mersis_no],
                 ["Merkez", eeat.company.merkez],
               ].map(([label, value]) => (
@@ -154,12 +153,12 @@ export function AboutTeam({
         >
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-indigo-400 mb-5">Seni Bekliyoruz</span>
           <h2 className="font-display text-5xl sm:text-6xl font-black text-white leading-tight mb-6">
-            G\u00fcl\u00fc\u015f\u00fcn\u00fc
+            Gülüşünü
             <br />
-            <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">bizimle ba\u015flat.</span>
+            <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">bizimle başlat.</span>
           </h2>
           <p className="text-slate-400 text-lg mb-10 max-w-md mx-auto">
-            Online randevu al, beklemeden gel. \u0130lk muayene de\u011ferlendirmesi \u00fccretsiz.
+            Online randevu al, beklemeden gel. İlk muayene değerlendirmesi ücretsiz.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to={BOOKING_URL}

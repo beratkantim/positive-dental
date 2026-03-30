@@ -86,6 +86,7 @@ export function DoctorsSection() {
                     <Badge color={doc.is_active ? "green" : "gray"}>
                       {doc.is_active ? "Aktif" : "Pasif"}
                     </Badge>
+                    {doc.is_manager && <Badge color="violet">Yönetici</Badge>}
                   </div>
                   <p className="text-sm text-gray-500">{doc.specialty}</p>
                 </div>
@@ -135,6 +136,7 @@ function DoctorForm({ doctor, onSave, onCancel }: {
     dentsoft_id: doctor?.dentsoft_id || "",
     booking_url: doctor?.booking_url || "https://randevu.positivedental.com",
     is_active: doctor?.is_active ?? true,
+    is_manager: doctor?.is_manager ?? false,
     sort_order: doctor?.sort_order || 0,
   });
   const [saving, setSaving] = useState(false);
@@ -193,6 +195,7 @@ function DoctorForm({ doctor, onSave, onCancel }: {
       expertise: form.expertise.split(",").map(s => s.trim()).filter(Boolean),
       booking_url: form.booking_url,
       is_active: form.is_active,
+      is_manager: form.is_manager,
       sort_order: form.sort_order,
     };
     if (doctor?.id) {
@@ -344,6 +347,19 @@ function DoctorForm({ doctor, onSave, onCancel }: {
 
         <FormField label="Randevu URL" value={form.booking_url} onChange={v => setForm(f => ({ ...f, booking_url: v }))} />
         <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: Number(v) }))} type="number" />
+
+        {/* Yönetici doktor toggle */}
+        <div className="md:col-span-2">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" checked={form.is_manager}
+              onChange={e => setForm(f => ({ ...f, is_manager: e.target.checked }))}
+              className="rounded" />
+            <div>
+              <span className="text-sm font-semibold text-gray-700">Yönetici Doktor</span>
+              <p className="text-xs text-gray-400">Hakkımızda sayfasında "Uzman Kadromuz" bölümünde gösterilir</p>
+            </div>
+          </label>
+        </div>
       </div>
       <div className="flex items-center gap-3 mt-6">
         <button onClick={save} disabled={saving || form.selectedBranches.length === 0}

@@ -37,6 +37,7 @@ export interface Doctor {
   expertise: string[];
   booking_url: string;
   is_active: boolean;
+  is_manager: boolean;
   sort_order: number;
 }
 
