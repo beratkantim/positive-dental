@@ -3,7 +3,6 @@ import { Link } from "react-router";
 import { SEO } from "../components/SEO";
 import {
   Star, Phone, ArrowRight, ArrowUpRight, MapPin,
-  Users, Stethoscope, Building2, ThumbsUp,
 } from "lucide-react";
 import { motion } from "motion/react";
 import { useState, useEffect, useCallback } from "react";
@@ -25,12 +24,7 @@ const BookingWizard = lazy(() => import("../components/BookingWizard").then(m =>
 
 // ─── CONSTANTS ────────────────────────────────────────────────────────────────
 
-const STATS = [
-  { value: "15.000+", label: "Mutlu Hasta",  icon: Users },
-  { value: "25+",     label: "Uzman Hekim",  icon: Stethoscope },
-  { value: "4",       label: "Klinik",       icon: Building2 },
-  { value: "4.9★",    label: "Google Puanı", icon: ThumbsUp },
-];
+import { HOME_STATS as STATS } from "../data/homeStats";
 
 // Testimonials Supabase'den çekilir, fallback aşağıda
 const FALLBACK_TESTIMONIALS = [

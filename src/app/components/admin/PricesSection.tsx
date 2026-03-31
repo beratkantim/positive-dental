@@ -1,32 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import {
-  supabase, logAction, slugify, Card, Badge, LoadingSpinner, EmptyState,
-  FormField, ImageUpload, usePagination, Pagination, type PriceItem,
+  supabase, logAction, Card, Badge, LoadingSpinner, EmptyState,
+  usePagination, Pagination, type PriceItem,
 } from "./shared";
-
-interface PriceCategory {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-  sort_order: number;
-  is_active: boolean;
-}
-
-const GRADIENT_OPTIONS = [
-  { label: "İndigo-Violet", value: "from-indigo-500 to-violet-600" },
-  { label: "Teal-Cyan", value: "from-teal-500 to-cyan-600" },
-  { label: "Pink-Rose", value: "from-pink-500 to-rose-600" },
-  { label: "Amber-Orange", value: "from-amber-500 to-orange-500" },
-  { label: "Violet-Purple", value: "from-violet-500 to-purple-600" },
-  { label: "Sky-Blue", value: "from-sky-500 to-blue-600" },
-  { label: "Rose-Red", value: "from-rose-500 to-red-600" },
-  { label: "Slate-Dark", value: "from-slate-600 to-slate-800" },
-  { label: "Green-Emerald", value: "from-green-500 to-emerald-600" },
-  { label: "Orange-Amber", value: "from-orange-500 to-amber-600" },
-  { label: "Red-Rose", value: "from-red-600 to-rose-700" },
-  { label: "İndigo-Blue", value: "from-indigo-600 to-blue-700" },
-];
+import { PriceCategoryForm, type PriceCategory } from "./prices/PriceCategoryForm";
+import { PriceItemForm } from "./prices/PriceItemForm";
 
 export function PricesSection() {
   const [items, setItems] = useState<PriceItem[]>([]);
@@ -80,7 +58,6 @@ export function PricesSection() {
     load();
   };
 
-  // CSV Export
   const exportCSV = () => {
     const header = "Kategori,İsim,Fiyat (Min),Fiyat (Max),Not,Aktif,Sıra\n";
     const rows = items.map(i =>
@@ -95,7 +72,6 @@ export function PricesSection() {
     URL.revokeObjectURL(url);
   };
 
-  // CSV Import
   const importCSV = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -149,7 +125,6 @@ export function PricesSection() {
         </div>
       </div>
 
-      {/* ── KATEGORİ YÖNETİMİ ── */}
       {showCatManager && (
         <Card className="p-5">
           <div className="flex items-center justify-between mb-4">
@@ -159,15 +134,13 @@ export function PricesSection() {
               + Yeni Kategori
             </button>
           </div>
-
           {showCatForm && (
-            <CategoryForm
+            <PriceCategoryForm
               category={editingCat}
               onSave={() => { setShowCatForm(false); load(); }}
               onCancel={() => setShowCatForm(false)}
             />
           )}
-
           <div className="space-y-2">
             {cats.map(cat => {
               const count = items.filter(i => i.category === cat.name).length;
@@ -205,7 +178,6 @@ export function PricesSection() {
         </Card>
       )}
 
-      {/* Kategori filtresi */}
       <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
         <button onClick={() => setFilterCat("")}
           className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition ${!filterCat ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}>
@@ -220,9 +192,8 @@ export function PricesSection() {
         ))}
       </div>
 
-      {/* Yeni kalem formu (sadece yeni eklerken üstte) */}
       {showForm && !editing && (
-        <PriceForm item={null} categories={catNames} onSave={() => { setShowForm(false); load(); }} onCancel={() => setShowForm(false)} />
+        <PriceItemForm item={null} categories={catNames} onSave={() => { setShowForm(false); load(); }} onCancel={() => setShowForm(false)} />
       )}
 
       <Card>
@@ -271,12 +242,11 @@ export function PricesSection() {
                         </div>
                       </td>
                     </tr>
-                    {/* Akordiyon: inline düzenleme formu */}
                     {editing?.id === item.id && (
                       <tr key={`edit-${item.id}`}>
                         <td colSpan={6} className="p-0">
                           <div className="border-t-2 border-indigo-200 bg-indigo-50/30 p-4">
-                            <PriceForm
+                            <PriceItemForm
                               item={editing}
                               categories={catNames}
                               onSave={() => { setEditing(null); setShowForm(false); load(); }}
@@ -296,148 +266,5 @@ export function PricesSection() {
         <Pagination page={page} totalPages={totalPages} setPage={setPage} total={total} perPage={perPage} />
       </Card>
     </div>
-  );
-}
-
-// ── KATEGORİ FORM ──
-function CategoryForm({ category, onSave, onCancel }: {
-  category: PriceCategory | null;
-  onSave: () => void;
-  onCancel: () => void;
-}) {
-  const [form, setForm] = useState({
-    name: category?.name || "",
-    icon: category?.icon || "",
-    color: category?.color || "from-indigo-500 to-violet-600",
-    sort_order: category?.sort_order || 0,
-    is_active: category?.is_active ?? true,
-  });
-  const [saving, setSaving] = useState(false);
-
-  const save = async () => {
-    setSaving(true);
-    if (category?.id) {
-      // Kategori adı değiştiyse price_items'daki kategori adını da güncelle
-      if (category.name !== form.name) {
-        await supabase.from("price_items").update({ category: form.name }).eq("category", category.name);
-      }
-      await supabase.from("price_categories").update(form).eq("id", category.id);
-      await logAction("update", "price_categories", category.id, `Kategori güncellendi: ${form.name}`);
-    } else {
-      await supabase.from("price_categories").insert(form);
-      await logAction("create", "price_categories", "", `Kategori eklendi: ${form.name}`);
-    }
-    setSaving(false);
-    onSave();
-  };
-
-  return (
-    <div className="mb-4 p-4 bg-white border border-indigo-100 rounded-xl space-y-3">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <FormField label="Kategori Adı" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Renk</label>
-          <select value={form.color} onChange={e => setForm(f => ({ ...f, color: e.target.value }))}
-            className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:border-indigo-400 outline-none">
-            {GRADIENT_OPTIONS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
-          </select>
-        </div>
-        <ImageUpload
-          currentUrl={form.icon}
-          bucket="price-categories"
-          fileName={form.name ? `kategori_${slugify(form.name)}` : ""}
-          onUploaded={url => setForm(f => ({ ...f, icon: url }))}
-          label="Kategori İkonu"
-          hint="64x64px, kare ikon"
-        />
-        <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: parseInt(v) || 0 }))} type="number" />
-      </div>
-      <div className="flex gap-2">
-        <button onClick={save} disabled={saving}
-          className="px-4 py-2 bg-indigo-500 text-white font-bold rounded-lg text-sm hover:bg-indigo-400 transition disabled:opacity-60">
-          {saving ? "Kaydediliyor..." : "Kaydet"}
-        </button>
-        <button onClick={onCancel} className="px-4 py-2 border border-gray-200 text-gray-600 font-semibold rounded-lg text-sm hover:bg-gray-50 transition">İptal</button>
-      </div>
-    </div>
-  );
-}
-
-// ── FİYAT FORM ──
-function PriceForm({ item, categories, onSave, onCancel, inline }: {
-  item: PriceItem | null;
-  categories: string[];
-  onSave: () => void;
-  onCancel: () => void;
-  inline?: boolean;
-}) {
-  const [form, setForm] = useState({
-    category: item?.category || "",
-    name: item?.name || "",
-    price_min: item?.price_min || 0,
-    price_max: item?.price_max || 0,
-    price_note: item?.price_note || "",
-    is_active: item?.is_active ?? true,
-    sort_order: item?.sort_order || 0,
-  });
-  const [saving, setSaving] = useState(false);
-
-  const save = async () => {
-    setSaving(true);
-    if (item?.id) {
-      await supabase.from("price_items").update(form).eq("id", item.id);
-      await logAction("update", "price_items", item.id, `Fiyat güncellendi: ${form.name}`);
-    } else {
-      await supabase.from("price_items").insert(form);
-      await logAction("create", "price_items", "", `Fiyat eklendi: ${form.name}`);
-    }
-    setSaving(false);
-    onSave();
-  };
-
-  const Wrapper = inline ? "div" : Card;
-  const wrapperClass = inline ? "" : "p-6";
-
-  return (
-    <Wrapper className={wrapperClass}>
-      {!inline && <h3 className="font-bold text-gray-900 mb-5">{item ? "Fiyat Düzenle" : "Yeni Fiyat Kalemi"}</h3>}
-      <div className={`grid gap-3 ${inline ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-6" : "grid-cols-1 md:grid-cols-2 gap-4"}`}>
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 mb-1">Kategori</label>
-          <input list={`cat-list-${item?.id || 'new'}`} value={form.category} onChange={e => setForm(f => ({ ...f, category: e.target.value }))}
-            placeholder="Kategori..."
-            className="w-full px-2.5 py-2 rounded-lg border border-gray-200 text-sm focus:border-indigo-400 outline-none" />
-          <datalist id={`cat-list-${item?.id || 'new'}`}>{categories.map(c => <option key={c} value={c} />)}</datalist>
-        </div>
-        <FormField label="İşlem Adı" value={form.name} onChange={v => setForm(f => ({ ...f, name: v }))} />
-        <FormField label="Min Fiyat (₺)" value={String(form.price_min)} onChange={v => setForm(f => ({ ...f, price_min: parseInt(v) || 0 }))} type="number" />
-        <FormField label="Max Fiyat (₺)" value={String(form.price_max)} onChange={v => setForm(f => ({ ...f, price_max: parseInt(v) || 0 }))} type="number" />
-        <FormField label="Not" value={form.price_note} onChange={v => setForm(f => ({ ...f, price_note: v }))} />
-        <FormField label="Sıra" value={String(form.sort_order)} onChange={v => setForm(f => ({ ...f, sort_order: parseInt(v) || 0 }))} type="number" />
-      </div>
-      {!inline && (
-        <div className="mt-4 p-3 bg-gray-50 rounded-xl flex items-center justify-between">
-          <div>
-            <p className="font-semibold text-gray-900 text-sm">{form.name || "İşlem adı"}</p>
-            <p className="text-xs text-gray-400">{form.category} {form.price_note && `· ${form.price_note}`}</p>
-          </div>
-          <p className="font-bold text-gray-900">
-            {form.price_min === 0 && form.price_max === 0 ? "Ücretsiz" :
-             form.price_max > form.price_min ? `₺${form.price_min.toLocaleString("tr-TR")} – ₺${form.price_max.toLocaleString("tr-TR")}` :
-             `₺${form.price_min.toLocaleString("tr-TR")}`}
-          </p>
-        </div>
-      )}
-      <div className={`flex items-center gap-2 ${inline ? "mt-3" : "mt-6"}`}>
-        <button onClick={save} disabled={saving}
-          className={`bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-bold rounded-xl text-sm hover:from-indigo-400 hover:to-violet-500 transition disabled:opacity-60 ${inline ? "px-4 py-2" : "px-6 py-2.5"}`}>
-          {saving ? "Kaydediliyor..." : "Kaydet"}
-        </button>
-        <button onClick={onCancel}
-          className={`border border-gray-200 text-gray-700 font-semibold rounded-xl text-sm hover:bg-gray-50 transition ${inline ? "px-4 py-2" : "px-6 py-2.5"}`}>
-          İptal
-        </button>
-      </div>
-    </Wrapper>
   );
 }

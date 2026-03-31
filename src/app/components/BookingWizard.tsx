@@ -1,13 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  ChevronDown, ChevronRight, ChevronLeft, Check,
+  ChevronRight, ChevronLeft, Check,
   MapPin, Stethoscope, UserRound, CalendarDays, CheckCircle2, X, Loader2,
 } from "lucide-react";
 import { useTable } from "../hooks/useSupabase";
 import type { Branch, Doctor as SupabaseDoctor } from "@/lib/supabase";
 import { supabase } from "@/lib/supabase";
 import { getDoctors, getDoctorSlots, createAppointment, type DentsoftDoctor } from "@/lib/dentsoft";
+import { Step1Clinic } from "./appointment/Step1Clinic";
+import { Step2Service } from "./appointment/Step2Service";
+import { Step3Doctor } from "./appointment/Step3Doctor";
+import { Step4DateTime } from "./appointment/Step4DateTime";
+import { Step5Confirm } from "./appointment/Step5Confirm";
 
 interface TreatmentCategory {
   id: string;
@@ -18,8 +23,6 @@ interface TreatmentCategory {
   is_active: boolean;
 }
 
-// ── STEPS ────────────────────────────────────────────────────────────────────
-
 const STEPS = [
   { id: 1, label: "Klinik",  icon: MapPin },
   { id: 2, label: "Hizmet",  icon: Stethoscope },
@@ -28,60 +31,7 @@ const STEPS = [
   { id: 5, label: "Onayla",  icon: CheckCircle2 },
 ];
 
-// ── DROPDOWN ─────────────────────────────────────────────────────────────────
-
-function Dropdown({ placeholder, value, options, onChange }: {
-  placeholder: string; value: string; options: { label: string; value: string }[]; onChange: (v: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const selected = options.find(o => o.value === value);
-  return (
-    <div className="relative">
-      <button type="button" onClick={() => setOpen((o) => !o)}
-        className="w-full flex items-center justify-between gap-3 px-5 py-4 bg-white border border-slate-200 hover:border-indigo-300 rounded-2xl text-left transition-all shadow-sm">
-        <span className={selected ? "text-slate-800 font-semibold" : "text-slate-400"}>
-          {selected?.label || placeholder}
-        </span>
-        <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform flex-shrink-0 ${open ? "rotate-180" : ""}`} />
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ opacity: 0, y: -8, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.97 }} transition={{ duration: 0.15 }}
-            className="absolute z-50 top-full mt-2 left-0 right-0 bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/80 max-h-60 overflow-y-auto">
-            {options.map((opt) => (
-              <button key={opt.value} type="button"
-                onClick={() => { onChange(opt.value); setOpen(false); }}
-                className={`w-full text-left px-5 py-3.5 text-sm transition-colors flex items-center justify-between ${
-                  value === opt.value ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                }`}>
-                {opt.label}
-                {value === opt.value && <Check className="w-4 h-4 text-indigo-500" />}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-// ── STEP HEADER ──────────────────────────────────────────────────────────────
-
-function StepHeader({ step, title, sub }: { step: number; title: string; sub: string }) {
-  return (
-    <div className="mb-6">
-      <span className="text-xs font-black text-indigo-500 tracking-widest uppercase">Adım {step}/5</span>
-      <h3 className="font-display text-xl font-black text-slate-900 mt-1">{title}</h3>
-      <p className="text-slate-400 text-xs mt-0.5">{sub}</p>
-    </div>
-  );
-}
-
-// ── MAIN ─────────────────────────────────────────────────────────────────────
-
 export function BookingWizard() {
-  // Supabase data
   const { data: branches } = useTable<Branch>("branches", "sort_order");
   const { data: categories } = useTable<TreatmentCategory>("treatment_categories", "sort_order");
   const { data: supabaseDoctors } = useTable<SupabaseDoctor>("doctors", "sort_order");
@@ -89,10 +39,8 @@ export function BookingWizard() {
   const activeBranches = branches.filter(b => b.is_active);
   const activeCategories = categories.filter(c => c.is_active);
 
-  // Mode: yetişkin / çocuk
   const [mode, setMode] = useState<"yetiskin" | "cocuk">("yetiskin");
 
-  // Kategorileri mode'a göre filtrele
   const filteredCategories = activeCategories.filter(c =>
     mode === "cocuk" ? (c.slug === "pedodonti" || c.slug === "ortodonti") : (c.slug !== "pedodonti")
   );
@@ -125,12 +73,10 @@ export function BookingWizard() {
   const selectedCategory = activeCategories.find(c => c.id === serviceId);
   const selectedDoctor = dsDoctors.find(d => d.ID === doctorId);
 
-  // Supabase doktorlarından dentsoft_id eşleşme haritası (string key)
   const sbDoctorMap = new Map(
     supabaseDoctors.filter(d => d.dentsoft_id).map(d => [String(d.dentsoft_id), d])
   );
 
-  // Eşleştirilmiş doktor listesi: Dentsoft verisi + Supabase zengin bilgi
   const mergedDoctors = dsDoctors.map(ds => {
     const sb = sbDoctorMap.get(String(ds.ID));
     return {
@@ -144,21 +90,17 @@ export function BookingWizard() {
     };
   });
 
-  // Şube + tedavi filtresi
   const branchSlug = selectedBranch?.slug?.toLowerCase() || "";
   const branchShort = branchSlug.split("-")[0] || "";
   const branchCity = selectedBranch?.city?.toLowerCase() || "";
 
-  // Doktorları şube + tedavi filtresine göre filtrele
   const filteredDoctors = mergedDoctors.filter(d => {
-    // Şube filtresi: doktorun branches'inde seçilen klinik slug'ı var mı
     const branchMatch = !d._branches?.length || d._branches.includes(branchSlug) || d._branches.includes(branchShort) || d._branches.includes(branchCity);
-    // Tedavi filtresi: doktorun service_ids'inde seçilen kategori var mı (veya allServices=true ise service_ids boş)
     const serviceMatch = !d._serviceIds?.length || d._serviceIds.includes(serviceId);
     return branchMatch && serviceMatch;
   });
 
-  // ── Dentsoft: Doktor listesini çek ─────────────────────────────────────
+  // Dentsoft: Doktor listesini çek
   useEffect(() => {
     if (step !== 3 || dsDoctors.length > 0) return;
     setLoadingDoctors(true);
@@ -169,12 +111,11 @@ export function BookingWizard() {
       .finally(() => setLoadingDoctors(false));
   }, [step]);
 
-  // ── Dentsoft: Doktor slotlarını çek ────────────────────────────────────
+  // Dentsoft: Doktor slotlarını çek
   useEffect(() => {
     if (!doctorId || step !== 4) return;
     setLoadingSlots(true);
     setDsSlots(null);
-    // 2 ay ileri tarih aralığı sor
     const rangeEnd = new Date();
     rangeEnd.setMonth(rangeEnd.getMonth() + 2);
     const rangeStr = `${rangeEnd.getFullYear()}/${String(rangeEnd.getMonth()+1).padStart(2,"0")}/${String(rangeEnd.getDate()).padStart(2,"0")}`;
@@ -184,10 +125,8 @@ export function BookingWizard() {
       .finally(() => setLoadingSlots(false));
   }, [doctorId, step]);
 
-  // Slotlardan günleri parse et — Available + NotAvailable birlikte
   const availableDays = useCallback(() => {
     if (!dsSlots) return [];
-    // Response array olarak gelir — seçilen doktorun slotlarını bul
     let slotData: Record<string, any[]> | null = null;
     if (Array.isArray(dsSlots)) {
       const doctorEntry = dsSlots.find((d: any) => d.User?.ID === doctorId);
@@ -200,7 +139,6 @@ export function BookingWizard() {
 
     for (const [dateStr, dateSlots] of Object.entries(slotData)) {
       if (!Array.isArray(dateSlots)) continue;
-      // En az 1 Available slot olan günleri göster
       const hasAvailable = (dateSlots as any[]).some(s => s.Type === "Available");
       if (!hasAvailable) continue;
 
@@ -208,7 +146,6 @@ export function BookingWizard() {
       days.push({
         date: dateStr,
         label: d.toLocaleDateString("tr-TR", { weekday: "short", day: "numeric", month: "short" }),
-        // Dentsoft'ta saat s.Time.Begin şeklinde geliyor
         slots: (dateSlots as any[]).map(s => ({
           time: s.Time?.Begin?.substring(0, 5) || s.Begin?.substring(0, 5) || "",
           type: s.Type || "NotAvailable",
@@ -223,7 +160,6 @@ export function BookingWizard() {
   const daysList = availableDays();
   const selectedDay = daysList.find(d => d.date === day);
 
-  // Fallback: Dentsoft slotları gelmezse statik saatler
   const fallbackDays = useCallback(() => {
     const days: { label: string; date: string; slots: { time: string; type: string }[] }[] = [];
     const d = new Date();
@@ -248,15 +184,17 @@ export function BookingWizard() {
   const displayDays = daysList.length > 0 ? daysList : fallbackDays();
   const displaySelectedDay = displayDays.find(d => d.date === day);
 
-  // ── Randevu oluştur ────────────────────────────────────────────────────
+  const clinicLabel  = selectedBranch?.name || "";
+  const serviceLabel = selectedCategory?.name || "";
+  const doctorLabel  = selectedDoctor?.Name || "";
+
+  // Submit
   const handleSubmit = async () => {
     if (submitting) return;
     setSubmitting(true);
     setError("");
 
     try {
-      // Tarih formatı: YYYY-MM-DD (Dentsoft bu formatı istiyor)
-      // Note alanına seçilen tedavi kategorisini yaz
       const noteText = `Online Randevu — ${serviceLabel || "Genel Muayene"}`;
 
       const dsResult = await createAppointment(doctorId, {
@@ -271,7 +209,6 @@ export function BookingWizard() {
         Note: noteText,
       });
 
-      // Supabase'e de kaydet — admin panelde görünsün
       try {
         const selectedDoctor = mergedDoctors.find(d => d.ID === doctorId);
         await supabase.from("appointments").insert({
@@ -293,7 +230,6 @@ export function BookingWizard() {
           source: "website",
         });
       } catch (sbErr) {
-        // Supabase kaydı başarısız olsa bile randevu Dentsoft'ta oluştu
         console.warn("Supabase randevu kaydı başarısız:", sbErr);
       }
 
@@ -326,10 +262,6 @@ export function BookingWizard() {
     setDone(false); setError(""); setDsSlots(null);
   };
 
-  const clinicLabel  = selectedBranch?.name || "";
-  const serviceLabel = selectedCategory?.name || "";
-  const doctorLabel  = selectedDoctor?.Name || "";
-
   return (
     <section id="randevu" className={`pt-6 pb-8 sm:pt-10 sm:pb-12 relative overflow-hidden transition-colors duration-500 ${
       mode === "cocuk" ? "bg-pink-50/50" : "bg-white"
@@ -359,7 +291,7 @@ export function BookingWizard() {
           <p className="text-slate-400 mt-4 text-sm">5 adımda hızlıca randevunu oluştur</p>
         </div>
 
-        {/* Randevu Tipi Seçimi */}
+        {/* Mode toggle */}
         <div className="flex items-center justify-center gap-1 mb-8 bg-slate-100 rounded-2xl p-1 max-w-xs mx-auto">
           <button
             onClick={() => { if (mode !== "yetiskin") { setMode("yetiskin"); reset(); } }}
@@ -453,183 +385,33 @@ export function BookingWizard() {
               <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.22 }} className="p-8">
 
-                {/* ── STEP 1: KLİNİK ── */}
                 {step === 1 && (
-                  <div className="space-y-4">
-                    <StepHeader step={1} title="Klinik Seçin" sub="Size en yakın kliniği seçin" />
-                    <Dropdown placeholder="Klinik Seç" value={clinicId}
-                      options={activeBranches.map(b => ({ label: b.name, value: b.id }))}
-                      onChange={(v) => { setClinicId(v); setServiceId(""); setDoctorId(""); setDsDoctors([]); }} />
-                    {clinicLabel && (
-                      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-indigo-500 text-sm flex items-center gap-1.5 font-medium">
-                        <MapPin className="w-3.5 h-3.5" /> {clinicLabel} seçildi
-                      </motion.p>
-                    )}
-                  </div>
+                  <Step1Clinic clinicId={clinicId} clinicLabel={clinicLabel} activeBranches={activeBranches}
+                    onChange={(v) => { setClinicId(v); setServiceId(""); setDoctorId(""); setDsDoctors([]); }} />
                 )}
 
-                {/* ── STEP 2: HİZMET ── */}
                 {step === 2 && (
-                  <div className="space-y-4">
-                    <StepHeader step={2} title="Hizmet Seçin" sub={`${clinicLabel} · Mevcut hizmetler`} />
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-80 overflow-y-auto">
-                      {filteredCategories.map((c) => (
-                        <button key={c.id} onClick={() => { setServiceId(c.id); setDoctorId(""); }}
-                          className={`flex items-center gap-2.5 px-4 py-3 rounded-xl border text-left text-sm font-semibold transition-all ${
-                            serviceId === c.id
-                              ? "bg-indigo-50 border-indigo-300 text-indigo-700"
-                              : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-900"
-                          }`}>
-                          {serviceId === c.id
-                            ? <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />
-                            : <span className="text-base flex-shrink-0">{c.icon || "🦷"}</span>}
-                          {c.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <Step2Service serviceId={serviceId} clinicLabel={clinicLabel} filteredCategories={filteredCategories}
+                    onChange={(v) => { setServiceId(v); setDoctorId(""); }} />
                 )}
 
-                {/* ── STEP 3: DOKTOR (Dentsoft) ── */}
                 {step === 3 && (
-                  <div className="space-y-4">
-                    <StepHeader step={3} title="Doktor Seçin" sub={`${serviceLabel} uzmanlarımız`} />
-                    {loadingDoctors ? (
-                      <div className="flex items-center justify-center py-10 gap-2 text-slate-400">
-                        <Loader2 className="w-5 h-5 animate-spin" /> Doktorlar yükleniyor...
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {filteredDoctors.map((d) => (
-                          <button key={d.ID} onClick={() => setDoctorId(d.ID)}
-                            className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl border text-left transition-all ${
-                              doctorId === d.ID
-                                ? "bg-indigo-50 border-indigo-300"
-                                : "bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300"
-                            }`}>
-                            {d.Avatar ? (
-                              <img src={d.Avatar} alt={d.Name} className="w-10 h-10 rounded-full object-cover flex-shrink-0" />
-                            ) : (
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center flex-shrink-0 text-white font-black text-sm shadow-md">
-                                {d.Name?.split(" ").slice(-1)[0]?.[0] || "?"}
-                              </div>
-                            )}
-                            <div className="flex-1">
-                              <p className={`font-bold text-sm ${doctorId === d.ID ? "text-indigo-700" : "text-slate-800"}`}>
-                                {d.Title ? `${d.Title} ` : ""}{d.Name}
-                              </p>
-                              {d.Salon && <p className="text-slate-400 text-xs">{d.Salon}</p>}
-                            </div>
-                            {doctorId === d.ID && <Check className="w-4 h-4 text-indigo-500 flex-shrink-0" />}
-                          </button>
-                        ))}
-                        {filteredDoctors.length === 0 && !loadingDoctors && (
-                          <div className="text-center py-6">
-                            <p className="text-slate-400 text-sm">Doktor listesi yüklenemedi</p>
-                            {doctorError && <p className="text-red-400 text-xs mt-1">{doctorError}</p>}
-                            <button onClick={() => { setDsDoctors([]); setDoctorError(""); }}
-                              className="mt-2 text-indigo-500 text-xs font-bold hover:underline">Tekrar dene</button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  <Step3Doctor doctorId={doctorId} serviceLabel={serviceLabel} filteredDoctors={filteredDoctors}
+                    loadingDoctors={loadingDoctors} doctorError={doctorError}
+                    onSelect={setDoctorId} onRetry={() => { setDsDoctors([]); setDoctorError(""); }} />
                 )}
 
-                {/* ── STEP 4: TARİH & SAAT ── */}
                 {step === 4 && (
-                  <div className="space-y-5">
-                    <StepHeader step={4} title="Tarih & Saat" sub={`${doctorLabel} · Müsait günler`} />
-                    {loadingSlots ? (
-                      <div className="flex items-center justify-center py-10 gap-2 text-slate-400">
-                        <Loader2 className="w-5 h-5 animate-spin" /> Müsait saatler yükleniyor...
-                      </div>
-                    ) : (
-                      <>
-                        <div className="flex gap-2 overflow-x-auto pb-1">
-                          {displayDays.map((d) => (
-                            <button key={d.date} onClick={() => { setDay(d.date); setSlot(""); }}
-                              className={`flex-shrink-0 flex flex-col items-center px-3 py-3 rounded-xl border text-xs transition-all ${
-                                day === d.date
-                                  ? "bg-indigo-50 border-indigo-300 text-indigo-700"
-                                  : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50 hover:border-slate-300 hover:text-slate-800"
-                              }`}>
-                              <span className="font-black text-sm leading-none mb-1">{d.label.split(" ")[1]}</span>
-                              <span className="capitalize opacity-70">{d.label.split(" ")[0]}</span>
-                            </button>
-                          ))}
-                        </div>
-                        {day && (
-                          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>
-                            <p className="text-slate-400 text-xs mb-2 uppercase tracking-widest">Saat Seçin</p>
-                            <div className="grid grid-cols-5 sm:grid-cols-6 gap-2">
-                              {displaySelectedDay?.slots.map((s) => {
-                                const isAvailable = s.type === "Available";
-                                const isSelected = slot === s.time && isAvailable;
-                                return (
-                                  <button key={s.time}
-                                    onClick={() => isAvailable && setSlot(s.time)}
-                                    disabled={!isAvailable}
-                                    className={`py-2.5 rounded-xl border text-xs font-bold transition-all ${
-                                      isSelected
-                                        ? "bg-gradient-to-br from-indigo-500 to-violet-600 border-transparent text-white shadow-md shadow-indigo-200"
-                                        : isAvailable
-                                          ? "bg-white border-slate-200 text-slate-500 hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-600"
-                                          : "bg-slate-100 border-slate-100 text-slate-300 cursor-not-allowed line-through"
-                                    }`}>
-                                    {s.time}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </motion.div>
-                        )}
-                      </>
-                    )}
-                  </div>
+                  <Step4DateTime day={day} setDay={setDay} slot={slot} setSlot={setSlot}
+                    displayDays={displayDays} displaySelectedDay={displaySelectedDay}
+                    doctorLabel={doctorLabel} loadingSlots={loadingSlots} />
                 )}
 
-                {/* ── STEP 5: BİLGİLER & ONAYLA ── */}
                 {step === 5 && (
-                  <div className="space-y-5">
-                    <StepHeader step={5} title="Bilgileriniz" sub="Son adım — onaylayın" />
-                    <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2">
-                      {[
-                        { l: "Klinik", v: clinicLabel },
-                        { l: "Hizmet", v: serviceLabel },
-                        { l: "Doktor", v: doctorLabel },
-                        { l: "Tarih",  v: `${displaySelectedDay?.label || day} – ${slot}` },
-                      ].map((r) => (
-                        <div key={r.l} className="flex justify-between text-sm">
-                          <span className="text-slate-400">{r.l}</span>
-                          <span className="text-slate-700 font-semibold">{r.v}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-3">
-                        <input type="text" placeholder="Ad *" value={firstName} onChange={(e) => setFirstName(e.target.value)}
-                          className="w-full px-5 py-3.5 bg-white border border-slate-200 hover:border-slate-300 focus:border-indigo-400 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none transition-all shadow-sm" />
-                        <input type="text" placeholder="Soyad *" value={lastName} onChange={(e) => setLastName(e.target.value)}
-                          className="w-full px-5 py-3.5 bg-white border border-slate-200 hover:border-slate-300 focus:border-indigo-400 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none transition-all shadow-sm" />
-                      </div>
-                      <input type="tel" placeholder="Telefon Numarası *" value={phone} onChange={(e) => setPhone(e.target.value)}
-                        className="w-full px-5 py-3.5 bg-white border border-slate-200 hover:border-slate-300 focus:border-indigo-400 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none transition-all shadow-sm" />
-                      <input type="text" placeholder="T.C. Kimlik No *" value={tckn} onChange={(e) => setTckn(e.target.value.replace(/\D/g, "").slice(0, 11))}
-                        maxLength={11}
-                        className="w-full px-5 py-3.5 bg-white border border-slate-200 hover:border-slate-300 focus:border-indigo-400 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none transition-all shadow-sm" />
-                      <input type="email" placeholder="E-posta (opsiyonel)" value={email} onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-5 py-3.5 bg-white border border-slate-200 hover:border-slate-300 focus:border-indigo-400 rounded-2xl text-slate-800 placeholder-slate-400 text-sm outline-none transition-all shadow-sm" />
-                    </div>
-                    {error && (
-                      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-500 text-sm bg-red-50 border border-red-200 rounded-xl px-4 py-3">
-                        {error}
-                      </motion.p>
-                    )}
-                    <p className="text-slate-400 text-xs leading-relaxed">
-                      Kişisel bilgileriniz yalnızca randevu onayı için kullanılır ve üçüncü taraflarla paylaşılmaz.
-                    </p>
-                  </div>
+                  <Step5Confirm firstName={firstName} setFirstName={setFirstName} lastName={lastName} setLastName={setLastName}
+                    phone={phone} setPhone={setPhone} tckn={tckn} setTckn={setTckn} email={email} setEmail={setEmail}
+                    clinicLabel={clinicLabel} serviceLabel={serviceLabel} doctorLabel={doctorLabel}
+                    displaySelectedDay={displaySelectedDay} day={day} slot={slot} error={error} />
                 )}
 
               </motion.div>

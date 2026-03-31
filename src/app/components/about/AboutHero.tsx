@@ -2,14 +2,9 @@ import { motion } from "motion/react";
 import { Link } from "react-router";
 import { Sparkles, Calendar, Phone } from "lucide-react";
 
-const BOOKING_URL = "/online-randevu";
+import { ABOUT_STATS as STATS } from "../../data/aboutStats";
 
-const STATS = [
-  { number: "15.000+", label: "Mutlu Hasta",  desc: "G\u00fcvenen hasta say\u0131s\u0131" },
-  { number: "25+",     label: "Uzman Hekim",  desc: "Sertifikal\u0131 hekimler"  },
-  { number: "2",       label: "Klinik",       desc: "\u0130stanbul & Adana"      },
-  { number: "15 Y\u0131l",  label: "Deneyim",      desc: "Sekt\u00f6r tecr\u00fcbesi"     },
-];
+const BOOKING_URL = "/online-randevu";
 
 export function AboutHero() {
   return (
